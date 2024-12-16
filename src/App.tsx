@@ -13,7 +13,14 @@ import Login from "./pages/Login"
 import { supabase } from "./integrations/supabase/client"
 import { useEffect, useState } from "react"
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+    },
+  },
+})
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session } = useSessionContext()
@@ -86,56 +93,66 @@ const AuthRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>
 }
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <SessionContextProvider 
-      supabaseClient={supabase}
-      initialSession={null}
-    >
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route 
-              path="/login" 
-              element={
-                <AuthRoute>
-                  <Login />
-                </AuthRoute>
-              } 
-            />
-            <Route path="/" element={<Index />} />
-            <Route path="/artist/:id" element={<ArtistDetail />} />
-            <Route 
-              path="/admin" 
-              element={
-                <ProtectedRoute>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/admin/new" 
-              element={
-                <ProtectedRoute>
-                  <AdminNewArtist />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/admin/edit/:id" 
-              element={
-                <ProtectedRoute>
-                  <AdminEditArtist />
-                </ProtectedRoute>
-              } 
-            />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </SessionContextProvider>
-  </QueryClientProvider>
-)
+const App = () => {
+  const [initialSession, setInitialSession] = useState(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setInitialSession(session)
+    })
+  }, [])
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <SessionContextProvider 
+        supabaseClient={supabase}
+        initialSession={initialSession}
+      >
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route 
+                path="/login" 
+                element={
+                  <AuthRoute>
+                    <Login />
+                  </AuthRoute>
+                } 
+              />
+              <Route path="/" element={<Index />} />
+              <Route path="/artist/:id" element={<ArtistDetail />} />
+              <Route 
+                path="/admin" 
+                element={
+                  <ProtectedRoute>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/new" 
+                element={
+                  <ProtectedRoute>
+                    <AdminNewArtist />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/edit/:id" 
+                element={
+                  <ProtectedRoute>
+                    <AdminEditArtist />
+                  </ProtectedRoute>
+                } 
+              />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </SessionContextProvider>
+    </QueryClientProvider>
+  )
+}
 
 export default App

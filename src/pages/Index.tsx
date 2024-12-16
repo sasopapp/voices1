@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { ArtistCard } from "../components/ArtistCard";
 import { LanguageSelect } from "../components/LanguageSelect";
 import { Language } from "../types/voiceover";
 import { voiceoverArtists } from "../data/voiceover-artists";
@@ -7,10 +6,12 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 
 const Index = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<Language | "all">("all");
   const navigate = useNavigate();
+  const { session } = useSessionContext();
 
   const filteredArtists = voiceoverArtists.filter((artist) =>
     selectedLanguage === "all"
@@ -35,34 +36,51 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background p-8">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-12 text-center">
-          <h1 className="mb-4 text-4xl font-bold text-primary">Voiceover Artists</h1>
-          <p className="mb-8 text-lg text-gray-600">
-            Discover professional voiceover artists in multiple languages
-          </p>
-          <div className="flex justify-center">
-            <LanguageSelect value={selectedLanguage} onChange={setSelectedLanguage} />
+    <div className="min-h-screen bg-background">
+      <header className="border-b">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex h-16 justify-between items-center">
+            <h1 className="text-xl font-semibold">Voiceover Artists</h1>
+            <nav>
+              {session ? (
+                <Button 
+                  variant="ghost" 
+                  onClick={handleLogout}
+                >
+                  Logout
+                </Button>
+              ) : (
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate('/login')}
+                >
+                  Login
+                </Button>
+              )}
+            </nav>
           </div>
         </div>
-        
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredArtists.map((artist) => (
-            <ArtistCard key={artist.id} artist={artist} />
-          ))}
-        </div>
+      </header>
 
-        <div className="mt-8 flex justify-center">
-          <Button 
-            variant="outline"
-            onClick={handleLogout}
-            className="w-full max-w-xs"
-          >
-            Logout
-          </Button>
+      <main className="p-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 text-center">
+            <h2 className="mb-4 text-4xl font-bold text-primary">Find Your Voice</h2>
+            <p className="mb-8 text-lg text-gray-600">
+              Discover professional voiceover artists in multiple languages
+            </p>
+            <div className="flex justify-center">
+              <LanguageSelect value={selectedLanguage} onChange={setSelectedLanguage} />
+            </div>
+          </div>
+          
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {filteredArtists.map((artist) => (
+              <ArtistCard key={artist.id} artist={artist} />
+            ))}
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

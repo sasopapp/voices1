@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { LayoutDashboard } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
-import { Logo } from "@/components/Logo";
 
 const Index = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<string | "all">("all");
@@ -72,7 +71,7 @@ const Index = () => {
       <header className="border-b">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 justify-between items-center">
-            <Logo />
+            <h1 className="text-2xl font-bold">Voiceover Artists</h1>
             <nav className="flex items-center gap-4">
               {isAdmin && (
                 <Button 

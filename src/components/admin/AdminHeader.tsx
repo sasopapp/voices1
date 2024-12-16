@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Home } from "lucide-react"
+import { Home } from "lucide-react"
 
 export function AdminHeader({ title }: { title: string }) {
   const navigate = useNavigate()
@@ -8,15 +8,6 @@ export function AdminHeader({ title }: { title: string }) {
   return (
     <header className="border-b">
       <div className="flex h-16 items-center gap-4 px-6">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => navigate(-1)}
-          className="mr-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span className="sr-only">Go back</span>
-        </Button>
         <Button
           variant="ghost"
           size="icon"

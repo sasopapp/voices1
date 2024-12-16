@@ -17,21 +17,17 @@ const queryClient = new QueryClient()
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session } = useSessionContext()
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const checkAdminStatus = async () => {
-      console.log('Starting admin status check')
-      
       if (!session?.user?.id) {
-        console.log('No session or user ID found, redirecting to login')
+        console.log('No session or user ID found')
         setIsAdmin(false)
-        setIsLoading(false)
         return
       }
 
       try {
-        console.log('Fetching profile for user:', session.user.id)
+        console.log('Checking admin status for user:', session.user.id)
         const { data: profile, error } = await supabase
           .from('profiles')
           .select('is_admin')
@@ -41,51 +37,37 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
         if (error) {
           console.error('Error fetching profile:', error)
           setIsAdmin(false)
-        } else {
-          console.log('Profile data:', profile)
-          setIsAdmin(!!profile?.is_admin)  // Convert to boolean explicitly
+          return
         }
+
+        console.log('Profile data:', profile)
+        setIsAdmin(profile?.is_admin || false)
       } catch (error) {
         console.error('Error in admin check:', error)
         setIsAdmin(false)
-      } finally {
-        setIsLoading(false)
       }
     }
 
     checkAdminStatus()
   }, [session?.user?.id])
 
-  console.log('Protected Route State:', {
-    isLoading,
-    hasSession: !!session,
-    isAdmin,
-    userId: session?.user?.id
-  })
-
-  if (isLoading) {
-    return <div>Loading...</div>
-  }
-
   if (!session) {
-    console.log('No session found, redirecting to login')
+    console.log('No session, redirecting to login')
     return <Navigate to="/login" replace />
   }
 
-  // Only redirect if we're certain the user is not an admin
-  if (isAdmin === false) {
+  if (isAdmin === null) {
+    console.log('Loading admin status...')
+    return <div>Loading...</div>
+  }
+
+  if (!isAdmin) {
     console.log('User is not admin, redirecting to home')
     return <Navigate to="/" replace />
   }
 
-  // If isAdmin is true, render the protected content
-  if (isAdmin === true) {
-    console.log('Rendering protected content - user is admin')
-    return <>{children}</>
-  }
-
-  // If we're still not sure about admin status, show loading
-  return <div>Verifying admin status...</div>
+  console.log('User is admin, rendering protected content')
+  return <>{children}</>
 }
 
 const App = () => (

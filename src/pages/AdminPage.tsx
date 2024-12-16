@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useState } from "react"
 import { toast } from "sonner"
 import { useSessionContext } from "@supabase/auth-helpers-react"
+import { useQuery } from "@tanstack/react-query"
 
 const AdminNewArtist = () => {
   const navigate = useNavigate()
@@ -19,6 +20,27 @@ const AdminNewArtist = () => {
   const [avatar, setAvatar] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { session } = useSessionContext()
+
+  // Fetch available languages from the database
+  const { data: availableLanguages = [] } = useQuery({
+    queryKey: ['languages'],
+    queryFn: async () => {
+      console.log('Fetching languages from database...')
+      const { data, error } = await supabase
+        .from('languages')
+        .select('name')
+        .order('name')
+
+      if (error) {
+        console.error('Error fetching languages:', error)
+        throw error
+      }
+
+      const languages = data.map(lang => lang.name)
+      console.log('Available languages from DB:', languages)
+      return languages
+    },
+  })
 
   // Check if user is admin
   useEffect(() => {
@@ -156,12 +178,11 @@ const AdminNewArtist = () => {
                   <SelectValue placeholder="Select language" />
                 </SelectTrigger>
                 <SelectContent>
-                  {/* Languages will be fetched from the database */}
-                  <SelectItem value="English">English</SelectItem>
-                  <SelectItem value="Spanish">Spanish</SelectItem>
-                  <SelectItem value="French">French</SelectItem>
-                  <SelectItem value="German">German</SelectItem>
-                  <SelectItem value="Italian">Italian</SelectItem>
+                  {availableLanguages.map((lang) => (
+                    <SelectItem key={lang} value={lang}>
+                      {lang}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <div className="mt-2 flex flex-wrap gap-2">

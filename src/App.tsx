@@ -1,27 +1,27 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { createClient } from "@supabase/supabase-js";
-import { SessionContextProvider } from "@supabase/auth-helpers-react";
-import Index from "./pages/Index";
-import ArtistDetail from "./pages/ArtistDetail";
-import AdminPage from "./pages/AdminPage";
-import Login from "./pages/Login";
-import { supabase } from "./integrations/supabase/client";
+import { Toaster } from "@/components/ui/toaster"
+import { Toaster as Sonner } from "@/components/ui/sonner"
+import { TooltipProvider } from "@/components/ui/tooltip"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import { SessionContextProvider } from "@supabase/auth-helpers-react"
+import Index from "./pages/Index"
+import ArtistDetail from "./pages/ArtistDetail"
+import AdminDashboard from "./pages/admin/AdminDashboard"
+import AdminNewArtist from "./pages/AdminPage"  // We'll keep using the existing form
+import Login from "./pages/Login"
+import { supabase } from "./integrations/supabase/client"
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient()
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const session = supabase.auth.getSession();
+  const session = supabase.auth.getSession()
   
   if (!session) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/login" />
   }
   
-  return <>{children}</>;
-};
+  return <>{children}</>
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -38,7 +38,15 @@ const App = () => (
               path="/admin" 
               element={
                 <ProtectedRoute>
-                  <AdminPage />
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/new" 
+              element={
+                <ProtectedRoute>
+                  <AdminNewArtist />
                 </ProtectedRoute>
               } 
             />
@@ -47,6 +55,6 @@ const App = () => (
       </TooltipProvider>
     </SessionContextProvider>
   </QueryClientProvider>
-);
+)
 
-export default App;
+export default App

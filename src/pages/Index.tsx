@@ -1,39 +1,35 @@
-import { useState } from "react";
-import { ArtistCard } from "../components/ArtistCard";
-import { LanguageSelect } from "../components/LanguageSelect";
-import { VoiceoverArtist } from "@/types/voiceover";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
-import { useSessionContext } from "@supabase/auth-helpers-react";
-import { LayoutDashboard } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react"
+import { VoiceoverArtist } from "@/types/voiceover"
+import { supabase } from "@/integrations/supabase/client"
+import { useSessionContext } from "@supabase/auth-helpers-react"
+import { useQuery } from "@tanstack/react-query"
+import { toast } from "sonner"
+import { Header } from "@/components/index/Header"
+import { ArtistList } from "@/components/index/ArtistList"
 
 const Index = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState<string | "all">("all");
-  const navigate = useNavigate();
-  const { session } = useSessionContext();
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState<string | "all">("all")
+  const { session } = useSessionContext()
+  const [isAdmin, setIsAdmin] = useState(false)
 
   // Fetch artists using React Query - now fetching approved artists for all visitors
   const { data: artists = [], isLoading: artistsLoading } = useQuery({
     queryKey: ['artists'],
     queryFn: async () => {
-      console.log('Fetching approved artists...');
+      console.log('Fetching approved artists...')
       const { data, error } = await supabase
         .from('artists')
         .select('*')
         .eq('is_approved', true)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false })
 
       if (error) {
-        console.error('Error fetching artists:', error);
-        toast.error('Failed to load artists');
-        throw error;
+        console.error('Error fetching artists:', error)
+        toast.error('Failed to load artists')
+        throw error
       }
 
-      console.log('Fetched artists:', data);
+      console.log('Fetched artists:', data)
       
       return data.map((artist): VoiceoverArtist => ({
         id: artist.id,
@@ -44,129 +40,49 @@ const Index = () => {
         created_by: artist.created_by,
         is_approved: artist.is_approved,
         created_at: artist.created_at
-      }));
+      }))
     },
-  });
+  })
 
   // Check if user is admin - only when session exists
   useQuery({
     queryKey: ['isAdmin', session?.user?.id],
     queryFn: async () => {
-      if (!session?.user?.id) return false;
+      if (!session?.user?.id) return false
       
       const { data: profile, error } = await supabase
         .from('profiles')
         .select('is_admin')
         .eq('id', session.user.id)
-        .single();
+        .single()
 
       if (error) {
-        console.error('Error checking admin status:', error);
-        return false;
+        console.error('Error checking admin status:', error)
+        return false
       }
 
-      setIsAdmin(profile?.is_admin || false);
-      return profile?.is_admin || false;
+      setIsAdmin(profile?.is_admin || false)
+      return profile?.is_admin || false
     },
     enabled: !!session?.user?.id,
-  });
-
-  const handleLogout = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        console.error('Error during logout:', error);
-        toast.error('Error during logout');
-        return;
-      }
-
-      toast.success('Logged out successfully');
-    } catch (error) {
-      console.error('Error during logout:', error);
-      toast.error('Error during logout');
-    }
-  };
-
-  const filteredArtists = artists.filter((artist) => {
-    if (selectedLanguage === "all") return true;
-    return artist.languages.includes(selectedLanguage);
-  });
+  })
 
   if (artistsLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>
   }
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b relative">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 justify-between items-center">
-            <div className="w-32">
-              {/* Empty div to maintain layout */}
-            </div>
-            
-            <div className="absolute left-1/2 transform -translate-x-1/2">
-              <img 
-                src="https://authenticvoices.eu/wp-content/uploads/2023/11/AV_logo_250px-1.png" 
-                alt="Authentic Voices Logo" 
-                className="h-24"
-                onClick={() => navigate('/')}
-              />
-            </div>
-
-            <nav className="flex items-center gap-4">
-              {isAdmin && (
-                <Button 
-                  variant="ghost" 
-                  onClick={() => navigate('/admin')}
-                  className="flex items-center gap-2"
-                >
-                  <LayoutDashboard className="h-4 w-4" />
-                  Admin Dashboard
-                </Button>
-              )}
-              {session ? (
-                <Button 
-                  variant="ghost" 
-                  onClick={handleLogout}
-                >
-                  Logout
-                </Button>
-              ) : (
-                <Button 
-                  variant="ghost" 
-                  onClick={() => navigate('/login')}
-                >
-                  Login
-                </Button>
-              )}
-            </nav>
-          </div>
-        </div>
-      </header>
-
+      <Header isAdmin={isAdmin} isLoggedIn={!!session} />
       <main className="p-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4 text-4xl font-bold text-[#1a365d]">Find Your Voice</h2>
-            <p className="mb-8 text-lg text-gray-600">
-              Discover professional voiceover artists in multiple languages
-            </p>
-            <div className="flex justify-center">
-              <LanguageSelect value={selectedLanguage} onChange={setSelectedLanguage} />
-            </div>
-          </div>
-          
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {filteredArtists.map((artist) => (
-              <ArtistCard key={artist.id} artist={artist} />
-            ))}
-          </div>
-        </div>
+        <ArtistList 
+          artists={artists}
+          selectedLanguage={selectedLanguage}
+          onLanguageChange={setSelectedLanguage}
+        />
       </main>
     </div>
-  );
-};
+  )
+}
 
-export default Index;
+export default Index

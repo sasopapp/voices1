@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
 import { AdminHeader } from "@/components/admin/AdminHeader"
@@ -6,9 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useState } from "react"
 import { toast } from "sonner"
-import { useSessionContext } from "@supabase/auth-helpers-react"
 import { useQuery } from "@tanstack/react-query"
 
 const AdminNewArtist = () => {
@@ -18,13 +16,12 @@ const AdminNewArtist = () => {
   const [audioDemo, setAudioDemo] = useState<File | null>(null)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { session } = useSessionContext()
 
-  // Fetch available languages from the database
+  // Fetch available languages
   const { data: availableLanguages = [] } = useQuery({
     queryKey: ['languages'],
     queryFn: async () => {
-      console.log('Fetching languages from database...')
+      console.log('Fetching available languages...')
       const { data, error } = await supabase
         .from('languages')
         .select('name')
@@ -35,42 +32,14 @@ const AdminNewArtist = () => {
         throw error
       }
 
-      const languages = data.map(lang => lang.name)
-      console.log('Available languages from DB:', languages)
-      return languages
+      return data.map(lang => lang.name)
     },
   })
 
-  // Check if user is admin
-  useEffect(() => {
-    const checkAdmin = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        console.log('No user found, redirecting to login')
-        navigate('/login')
-        return
-      }
-
-      const { data: profile, error } = await supabase
-        .from('profiles')
-        .select('is_admin')
-        .eq('id', user.id)
-        .single()
-
-      if (error || !profile?.is_admin) {
-        console.log('User is not admin, redirecting to home')
-        navigate('/')
-      }
-    }
-
-    checkAdmin()
-  }, [navigate])
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
-    if (!session?.user?.id) {
-      toast.error('You must be logged in to create an artist')
+    if (!name || languages.length === 0) {
+      toast.error('Please fill in all required fields')
       return
     }
 
@@ -78,12 +47,14 @@ const AdminNewArtist = () => {
       setIsSubmitting(true)
       console.log('Starting artist creation process...')
 
-      // Upload avatar if provided
       let avatarUrl = null
+      let audioDemoUrl = null
+
+      // Upload avatar if provided
       if (avatar) {
         console.log('Uploading avatar...')
         const avatarFileName = `${Date.now()}-${avatar.name}`
-        const { data: avatarData, error: avatarError } = await supabase.storage
+        const { error: avatarError } = await supabase.storage
           .from('avatars')
           .upload(avatarFileName, avatar)
 
@@ -92,20 +63,19 @@ const AdminNewArtist = () => {
           throw new Error('Failed to upload avatar')
         }
 
-        const { data: { publicUrl: avatarPublicUrl } } = supabase.storage
+        const { data: { publicUrl } } = supabase.storage
           .from('avatars')
           .getPublicUrl(avatarFileName)
         
-        avatarUrl = avatarPublicUrl
+        avatarUrl = publicUrl
         console.log('Avatar uploaded successfully:', avatarUrl)
       }
 
       // Upload audio demo if provided
-      let audioDemoUrl = null
       if (audioDemo) {
         console.log('Uploading audio demo...')
         const audioFileName = `${Date.now()}-${audioDemo.name}`
-        const { data: audioData, error: audioError } = await supabase.storage
+        const { error: audioError } = await supabase.storage
           .from('demos')
           .upload(audioFileName, audioDemo)
 
@@ -114,24 +84,24 @@ const AdminNewArtist = () => {
           throw new Error('Failed to upload audio demo')
         }
 
-        const { data: { publicUrl: audioPublicUrl } } = supabase.storage
+        const { data: { publicUrl } } = supabase.storage
           .from('demos')
           .getPublicUrl(audioFileName)
         
-        audioDemoUrl = audioPublicUrl
+        audioDemoUrl = publicUrl
         console.log('Audio demo uploaded successfully:', audioDemoUrl)
       }
 
       // Create artist record
       console.log('Creating artist record...')
-      const { error: insertError } = await supabase.from('artists').insert({
-        name,
-        languages,
-        audio_demo: audioDemoUrl,
-        avatar: avatarUrl,
-        created_by: session.user.id,
-        is_approved: false
-      })
+      const { error: insertError } = await supabase
+        .from('artists')
+        .insert({
+          name,
+          languages,
+          avatar: avatarUrl,
+          audio_demo: audioDemoUrl,
+        })
 
       if (insertError) {
         console.error('Error creating artist:', insertError)
@@ -151,7 +121,7 @@ const AdminNewArtist = () => {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <AdminHeader title="Add New Artist" />
+      <AdminHeader title="New Artist" />
       <main className="flex-1 p-8">
         <form onSubmit={handleSubmit} className="space-y-6 max-w-xl mx-auto">
           <div>
@@ -168,7 +138,7 @@ const AdminNewArtist = () => {
             <Label>Languages</Label>
             <Select
               onValueChange={(value) => 
-                setLanguages([...languages, value])
+                setLanguages(prev => [...prev, value])
               }
             >
               <SelectTrigger>
@@ -210,7 +180,6 @@ const AdminNewArtist = () => {
               type="file"
               accept="audio/*"
               onChange={(e) => setAudioDemo(e.target.files?.[0] || null)}
-              required
             />
           </div>
 
@@ -221,7 +190,6 @@ const AdminNewArtist = () => {
               type="file"
               accept="image/*"
               onChange={(e) => setAvatar(e.target.files?.[0] || null)}
-              required
             />
           </div>
 

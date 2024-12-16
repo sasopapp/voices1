@@ -20,6 +20,26 @@ const AdminEditArtist = () => {
   const [avatar, setAvatar] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  // Fetch available languages
+  const { data: availableLanguages = [] } = useQuery({
+    queryKey: ['languages'],
+    queryFn: async () => {
+      console.log('Fetching available languages...')
+      const { data, error } = await supabase
+        .from('languages')
+        .select('name')
+        .order('name')
+
+      if (error) {
+        console.error('Error fetching languages:', error)
+        throw error
+      }
+
+      return data.map(lang => lang.name as Language)
+    },
+  })
+
+  // Fetch artist details
   const { data: artist, isLoading: isLoadingArtist } = useQuery({
     queryKey: ['artist', id],
     queryFn: async () => {
@@ -154,11 +174,11 @@ const AdminEditArtist = () => {
                   <SelectValue placeholder="Select language" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="English">English</SelectItem>
-                  <SelectItem value="Spanish">Spanish</SelectItem>
-                  <SelectItem value="French">French</SelectItem>
-                  <SelectItem value="German">German</SelectItem>
-                  <SelectItem value="Italian">Italian</SelectItem>
+                  {availableLanguages.map((lang) => (
+                    <SelectItem key={lang} value={lang}>
+                      {lang}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <div className="mt-2 flex flex-wrap gap-2">

@@ -6,7 +6,8 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Language } from "../types/voiceover";
-import { languages } from "../data/voiceover-artists";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface LanguageSelectProps {
   value: Language | "all";
@@ -14,6 +15,29 @@ interface LanguageSelectProps {
 }
 
 export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
+  const { data: languages = [], isLoading } = useQuery({
+    queryKey: ['languages'],
+    queryFn: async () => {
+      console.log('Fetching languages from Supabase...');
+      const { data, error } = await supabase
+        .from('languages')
+        .select('name')
+        .order('name');
+
+      if (error) {
+        console.error('Error fetching languages:', error);
+        throw error;
+      }
+
+      console.log('Languages loaded:', data);
+      return data.map(lang => lang.name as Language);
+    },
+  });
+
+  if (isLoading) {
+    return <div>Loading languages...</div>;
+  }
+
   return (
     <Select value={value} onValueChange={onChange}>
       <SelectTrigger className="w-[200px] bg-white">

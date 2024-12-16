@@ -13,10 +13,27 @@ import {
 import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"
 import { useQueryClient } from "@tanstack/react-query"
+import { Language } from "@/types/voiceover"
 
 interface AdminArtistCardProps {
   artist: VoiceoverArtist & { is_approved?: boolean }
 }
+
+// Helper function to validate languages (same as in Index.tsx)
+const validateLanguages = (languages: string[]): Language[] => {
+  if (!Array.isArray(languages)) {
+    console.log('Languages is not an array:', languages);
+    return [];
+  }
+  
+  const validLanguages = ['English', 'Spanish', 'French', 'German', 'Italian', 'Croatian', 'Serbian', 'Slovak', 'Slovene'];
+  const validatedLanguages = languages.filter((lang): lang is Language => 
+    validLanguages.includes(lang)
+  );
+  
+  console.log('Validated languages:', validatedLanguages);
+  return validatedLanguages;
+};
 
 export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
   const navigate = useNavigate()
@@ -46,10 +63,8 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
     }
   }
 
-  // Ensure languages is always an array and extract names
-  const languages = Array.isArray(artist.languages) 
-    ? artist.languages.map(lang => typeof lang === 'string' ? lang : lang.name)
-    : []
+  // Use the same validation approach as Index page
+  const languages = validateLanguages(artist.languages || [])
   console.log('Languages for artist:', artist.name, languages)
 
   return (

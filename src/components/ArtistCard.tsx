@@ -11,6 +11,9 @@ interface ArtistCardProps {
 export const ArtistCard = ({ artist }: ArtistCardProps) => {
   const navigate = useNavigate();
 
+  // Ensure languages is always an array
+  const languages = Array.isArray(artist.languages) ? artist.languages : [];
+
   return (
     <Card 
       className="overflow-hidden transition-all hover:shadow-lg cursor-pointer" 
@@ -18,20 +21,20 @@ export const ArtistCard = ({ artist }: ArtistCardProps) => {
     >
       <CardHeader className="flex flex-row items-center gap-4 pb-3">
         <Avatar className="h-10 w-10">
-          <AvatarImage src={artist.avatar} alt={artist.name} />
+          <AvatarImage src={artist.avatar || ''} alt={artist.name} />
           <AvatarFallback>{artist.name[0]}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col">
           <h3 className="font-semibold text-lg">{artist.name}</h3>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <Globe className="h-4 w-4" />
-            {artist.languages.join(", ")}
+            {languages.length > 0 ? languages.join(", ") : "No languages specified"}
           </div>
         </div>
       </CardHeader>
       <CardContent>
         <audio controls className="w-full">
-          <source src={artist.audioDemo} type="audio/mpeg" />
+          <source src={artist.audioDemo || ''} type="audio/mpeg" />
           Your browser does not support the audio element.
         </audio>
       </CardContent>

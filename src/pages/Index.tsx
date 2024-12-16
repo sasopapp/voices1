@@ -10,18 +10,10 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { LayoutDashboard } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
-// Helper function to validate languages
-const validateLanguages = (languages: string[]): Language[] => {
-  const validLanguages = ['English', 'Spanish', 'French', 'German', 'Italian'];
-  return languages.filter((lang): lang is Language => 
-    validLanguages.includes(lang)
-  );
-};
-
 const Index = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<Language | "all">("all");
   const navigate = useNavigate();
-  const { session, isLoading: sessionLoading } = useSessionContext();
+  const { session } = useSessionContext();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -48,7 +40,7 @@ const Index = () => {
       return data.map((artist): VoiceoverArtist => ({
         id: artist.id,
         name: artist.name,
-        languages: validateLanguages(artist.languages || []),
+        languages: artist.languages || [],
         audioDemo: artist.audio_demo || '',
         avatar: artist.avatar || '',
         created_by: artist.created_by,

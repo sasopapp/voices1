@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArtistCard } from "../components/ArtistCard";
 import { LanguageSelect } from "../components/LanguageSelect";
 import { Language } from "../types/voiceover";
@@ -13,6 +13,26 @@ const Index = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<Language | "all">("all");
   const navigate = useNavigate();
   const { session } = useSessionContext();
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      console.log('Current user:', user);
+      
+      if (user) {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+          
+        console.log('User profile:', profile);
+        console.log('Profile error:', error);
+      }
+    };
+    
+    checkSession();
+  }, []);
 
   const filteredArtists = voiceoverArtists.filter((artist) =>
     selectedLanguage === "all"

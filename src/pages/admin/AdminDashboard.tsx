@@ -1,9 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { AdminArtistCard } from "@/components/admin/AdminArtistCard"
 import { AdminHeader } from "@/components/admin/AdminHeader"
-import { AdminSidebar } from "@/components/admin/AdminSidebar"
 import { LanguageManager } from "@/components/admin/LanguageManager"
-import { SidebarProvider } from "@/components/ui/sidebar"
 import { supabase } from "@/integrations/supabase/client"
 import { VoiceoverArtist } from "@/types/voiceover"
 import { Button } from "@/components/ui/button"
@@ -66,53 +64,48 @@ const AdminDashboard = () => {
   })
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full">
-        <AdminSidebar />
-        <div className="flex-1 flex flex-col">
-          <AdminHeader title="Admin Dashboard" />
-          <main className="flex-1 p-6">
-            <Tabs defaultValue="artists" className="w-full">
-              <TabsList>
-                <TabsTrigger value="artists">Artists</TabsTrigger>
-                <TabsTrigger value="languages">Languages</TabsTrigger>
-              </TabsList>
+    <div className="flex min-h-screen w-full flex-col">
+      <AdminHeader title="Admin Dashboard" />
+      <main className="flex-1 p-6">
+        <Tabs defaultValue="artists" className="w-full">
+          <TabsList>
+            <TabsTrigger value="artists">Artists</TabsTrigger>
+            <TabsTrigger value="languages">Languages</TabsTrigger>
+          </TabsList>
 
-              <TabsContent value="artists" className="mt-6">
-                <div className="flex justify-end mb-6">
-                  <Button onClick={() => navigate('/admin/new')} className="flex items-center gap-2">
-                    <Plus className="h-4 w-4" />
-                    Add New Artist
-                  </Button>
-                </div>
+          <TabsContent value="artists" className="mt-6">
+            <div className="flex justify-end mb-6">
+              <Button onClick={() => navigate('/admin/new')} className="flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                Add New Artist
+              </Button>
+            </div>
 
-                {error && (
-                  <div className="text-red-500 mb-4">
-                    Error loading artists: {(error as Error).message}
-                  </div>
-                )}
+            {error && (
+              <div className="text-red-500 mb-4">
+                Error loading artists: {(error as Error).message}
+              </div>
+            )}
 
-                {isLoading ? (
-                  <div className="animate-pulse text-gray-500">Loading artists...</div>
-                ) : artists && artists.length > 0 ? (
-                  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {artists.map((artist) => (
-                      <AdminArtistCard key={artist.id} artist={artist} />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center text-gray-500">No artists found</div>
-                )}
-              </TabsContent>
+            {isLoading ? (
+              <div className="animate-pulse text-gray-500">Loading artists...</div>
+            ) : artists && artists.length > 0 ? (
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {artists.map((artist) => (
+                  <AdminArtistCard key={artist.id} artist={artist} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center text-gray-500">No artists found</div>
+            )}
+          </TabsContent>
 
-              <TabsContent value="languages" className="mt-6">
-                <LanguageManager />
-              </TabsContent>
-            </Tabs>
-          </main>
-        </div>
-      </div>
-    </SidebarProvider>
+          <TabsContent value="languages" className="mt-6">
+            <LanguageManager />
+          </TabsContent>
+        </Tabs>
+      </main>
+    </div>
   )
 }
 

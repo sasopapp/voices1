@@ -1,9 +1,10 @@
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import { Home } from "lucide-react"
+import { Home, Users, Globe } from "lucide-react"
 
 export function AdminHeader({ title }: { title: string }) {
   const navigate = useNavigate()
+  const location = useLocation()
 
   return (
     <header className="border-b">
@@ -25,6 +26,26 @@ export function AdminHeader({ title }: { title: string }) {
         <div className="flex-1">
           <h1 className="text-lg font-semibold">{title}</h1>
         </div>
+        <nav className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2"
+            onClick={() => navigate('/admin')}
+            data-active={location.pathname === '/admin'}
+          >
+            <Users className="h-4 w-4" />
+            Artists
+          </Button>
+          <Button
+            variant="ghost"
+            className="flex items-center gap-2"
+            onClick={() => navigate('/admin')}
+            data-active={location.pathname.includes('languages')}
+          >
+            <Globe className="h-4 w-4" />
+            Languages
+          </Button>
+        </nav>
       </div>
     </header>
   )

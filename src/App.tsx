@@ -13,6 +13,7 @@ import AdminLanguages from "./pages/admin/AdminLanguages"
 import Login from "./pages/Login"
 import { supabase } from "./integrations/supabase/client"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,7 +25,7 @@ const queryClient = new QueryClient({
 })
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { session } = useSessionContext()
+  const { session, isLoading: sessionLoading } = useSessionContext()
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -39,33 +40,45 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
       try {
         console.log('Checking admin status for user:', session.user.id)
-        const { data: profile, error } = await supabase
+        const { data: profiles, error } = await supabase
           .from('profiles')
           .select('is_admin')
           .eq('id', session.user.id)
-          .single()
 
         if (error) {
           console.error('Error fetching profile:', error)
+          toast.error('Error checking admin status')
           setIsAdmin(false)
           setIsLoading(false)
           return
         }
 
+        // Check if we got any profiles back
+        if (!profiles || profiles.length === 0) {
+          console.log('No profile found for user')
+          setIsAdmin(false)
+          setIsLoading(false)
+          return
+        }
+
+        const profile = profiles[0]
         console.log('Profile data:', profile)
         setIsAdmin(profile?.is_admin || false)
         setIsLoading(false)
       } catch (error) {
         console.error('Error in admin check:', error)
+        toast.error('Error checking admin status')
         setIsAdmin(false)
         setIsLoading(false)
       }
     }
 
-    checkAdminStatus()
-  }, [session?.user?.id])
+    if (!sessionLoading) {
+      checkAdminStatus()
+    }
+  }, [session?.user?.id, sessionLoading])
 
-  if (isLoading) {
+  if (sessionLoading || isLoading) {
     console.log('Loading admin status...')
     return <div>Loading...</div>
   }
@@ -98,9 +111,21 @@ const App = () => {
   const [initialSession, setInitialSession] = useState(null)
 
   useEffect(() => {
+    // Initialize session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session:', session)
       setInitialSession(session)
     })
+
+    // Set up auth state change listener
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('Auth state changed:', session)
+      setInitialSession(session)
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   return (

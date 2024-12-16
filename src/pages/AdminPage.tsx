@@ -11,17 +11,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { languages } from "@/data/voiceover-artists";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   name: z.string().min(2, {
@@ -40,6 +34,7 @@ const formSchema = z.object({
 
 const AdminPage = () => {
   const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -51,12 +46,55 @@ const AdminPage = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Here you would typically make an API call to save the artist
-    console.log("Form submitted with values:", values);
-    toast.success("Artist added successfully!");
-    form.reset();
-    setSelectedLanguages([]);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    try {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        toast.error("You must be logged in to submit an artist");
+        navigate("/login");
+        return;
+      }
+
+      const { data: artist, error } = await supabase
+        .from("artists")
+        .insert({
+          name: values.name,
+          avatar: values.avatar,
+          languages: values.languages,
+          audio_demo: values.audioDemo,
+          created_by: user.id,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Notify admin about new submission
+      const response = await fetch("/functions/v1/notify-admin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          artistName: values.name,
+          artistId: artist.id,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to send admin notification");
+      }
+
+      toast.success("Artist submitted successfully!");
+      form.reset();
+      setSelectedLanguages([]);
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   }
 
   const handleLanguageSelect = (language: string) => {

@@ -9,7 +9,68 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      artists: {
+        Row: {
+          audio_demo: string | null
+          avatar: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          is_approved: boolean | null
+          languages: string[]
+          name: string
+        }
+        Insert: {
+          audio_demo?: string | null
+          avatar?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_approved?: boolean | null
+          languages?: string[]
+          name: string
+        }
+        Update: {
+          audio_demo?: string | null
+          avatar?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_approved?: boolean | null
+          languages?: string[]
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artists_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          is_admin: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id: string
+          is_admin?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_admin?: boolean | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

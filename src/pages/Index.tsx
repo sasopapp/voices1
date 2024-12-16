@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ArtistCard } from "../components/ArtistCard";
 import { LanguageSelect } from "../components/LanguageSelect";
 import { Language } from "../types/voiceover";
 import { voiceoverArtists } from "../data/voiceover-artists";

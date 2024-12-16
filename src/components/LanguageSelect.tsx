@@ -16,8 +16,8 @@ interface LanguageSelectProps {
 export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Select language" />
+      <SelectTrigger className="w-[200px] bg-white">
+        <SelectValue placeholder="All Languages" />
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="all">All Languages</SelectItem>

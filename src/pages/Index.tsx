@@ -124,7 +124,7 @@ const Index = () => {
       <header className="border-b">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 justify-between items-center">
-            <h1 className="text-xl font-semibold">Voiceover Artists</h1>
+            <h1 className="text-xl font-bold">Voiceover Artists</h1>
             <nav className="flex items-center gap-4">
               {isAdmin && (
                 <Button 
@@ -159,7 +159,7 @@ const Index = () => {
       <main className="p-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 text-center">
-            <h2 className="mb-4 text-4xl font-bold text-primary">Find Your Voice</h2>
+            <h2 className="mb-4 text-4xl font-bold text-[#1a365d]">Find Your Voice</h2>
             <p className="mb-8 text-lg text-gray-600">
               Discover professional voiceover artists in multiple languages
             </p>

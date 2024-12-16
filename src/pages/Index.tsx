@@ -37,40 +37,51 @@ const Index = () => {
     queryKey: ['artists'],
     queryFn: async () => {
       console.log('Starting public artists fetch...')
+      console.log('Session state:', session ? 'logged in' : 'not logged in')
       
-      const { data, error } = await supabase
-        .from('artists')
-        .select('id, name, languages, audio_demo, avatar')
-        .eq('is_approved', true)
+      try {
+        console.log('Executing artists query...')
+        const { data, error } = await supabase
+          .from('artists')
+          .select('*')
+          .eq('is_approved', true)
 
-      if (error) {
-        console.error('Error fetching artists:', error.message)
-        console.error('Error details:', error)
+        console.log('Query completed')
+
+        if (error) {
+          console.error('Error fetching artists:', error.message)
+          console.error('Error details:', error)
+          throw error
+        }
+
+        console.log('Raw artists response:', data)
+        console.log('Number of artists found:', data?.length || 0)
+        
+        if (!data || data.length === 0) {
+          console.log('No approved artists found')
+          return []
+        }
+
+        console.log('Found artists with IDs:', data.map(a => a.id))
+        console.log('Artists approval status:', data.map(a => a.is_approved))
+        
+        const mappedArtists = data.map((artist): VoiceoverArtist => ({
+          id: artist.id,
+          name: artist.name,
+          languages: Array.isArray(artist.languages) ? artist.languages : [],
+          audioDemo: artist.audio_demo || '',
+          avatar: artist.avatar || '',
+          created_by: artist.created_by,
+          is_approved: artist.is_approved,
+          created_at: artist.created_at
+        }))
+
+        console.log('Mapped artists:', mappedArtists)
+        return mappedArtists
+      } catch (error) {
+        console.error('Unexpected error in artists query:', error)
         throw error
       }
-
-      console.log('Raw artists response:', data)
-      
-      if (!data || data.length === 0) {
-        console.log('No approved artists found')
-        return []
-      }
-
-      console.log(`Found ${data.length} approved artists`)
-      
-      const mappedArtists = data.map((artist): VoiceoverArtist => ({
-        id: artist.id,
-        name: artist.name,
-        languages: Array.isArray(artist.languages) ? artist.languages : [],
-        audioDemo: artist.audio_demo || '',
-        avatar: artist.avatar || '',
-        created_by: null, // Not needed for public view
-        is_approved: true, // We only fetch approved artists
-        created_at: null // Not needed for public view
-      }))
-
-      console.log('Mapped artists:', mappedArtists)
-      return mappedArtists
     },
   })
 

@@ -39,7 +39,7 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
       }
 
       console.log('Available languages from DB:', data)
-      return data.map(lang => lang.name)
+      return data.map(lang => lang.name as Language)
     },
   })
 

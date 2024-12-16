@@ -38,7 +38,10 @@ const AdminDashboard = () => {
   const { data: artists, isLoading, error } = useQuery({
     queryKey: ['admin-artists'],
     queryFn: async () => {
-      console.log('Fetching artists...');
+      console.log('Fetching artists as admin...');
+      const { data: { user } } = await supabase.auth.getUser();
+      console.log('Current user:', user);
+
       const { data, error } = await supabase
         .from('artists')
         .select('*')
@@ -55,6 +58,8 @@ const AdminDashboard = () => {
       }
 
       console.log('Artists data:', data);
+      if (!data) return [];
+      
       return data.map(artist => ({
         id: artist.id,
         name: artist.name,
@@ -69,6 +74,7 @@ const AdminDashboard = () => {
   });
 
   if (error) {
+    console.error('Query error:', error);
     return (
       <SidebarProvider>
         <div className="flex min-h-screen w-full">

@@ -12,32 +12,36 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"
-import { useQueryClient } from "@tanstack/react-query"
+import { useQueryClient, useQuery } from "@tanstack/react-query"
 import { Language } from "@/types/voiceover"
 
 interface AdminArtistCardProps {
   artist: VoiceoverArtist & { is_approved?: boolean }
 }
 
-// Helper function to validate languages (same as in Index.tsx)
-const validateLanguages = (languages: string[]): Language[] => {
-  if (!Array.isArray(languages)) {
-    console.log('Languages is not an array:', languages);
-    return [];
-  }
-  
-  const validLanguages = ['English', 'Spanish', 'French', 'German', 'Italian', 'Croatian', 'Serbian', 'Slovak', 'Slovene'];
-  const validatedLanguages = languages.filter((lang): lang is Language => 
-    validLanguages.includes(lang)
-  );
-  
-  console.log('Validated languages:', validatedLanguages);
-  return validatedLanguages;
-};
-
 export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+
+  // Fetch available languages from the database
+  const { data: availableLanguages = [] } = useQuery({
+    queryKey: ['languages'],
+    queryFn: async () => {
+      console.log('Fetching languages from database...')
+      const { data, error } = await supabase
+        .from('languages')
+        .select('name')
+        .order('name')
+
+      if (error) {
+        console.error('Error fetching languages:', error)
+        throw error
+      }
+
+      console.log('Available languages from DB:', data)
+      return data.map(lang => lang.name)
+    },
+  })
 
   const handleApprove = async () => {
     try {
@@ -55,7 +59,6 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
 
       console.log('Artist approved successfully')
       toast.success('Artist approved successfully')
-      // Invalidate and refetch the artists query
       queryClient.invalidateQueries({ queryKey: ['admin-artists'] })
     } catch (error) {
       console.error('Error in handleApprove:', error)
@@ -63,9 +66,22 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
     }
   }
 
-  // Use the same validation approach as Index page
+  // Validate languages against the database languages
+  const validateLanguages = (artistLanguages: string[]): Language[] => {
+    if (!Array.isArray(artistLanguages)) {
+      console.log('Languages is not an array:', artistLanguages)
+      return []
+    }
+    
+    const validatedLanguages = artistLanguages.filter((lang): lang is Language => 
+      availableLanguages.includes(lang)
+    )
+    
+    console.log('Validated languages for artist:', artist.name, validatedLanguages)
+    return validatedLanguages
+  }
+
   const languages = validateLanguages(artist.languages || [])
-  console.log('Languages for artist:', artist.name, languages)
 
   return (
     <Card className="relative overflow-hidden">

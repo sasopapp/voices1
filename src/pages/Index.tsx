@@ -32,24 +32,17 @@ const Index = () => {
     enabled: !!session?.user?.id,
   })
 
-  // Fetch artists based on authentication status
+  // Fetch approved artists
   const { data: artists = [], isLoading: artistsLoading } = useQuery({
-    queryKey: ['artists', !!session?.user?.id],
+    queryKey: ['artists'],
     queryFn: async () => {
       console.log('Starting artists fetch...')
-      console.log('Session state:', session ? 'logged in' : 'not logged in')
       
       try {
-        let query = supabase
+        const { data, error } = await supabase
           .from('artists')
           .select('*')
-        
-        // If not logged in or not admin, only show approved artists
-        if (!session?.user?.id || !isAdmin) {
-          query = query.eq('is_approved', true)
-        }
-
-        const { data, error } = await query
+          .eq('is_approved', true)
 
         if (error) {
           console.error('Error fetching artists:', error)
@@ -57,10 +50,10 @@ const Index = () => {
         }
 
         console.log('Query completed')
-        console.log('Number of artists found:', data?.length || 0)
+        console.log('Number of approved artists found:', data?.length || 0)
         
         if (!data || data.length === 0) {
-          console.log('No artists found')
+          console.log('No approved artists found')
           return []
         }
 
@@ -68,8 +61,8 @@ const Index = () => {
           id: artist.id,
           name: artist.name,
           languages: Array.isArray(artist.languages) ? artist.languages : [],
-          audioDemo: artist.audio_demo || '',
-          avatar: artist.avatar || '',
+          audioDemo: artist.audio_demo,
+          avatar: artist.avatar,
           created_by: artist.created_by,
           is_approved: artist.is_approved,
           created_at: artist.created_at

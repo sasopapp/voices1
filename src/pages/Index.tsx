@@ -15,33 +15,41 @@ const Index = () => {
   const navigate = useNavigate();
   const { session } = useSessionContext();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkSession = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      console.log('Current user:', user);
-      
-      if (user) {
-        const { data: profile, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-          
-        console.log('User profile:', profile);
-        console.log('Profile error:', error);
-        setIsAdmin(profile?.is_admin || false);
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        console.log('Current user:', user);
+        
+        if (user) {
+          const { data: profile, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+            
+          if (error) {
+            console.error('Error fetching profile:', error);
+            toast.error('Error loading user profile');
+            setIsAdmin(false);
+          } else {
+            console.log('User profile:', profile);
+            setIsAdmin(profile?.is_admin || false);
+          }
+        }
+      } catch (error) {
+        console.error('Session check error:', error);
+        toast.error('Error checking session');
+        setIsAdmin(false);
+      } finally {
+        setIsLoading(false);
       }
     };
     
     checkSession();
   }, []);
-
-  const filteredArtists = voiceoverArtists.filter((artist) =>
-    selectedLanguage === "all"
-      ? true
-      : artist.languages.includes(selectedLanguage as Language)
-  );
 
   const handleLogout = async () => {
     try {
@@ -58,6 +66,16 @@ const Index = () => {
       toast.error('Failed to log out');
     }
   };
+
+  const filteredArtists = voiceoverArtists.filter((artist) =>
+    selectedLanguage === "all"
+      ? true
+      : artist.languages.includes(selectedLanguage as Language)
+  );
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-background">

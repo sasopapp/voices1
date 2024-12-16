@@ -71,9 +71,24 @@ const Index = () => {
 
   const handleLogout = async () => {
     try {
-      await supabase.auth.signOut();
+      const { error } = await supabase.auth.getSession();
+      
+      if (error) {
+        console.error('No active session found:', error);
+        toast.error('No active session found');
+        return;
+      }
+
+      const { error: signOutError } = await supabase.auth.signOut();
+      
+      if (signOutError) {
+        console.error('Error during logout:', signOutError);
+        toast.error('Error during logout');
+        return;
+      }
+
       toast.success('Logged out successfully');
-      // Remove navigation to login page, as we want to stay on index
+      // Stay on index page
     } catch (error) {
       console.error('Error during logout:', error);
       toast.error('Error during logout');

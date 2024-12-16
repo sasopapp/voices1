@@ -1,6 +1,12 @@
 import { useNavigate, useLocation } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import { Home, Users, Globe, Plus } from "lucide-react"
+import { Home, Users, Globe, Plus, Menu } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export function AdminHeader({ title }: { title: string }) {
   const navigate = useNavigate()
@@ -30,7 +36,8 @@ export function AdminHeader({ title }: { title: string }) {
           />
         </div>
 
-        <div className="flex items-center gap-4">
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-4">
           <Button
             variant="ghost"
             className={`flex items-center gap-2 ${location.pathname === '/admin' ? 'bg-accent' : ''}`}
@@ -54,6 +61,32 @@ export function AdminHeader({ title }: { title: string }) {
             <Plus className="h-4 w-4" />
             Add New Artist
           </Button>
+        </div>
+
+        {/* Mobile Navigation */}
+        <div className="md:hidden">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              <DropdownMenuItem onClick={() => navigate('/admin')}>
+                <Users className="mr-2 h-4 w-4" />
+                <span>Artists</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/admin/languages')}>
+                <Globe className="mr-2 h-4 w-4" />
+                <span>Languages</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate('/admin/new')}>
+                <Plus className="mr-2 h-4 w-4" />
+                <span>Add New Artist</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>

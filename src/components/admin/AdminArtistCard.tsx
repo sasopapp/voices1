@@ -46,8 +46,10 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
     }
   }
 
-  // Ensure languages is always an array
-  const languages = Array.isArray(artist.languages) ? artist.languages : []
+  // Ensure languages is always an array and extract names
+  const languages = Array.isArray(artist.languages) 
+    ? artist.languages.map(lang => typeof lang === 'string' ? lang : lang.name)
+    : []
   console.log('Languages for artist:', artist.name, languages)
 
   return (

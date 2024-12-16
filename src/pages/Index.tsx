@@ -9,10 +9,9 @@ import { ArtistList } from "@/components/index/ArtistList"
 const Index = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<string | "all">("all")
   const { session } = useSessionContext()
-  const [isAdmin, setIsAdmin] = useState(false)
-
-  // Check if user is admin - only when session exists
-  useQuery({
+  
+  // Check if user is admin
+  const { data: isAdmin = false } = useQuery({
     queryKey: ['isAdmin', session?.user?.id],
     queryFn: async () => {
       if (!session?.user?.id) return false
@@ -28,22 +27,20 @@ const Index = () => {
         return false
       }
 
-      console.log('Admin status:', profile?.is_admin)
-      setIsAdmin(profile?.is_admin || false)
       return profile?.is_admin || false
     },
     enabled: !!session?.user?.id,
   })
 
-  // Fetch artists - simplified query with detailed logging
+  // Fetch artists - public query for approved artists
   const { data: artists = [], isLoading: artistsLoading } = useQuery({
     queryKey: ['artists'],
     queryFn: async () => {
-      console.log('Starting simplified artist fetch...')
+      console.log('Starting public artists fetch...')
       
       const { data, error } = await supabase
         .from('artists')
-        .select('id, name, languages, audio_demo, avatar, created_by, is_approved, created_at')
+        .select('id, name, languages, audio_demo, avatar')
         .eq('is_approved', true)
 
       if (error) {
@@ -52,7 +49,7 @@ const Index = () => {
         throw error
       }
 
-      console.log('Raw query response:', data)
+      console.log('Raw artists response:', data)
       
       if (!data || data.length === 0) {
         console.log('No approved artists found')
@@ -65,11 +62,11 @@ const Index = () => {
         id: artist.id,
         name: artist.name,
         languages: Array.isArray(artist.languages) ? artist.languages : [],
-        audioDemo: artist.audio_demo,
-        avatar: artist.avatar,
-        created_by: artist.created_by,
-        is_approved: artist.is_approved,
-        created_at: artist.created_at
+        audioDemo: artist.audio_demo || '',
+        avatar: artist.avatar || '',
+        created_by: null, // Not needed for public view
+        is_approved: true, // We only fetch approved artists
+        created_at: null // Not needed for public view
       }))
 
       console.log('Mapped artists:', mappedArtists)

@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { AdminArtistCard } from "@/components/admin/AdminArtistCard"
 import { AdminSidebar } from "@/components/admin/AdminSidebar"
 import { SidebarProvider } from "@/components/ui/sidebar"
-import { VoiceoverArtist } from "@/types/voiceover"
+import { VoiceoverArtist, Language } from "@/types/voiceover"
 
 const AdminDashboard = () => {
   const { data: artists, isLoading } = useQuery({
@@ -20,8 +20,10 @@ const AdminDashboard = () => {
       return data.map(artist => ({
         id: artist.id,
         name: artist.name,
-        languages: artist.languages,
-        audioDemo: artist.audio_demo, // Map audio_demo to audioDemo
+        languages: artist.languages.filter((lang): lang is Language => 
+          ['English', 'Spanish', 'French', 'German', 'Italian'].includes(lang)
+        ),
+        audioDemo: artist.audio_demo,
         avatar: artist.avatar,
         is_approved: artist.is_approved
       }))

@@ -114,18 +114,33 @@ const Index = () => {
 
   const handleLogout = async () => {
     try {
+      // First clear local storage to prevent session conflicts
+      localStorage.clear();
+      
+      // Then attempt to sign out from Supabase
       const { error } = await supabase.auth.signOut();
+      
       if (error) {
+        // If there's an error but it's just that the session wasn't found, we can ignore it
+        if (error.message.includes('session_not_found')) {
+          console.log('Session already cleared');
+          navigate('/login');
+          return;
+        }
+        
+        // For other errors, show the error message
         console.error('Error during logout:', error);
         toast.error('Error during logout');
       } else {
-        localStorage.clear();
         toast.success('Logged out successfully');
-        navigate('/login');
       }
+      
+      // Always navigate to login page after logout attempt
+      navigate('/login');
     } catch (error) {
       console.error('Exception during logout:', error);
       toast.error('Error during logout');
+      // Still navigate to login page even if there's an error
       navigate('/login');
     }
   };

@@ -73,25 +73,20 @@ const AdminPage = () => {
       if (error) throw error;
 
       // Notify admin about new submission
-      const response = await fetch("/functions/v1/notify-admin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.SUPABASE_ANON_KEY}`,
-        },
-        body: JSON.stringify({
+      const response = await supabase.functions.invoke("notify-admin", {
+        body: {
           artistName: values.name,
           artistId: artist.id,
-        }),
+        },
       });
 
-      if (!response.ok) {
+      if (!response.error) {
+        toast.success("Artist submitted successfully!");
+        form.reset();
+        setSelectedLanguages([]);
+      } else {
         console.error("Failed to send admin notification");
       }
-
-      toast.success("Artist submitted successfully!");
-      form.reset();
-      setSelectedLanguages([]);
     } catch (error: any) {
       toast.error(error.message);
     }

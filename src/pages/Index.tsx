@@ -35,25 +35,33 @@ const Index = () => {
     enabled: !!session?.user?.id,
   })
 
-  // Fetch artists - ensuring public access works
+  // Fetch artists - with detailed logging for debugging
   const { data: artists = [], isLoading: artistsLoading } = useQuery({
     queryKey: ['artists'],
     queryFn: async () => {
-      console.log('Fetching approved artists for all visitors...')
+      console.log('Starting artist fetch...')
       
-      // Enable row level security for this query
-      const { data, error } = await supabase
+      const query = supabase
         .from('artists')
         .select('*')
         .eq('is_approved', true)
         .order('created_at', { ascending: false })
+
+      console.log('Executing query:', query)
+      
+      const { data, error } = await query
 
       if (error) {
         console.error('Error fetching artists:', error)
         throw error
       }
 
-      console.log('Successfully fetched artists:', data)
+      if (!data || data.length === 0) {
+        console.log('No artists found in the database')
+      } else {
+        console.log(`Found ${data.length} artists:`, data)
+      }
+
       return data.map((artist): VoiceoverArtist => ({
         id: artist.id,
         name: artist.name,

@@ -112,14 +112,17 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => navigate(`/admin/edit/${artist.id}`)}>
+            <DropdownMenuContent align="end" className="bg-white">
+              <DropdownMenuItem 
+                onClick={() => navigate(`/admin/edit/${artist.id}`)}
+                className="bg-white hover:bg-gray-100"
+              >
                 Edit Artist
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem 
                 onClick={handleDelete}
-                className="text-red-600 focus:text-red-600 focus:bg-red-50"
+                className="text-red-600 focus:text-red-600 focus:bg-red-50 bg-white hover:bg-red-50"
               >
                 Delete Artist
               </DropdownMenuItem>
@@ -138,3 +141,5 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
     </Card>
   )
 }
+
+export default AdminArtistCard

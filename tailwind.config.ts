@@ -36,6 +36,10 @@ export default {
           DEFAULT: "#3b82f6",
           foreground: "#ffffff",
         },
+        popover: {
+          DEFAULT: "white",
+          foreground: "hsl(var(--popover-foreground))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

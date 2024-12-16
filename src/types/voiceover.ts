@@ -1,18 +1,7 @@
-export type Language = 
-  | "English" 
-  | "Spanish" 
-  | "French" 
-  | "German" 
-  | "Italian"
-  | "Croatian"
-  | "Serbian"
-  | "Slovak"
-  | "Slovene";
-
 export interface VoiceoverArtist {
   id: string;
   name: string;
-  languages: Language[];
+  languages: string[];
   audioDemo: string | null;
   avatar: string | null;
   created_by?: string;

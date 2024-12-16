@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { AdminArtistCard } from "@/components/admin/AdminArtistCard"
+import { AdminHeader } from "@/components/admin/AdminHeader"
 import { AdminSidebar } from "@/components/admin/AdminSidebar"
 import { LanguageManager } from "@/components/admin/LanguageManager"
 import { SidebarProvider } from "@/components/ui/sidebar"
@@ -53,9 +54,7 @@ const AdminDashboard = () => {
       return (data || []).map((artist: DatabaseArtist): VoiceoverArtist & { is_approved?: boolean } => ({
         id: artist.id,
         name: artist.name,
-        languages: artist.languages.filter((lang) => 
-          ['English', 'Spanish', 'French', 'German', 'Italian'].includes(lang)
-        ),
+        languages: artist.languages,
         audioDemo: artist.audio_demo || '',
         avatar: artist.avatar || '',
         created_by: artist.created_by,
@@ -70,46 +69,48 @@ const AdminDashboard = () => {
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
         <AdminSidebar />
-        <main className="flex-1 p-8">
-          <Tabs defaultValue="artists" className="w-full">
-            <TabsList>
-              <TabsTrigger value="artists">Artists</TabsTrigger>
-              <TabsTrigger value="languages">Languages</TabsTrigger>
-            </TabsList>
+        <div className="flex-1 flex flex-col">
+          <AdminHeader title="Admin Dashboard" />
+          <main className="flex-1 p-6">
+            <Tabs defaultValue="artists" className="w-full">
+              <TabsList>
+                <TabsTrigger value="artists">Artists</TabsTrigger>
+                <TabsTrigger value="languages">Languages</TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="artists">
-              <div className="flex justify-between items-center mb-8">
-                <h1 className="text-4xl font-bold">Manage Artists</h1>
-                <Button onClick={() => navigate('/admin/new')} className="flex items-center gap-2">
-                  <Plus className="h-4 w-4" />
-                  Add New Artist
-                </Button>
-              </div>
-
-              {error && (
-                <div className="text-red-500 mb-4">
-                  Error loading artists: {(error as Error).message}
+              <TabsContent value="artists" className="mt-6">
+                <div className="flex justify-end mb-6">
+                  <Button onClick={() => navigate('/admin/new')} className="flex items-center gap-2">
+                    <Plus className="h-4 w-4" />
+                    Add New Artist
+                  </Button>
                 </div>
-              )}
 
-              {isLoading ? (
-                <div className="animate-pulse text-gray-500">Loading artists...</div>
-              ) : artists && artists.length > 0 ? (
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {artists.map((artist) => (
-                    <AdminArtistCard key={artist.id} artist={artist} />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center text-gray-500">No artists found</div>
-              )}
-            </TabsContent>
+                {error && (
+                  <div className="text-red-500 mb-4">
+                    Error loading artists: {(error as Error).message}
+                  </div>
+                )}
 
-            <TabsContent value="languages">
-              <LanguageManager />
-            </TabsContent>
-          </Tabs>
-        </main>
+                {isLoading ? (
+                  <div className="animate-pulse text-gray-500">Loading artists...</div>
+                ) : artists && artists.length > 0 ? (
+                  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {artists.map((artist) => (
+                      <AdminArtistCard key={artist.id} artist={artist} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center text-gray-500">No artists found</div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="languages" className="mt-6">
+                <LanguageManager />
+              </TabsContent>
+            </Tabs>
+          </main>
+        </div>
       </div>
     </SidebarProvider>
   )

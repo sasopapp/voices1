@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { AdminArtistCard } from "@/components/admin/AdminArtistCard"
 import { AdminSidebar } from "@/components/admin/AdminSidebar"
 import { SidebarProvider } from "@/components/ui/sidebar"
+import { VoiceoverArtist } from "@/types/voiceover"
 
 const AdminDashboard = () => {
   const { data: artists, isLoading } = useQuery({
@@ -14,7 +15,16 @@ const AdminDashboard = () => {
         .order('created_at', { ascending: false })
 
       if (error) throw error
-      return data
+
+      // Map the database fields to match our VoiceoverArtist type
+      return data.map(artist => ({
+        id: artist.id,
+        name: artist.name,
+        languages: artist.languages,
+        audioDemo: artist.audio_demo, // Map audio_demo to audioDemo
+        avatar: artist.avatar,
+        is_approved: artist.is_approved
+      }))
     },
   })
 

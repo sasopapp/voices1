@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
-import { AdminSidebar } from "@/components/admin/AdminSidebar"
-import { SidebarProvider } from "@/components/ui/sidebar"
+import { AdminHeader } from "@/components/admin/AdminHeader"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -142,92 +141,96 @@ const AdminEditArtist = () => {
   }
 
   if (isLoadingArtist) {
-    return <div>Loading...</div>
+    return (
+      <div className="flex min-h-screen flex-col">
+        <AdminHeader title="Edit Artist" />
+        <main className="flex-1 p-8">
+          <div>Loading...</div>
+        </main>
+      </div>
+    )
   }
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen">
-        <AdminSidebar />
-        <main className="flex-1 p-8">
-          <h1 className="text-3xl font-bold mb-8">Edit Artist</h1>
-          <form onSubmit={handleSubmit} className="space-y-6 max-w-xl">
-            <div>
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
-            </div>
+    <div className="flex min-h-screen flex-col">
+      <AdminHeader title="Edit Artist" />
+      <main className="flex-1 p-8">
+        <form onSubmit={handleSubmit} className="space-y-6 max-w-xl mx-auto">
+          <div>
+            <Label htmlFor="name">Name</Label>
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
 
-            <div>
-              <Label>Languages</Label>
-              <Select
-                onValueChange={(value) => 
-                  setLanguages([...languages, value])
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select language" />
-                </SelectTrigger>
-                <SelectContent>
-                  {availableLanguages.map((lang) => (
-                    <SelectItem key={lang} value={lang}>
-                      {lang}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {languages.map((lang) => (
-                  <div
-                    key={lang}
-                    className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm flex items-center gap-2"
-                  >
+          <div>
+            <Label>Languages</Label>
+            <Select
+              onValueChange={(value) => 
+                setLanguages([...languages, value])
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select language" />
+              </SelectTrigger>
+              <SelectContent>
+                {availableLanguages.map((lang) => (
+                  <SelectItem key={lang} value={lang}>
                     {lang}
-                    <button
-                      type="button"
-                      onClick={() => 
-                        setLanguages(languages.filter((l) => l !== lang))
-                      }
-                      className="text-secondary-foreground/50 hover:text-secondary-foreground"
-                    >
-                      ×
-                    </button>
-                  </div>
+                  </SelectItem>
                 ))}
-              </div>
+              </SelectContent>
+            </Select>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {languages.map((lang) => (
+                <div
+                  key={lang}
+                  className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm flex items-center gap-2"
+                >
+                  {lang}
+                  <button
+                    type="button"
+                    onClick={() => 
+                      setLanguages(languages.filter((l) => l !== lang))
+                    }
+                    className="text-secondary-foreground/50 hover:text-secondary-foreground"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
             </div>
+          </div>
 
-            <div>
-              <Label htmlFor="audio">New Audio Demo (optional)</Label>
-              <Input
-                id="audio"
-                type="file"
-                accept="audio/*"
-                onChange={(e) => setAudioDemo(e.target.files?.[0] || null)}
-              />
-            </div>
+          <div>
+            <Label htmlFor="audio">New Audio Demo (optional)</Label>
+            <Input
+              id="audio"
+              type="file"
+              accept="audio/*"
+              onChange={(e) => setAudioDemo(e.target.files?.[0] || null)}
+            />
+          </div>
 
-            <div>
-              <Label htmlFor="avatar">New Avatar (optional)</Label>
-              <Input
-                id="avatar"
-                type="file"
-                accept="image/*"
-                onChange={(e) => setAvatar(e.target.files?.[0] || null)}
-              />
-            </div>
+          <div>
+            <Label htmlFor="avatar">New Avatar (optional)</Label>
+            <Input
+              id="avatar"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setAvatar(e.target.files?.[0] || null)}
+            />
+          </div>
 
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Updating Artist...' : 'Update Artist'}
-            </Button>
-          </form>
-        </main>
-      </div>
-    </SidebarProvider>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? 'Updating Artist...' : 'Update Artist'}
+          </Button>
+        </form>
+      </main>
+    </div>
   )
 }
 

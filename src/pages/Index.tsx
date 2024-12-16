@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { ArtistCard } from "../components/ArtistCard";
 import { LanguageSelect } from "../components/LanguageSelect";
-import { Language } from "../types/voiceover";
-import { voiceoverArtists } from "../data/voiceover-artists";
+import { Language, VoiceoverArtist } from "../types/voiceover";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useSessionContext } from "@supabase/auth-helpers-react";
 import { LayoutDashboard } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 const Index = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<Language | "all">("all");
@@ -16,6 +16,34 @@ const Index = () => {
   const { session, isLoading: sessionLoading } = useSessionContext();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch artists using React Query
+  const { data: artists = [], isLoading: artistsLoading } = useQuery({
+    queryKey: ['artists'],
+    queryFn: async () => {
+      console.log('Fetching artists...');
+      const { data, error } = await supabase
+        .from('artists')
+        .select('*')
+        .eq('is_approved', true)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching artists:', error);
+        toast.error('Failed to load artists');
+        throw error;
+      }
+
+      console.log('Artists data:', data);
+      return data.map((artist): VoiceoverArtist => ({
+        id: artist.id,
+        name: artist.name,
+        languages: artist.languages,
+        audioDemo: artist.audio_demo,
+        avatar: artist.avatar,
+      }));
+    },
+  });
 
   useEffect(() => {
     const checkSession = async () => {
@@ -73,13 +101,13 @@ const Index = () => {
     }
   };
 
-  const filteredArtists = voiceoverArtists.filter((artist) =>
+  const filteredArtists = artists.filter((artist) =>
     selectedLanguage === "all"
       ? true
-      : artist.languages.includes(selectedLanguage as Language)
+      : artist.languages.includes(selectedLanguage)
   );
 
-  if (sessionLoading || isLoading) {
+  if (sessionLoading || isLoading || artistsLoading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 

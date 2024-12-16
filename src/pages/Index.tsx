@@ -71,18 +71,10 @@ const Index = () => {
 
   const handleLogout = async () => {
     try {
-      const { error } = await supabase.auth.getSession();
+      const { error } = await supabase.auth.signOut();
       
       if (error) {
-        console.error('No active session found:', error);
-        toast.error('No active session found');
-        return;
-      }
-
-      const { error: signOutError } = await supabase.auth.signOut();
-      
-      if (signOutError) {
-        console.error('Error during logout:', signOutError);
+        console.error('Error during logout:', error);
         toast.error('Error during logout');
         return;
       }

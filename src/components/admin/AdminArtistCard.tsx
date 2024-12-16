@@ -46,7 +46,7 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
     }
   }
 
-  // Ensure languages is always an array of valid languages
+  // Ensure languages is always an array
   const languages = Array.isArray(artist.languages) ? artist.languages : []
   console.log('Languages for artist:', artist.name, languages)
 
@@ -64,7 +64,7 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
           <h3 className="font-semibold text-lg">{artist.name}</h3>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <Globe className="h-4 w-4" />
-            <span>{languages.length > 0 ? languages.join(", ") : "No languages specified"}</span>
+            {languages.length > 0 ? languages.join(", ") : "No languages specified"}
           </div>
         </div>
         <div className="flex items-center gap-2">

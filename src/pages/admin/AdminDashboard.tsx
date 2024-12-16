@@ -7,6 +7,7 @@ import { VoiceoverArtist, Language } from "@/types/voiceover"
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
 import { Plus } from "lucide-react"
+import { useSessionContext } from "@supabase/auth-helpers-react"
 
 interface DatabaseArtist {
   id: string
@@ -21,15 +22,19 @@ interface DatabaseArtist {
 
 const AdminDashboard = () => {
   const navigate = useNavigate()
+  const { session } = useSessionContext()
 
   const { data: artists, isLoading, error } = useQuery({
     queryKey: ['admin-artists'],
     queryFn: async () => {
       console.log('Fetching artists as admin...')
       
-      // Get current user to verify admin status
-      const { data: { user } } = await supabase.auth.getUser()
-      console.log('Current user:', user)
+      if (!session) {
+        console.error('No session found')
+        throw new Error('Authentication required')
+      }
+
+      console.log('Session found:', session.user.id)
 
       // Fetch all artists
       const { data, error } = await supabase
@@ -58,6 +63,7 @@ const AdminDashboard = () => {
         created_at: artist.created_at
       }))
     },
+    enabled: !!session // Only run query when session exists
   })
 
   return (

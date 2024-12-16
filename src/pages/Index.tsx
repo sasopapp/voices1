@@ -32,39 +32,38 @@ const Index = () => {
     enabled: !!session?.user?.id,
   })
 
-  // Fetch all artists temporarily to debug
+  // Fetch artists based on authentication status
   const { data: artists = [], isLoading: artistsLoading } = useQuery({
-    queryKey: ['artists'],
+    queryKey: ['artists', !!session?.user?.id],
     queryFn: async () => {
-      console.log('Starting artists fetch (debug mode - showing all artists)...')
+      console.log('Starting artists fetch...')
       console.log('Session state:', session ? 'logged in' : 'not logged in')
       
       try {
-        console.log('Executing artists query...')
-        const { data, error } = await supabase
+        let query = supabase
           .from('artists')
           .select('*')
-          // Temporarily removed .eq('is_approved', true) for debugging
+        
+        // If not logged in or not admin, only show approved artists
+        if (!session?.user?.id || !isAdmin) {
+          query = query.eq('is_approved', true)
+        }
 
-        console.log('Query completed')
+        const { data, error } = await query
 
         if (error) {
-          console.error('Error fetching artists:', error.message)
-          console.error('Error details:', error)
+          console.error('Error fetching artists:', error)
           throw error
         }
 
-        console.log('Raw artists response:', data)
+        console.log('Query completed')
         console.log('Number of artists found:', data?.length || 0)
         
         if (!data || data.length === 0) {
-          console.log('No artists found in database')
+          console.log('No artists found')
           return []
         }
 
-        console.log('Found artists with IDs:', data.map(a => a.id))
-        console.log('Artists approval status:', data.map(a => a.is_approved))
-        
         const mappedArtists = data.map((artist): VoiceoverArtist => ({
           id: artist.id,
           name: artist.name,
@@ -76,7 +75,7 @@ const Index = () => {
           created_at: artist.created_at
         }))
 
-        console.log('Mapped artists:', mappedArtists)
+        console.log('Artists mapped successfully')
         return mappedArtists
       } catch (error) {
         console.error('Unexpected error in artists query:', error)

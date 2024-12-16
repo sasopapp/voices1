@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Home } from "lucide-react"
 
 export function AdminHeader({ title }: { title: string }) {
   const navigate = useNavigate()
@@ -16,6 +16,15 @@ export function AdminHeader({ title }: { title: string }) {
         >
           <ArrowLeft className="h-4 w-4" />
           <span className="sr-only">Go back</span>
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => navigate('/')}
+          className="mr-2"
+        >
+          <Home className="h-4 w-4" />
+          <span className="sr-only">Go to home page</span>
         </Button>
         <img 
           src="https://authenticvoices.eu/wp-content/uploads/2023/11/AV_logo_250px-1.png"

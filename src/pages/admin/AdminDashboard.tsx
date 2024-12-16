@@ -26,6 +26,12 @@ const AdminDashboard = () => {
     queryKey: ['admin-artists'],
     queryFn: async () => {
       console.log('Fetching artists as admin...')
+      
+      // Get current user to verify admin status
+      const { data: { user } } = await supabase.auth.getUser()
+      console.log('Current user:', user)
+
+      // Fetch all artists
       const { data, error } = await supabase
         .from('artists')
         .select('*')
@@ -69,7 +75,7 @@ const AdminDashboard = () => {
 
           {error && (
             <div className="text-red-500 mb-4">
-              Error loading artists: {error.message}
+              Error loading artists: {(error as Error).message}
             </div>
           )}
 

@@ -17,12 +17,14 @@ const queryClient = new QueryClient()
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session } = useSessionContext()
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const checkAdminStatus = async () => {
       if (!session?.user?.id) {
         console.log('No session or user ID found')
         setIsAdmin(false)
+        setIsLoading(false)
         return
       }
 
@@ -37,28 +39,31 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
         if (error) {
           console.error('Error fetching profile:', error)
           setIsAdmin(false)
+          setIsLoading(false)
           return
         }
 
         console.log('Profile data:', profile)
         setIsAdmin(profile?.is_admin || false)
+        setIsLoading(false)
       } catch (error) {
         console.error('Error in admin check:', error)
         setIsAdmin(false)
+        setIsLoading(false)
       }
     }
 
     checkAdminStatus()
   }, [session?.user?.id])
 
+  if (isLoading) {
+    console.log('Loading admin status...')
+    return <div>Loading...</div>
+  }
+
   if (!session) {
     console.log('No session, redirecting to login')
     return <Navigate to="/login" replace />
-  }
-
-  if (isAdmin === null) {
-    console.log('Loading admin status...')
-    return <div>Loading...</div>
   }
 
   if (!isAdmin) {

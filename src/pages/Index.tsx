@@ -10,10 +10,18 @@ import { useSessionContext } from "@supabase/auth-helpers-react";
 import { LayoutDashboard } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
+// Helper function to validate languages
+const validateLanguages = (languages: string[]): Language[] => {
+  const validLanguages = ['English', 'Spanish', 'French', 'German', 'Italian'];
+  return languages.filter((lang): lang is Language => 
+    validLanguages.includes(lang)
+  );
+};
+
 const Index = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<Language | "all">("all");
   const navigate = useNavigate();
-  const { session } = useSessionContext();
+  const { session, isLoading: sessionLoading } = useSessionContext();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -40,7 +48,7 @@ const Index = () => {
       return data.map((artist): VoiceoverArtist => ({
         id: artist.id,
         name: artist.name,
-        languages: artist.languages || [],
+        languages: validateLanguages(artist.languages || []),
         audioDemo: artist.audio_demo || '',
         avatar: artist.avatar || '',
         created_by: artist.created_by,
@@ -92,26 +100,18 @@ const Index = () => {
 
   const handleLogout = async () => {
     try {
-      if (!session) {
-        console.log('No active session found, redirecting to login');
-        navigate('/login');
-        return;
-      }
-
-      console.log('Attempting to sign out...');
       const { error } = await supabase.auth.signOut();
-      
       if (error) {
-        console.error('Error during signOut:', error);
-        // Even if there's an error, we'll clear local state
+        console.error('Error during logout:', error);
+        toast.error('Error during logout');
+      } else {
+        localStorage.clear();
+        toast.success('Logged out successfully');
+        navigate('/login');
       }
     } catch (error) {
       console.error('Exception during logout:', error);
-    } finally {
-      // Always clear local storage and redirect
-      console.log('Clearing local storage and redirecting...');
-      localStorage.clear(); // Clear all storage to be safe
-      toast.success('Logged out successfully');
+      toast.error('Error during logout');
       navigate('/login');
     }
   };

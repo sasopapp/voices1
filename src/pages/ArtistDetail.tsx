@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { VoiceoverArtist, Language } from "@/types/voiceover";
+import { VoiceoverArtist } from "@/types/voiceover";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -39,7 +39,7 @@ const ArtistDetail = () => {
       const transformedData: VoiceoverArtist = {
         id: data.id,
         name: data.name,
-        languages: data.languages as Language[], // Type assertion since we know the values match the Language enum
+        languages: data.languages as string[], // Type assertion since we know the values match the Language enum
         audioDemo: data.audio_demo,
         avatar: data.avatar,
         created_by: data.created_by,

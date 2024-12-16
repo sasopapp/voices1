@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { ArtistCard } from "../components/ArtistCard";
 import { LanguageSelect } from "../components/LanguageSelect";
-import { Language, VoiceoverArtist } from "../types/voiceover";
+import { VoiceoverArtist } from "../types/voiceover";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -11,23 +11,17 @@ import { LayoutDashboard } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
 // Helper function to validate languages
-const validateLanguages = (languages: string[]): Language[] => {
+const validateLanguages = (languages: string[]): string[] => {
   if (!Array.isArray(languages)) {
     console.log('Languages is not an array:', languages);
     return [];
   }
   
-  const validLanguages = ['English', 'Spanish', 'French', 'German', 'Italian', 'Croatian', 'Serbian', 'Slovak', 'Slovene'];
-  const validatedLanguages = languages.filter((lang): lang is Language => 
-    validLanguages.includes(lang)
-  );
-  
-  console.log('Validated languages:', validatedLanguages);
-  return validatedLanguages;
+  return languages;
 };
 
 const Index = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState<Language | "all">("all");
+  const [selectedLanguage, setSelectedLanguage] = useState<string | "all">("all");
   const navigate = useNavigate();
   const { session, isLoading: sessionLoading } = useSessionContext();
   const [isAdmin, setIsAdmin] = useState(false);

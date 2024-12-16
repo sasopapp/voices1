@@ -8,14 +8,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState } from "react"
-import { Language } from "@/types/voiceover"
 import { toast } from "sonner"
 import { useSessionContext } from "@supabase/auth-helpers-react"
 
 const AdminNewArtist = () => {
   const navigate = useNavigate()
   const [name, setName] = useState("")
-  const [languages, setLanguages] = useState<Language[]>([])
+  const [languages, setLanguages] = useState<string[]>([])
   const [audioDemo, setAudioDemo] = useState<File | null>(null)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -150,13 +149,14 @@ const AdminNewArtist = () => {
               <Label>Languages</Label>
               <Select
                 onValueChange={(value) => 
-                  setLanguages([...languages, value as Language])
+                  setLanguages([...languages, value])
                 }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select language" />
                 </SelectTrigger>
                 <SelectContent>
+                  {/* Languages will be fetched from the database */}
                   <SelectItem value="English">English</SelectItem>
                   <SelectItem value="Spanish">Spanish</SelectItem>
                   <SelectItem value="French">French</SelectItem>

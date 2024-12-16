@@ -4,7 +4,7 @@ import { AdminSidebar } from "@/components/admin/AdminSidebar"
 import { LanguageManager } from "@/components/admin/LanguageManager"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { supabase } from "@/integrations/supabase/client"
-import { VoiceoverArtist, Language } from "@/types/voiceover"
+import { VoiceoverArtist } from "@/types/voiceover"
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
 import { Plus } from "lucide-react"
@@ -53,7 +53,7 @@ const AdminDashboard = () => {
       return (data || []).map((artist: DatabaseArtist): VoiceoverArtist & { is_approved?: boolean } => ({
         id: artist.id,
         name: artist.name,
-        languages: artist.languages.filter((lang): lang is Language => 
+        languages: artist.languages.filter((lang) => 
           ['English', 'Spanish', 'French', 'German', 'Italian'].includes(lang)
         ),
         audioDemo: artist.audio_demo || '',

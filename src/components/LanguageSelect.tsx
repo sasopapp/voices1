@@ -5,13 +5,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { Language } from "../types/voiceover";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
 interface LanguageSelectProps {
-  value: Language | "all";
-  onChange: (value: Language | "all") => void;
+  value: string | "all";
+  onChange: (value: string | "all") => void;
 }
 
 export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
@@ -30,7 +29,7 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
       }
 
       console.log('Languages loaded:', data);
-      return data.map(lang => lang.name as Language);
+      return data.map(lang => lang.name);
     },
   });
 

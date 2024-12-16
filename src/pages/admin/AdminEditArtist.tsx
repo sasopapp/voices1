@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Language } from "@/types/voiceover"
 import { toast } from "sonner"
 import { useQuery } from "@tanstack/react-query"
 
@@ -15,7 +14,7 @@ const AdminEditArtist = () => {
   const navigate = useNavigate()
   const { id } = useParams()
   const [name, setName] = useState("")
-  const [languages, setLanguages] = useState<Language[]>([])
+  const [languages, setLanguages] = useState<string[]>([])
   const [audioDemo, setAudioDemo] = useState<File | null>(null)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -35,7 +34,7 @@ const AdminEditArtist = () => {
         throw error
       }
 
-      return data.map(lang => lang.name as Language)
+      return data.map(lang => lang.name as string)
     },
   })
 
@@ -62,7 +61,7 @@ const AdminEditArtist = () => {
   useEffect(() => {
     if (artist) {
       setName(artist.name)
-      setLanguages(artist.languages as Language[])
+      setLanguages(artist.languages as string[])
     }
   }, [artist])
 
@@ -167,7 +166,7 @@ const AdminEditArtist = () => {
               <Label>Languages</Label>
               <Select
                 onValueChange={(value) => 
-                  setLanguages([...languages, value as Language])
+                  setLanguages([...languages, value])
                 }
               >
                 <SelectTrigger>

@@ -66,23 +66,9 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
     }
   }
 
-  // Validate languages against the database languages
-  const validateLanguages = (artistLanguages: string[]): string[] => {
-    if (!Array.isArray(artistLanguages)) {
-      console.log('Languages is not an array:', artistLanguages)
-      return []
-    }
-    
-    // Filter languages that exist in our available languages
-    const validatedLanguages = artistLanguages.filter(lang => 
-      availableLanguages.includes(lang)
-    )
-    
-    console.log('Validated languages for artist:', artist.name, validatedLanguages)
-    return validatedLanguages
-  }
-
-  const languages = validateLanguages(artist.languages || [])
+  // Make sure languages is always an array
+  const languages = Array.isArray(artist.languages) ? artist.languages : []
+  console.log('Artist languages:', languages)
 
   return (
     <Card className="relative overflow-hidden">

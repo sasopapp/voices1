@@ -8,11 +8,13 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useSessionContext } from "@supabase/auth-helpers-react";
+import { LayoutDashboard } from "lucide-react";
 
 const Index = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<Language | "all">("all");
   const navigate = useNavigate();
   const { session } = useSessionContext();
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     const checkSession = async () => {
@@ -28,6 +30,7 @@ const Index = () => {
           
         console.log('User profile:', profile);
         console.log('Profile error:', error);
+        setIsAdmin(profile?.is_admin || false);
       }
     };
     
@@ -62,7 +65,17 @@ const Index = () => {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 justify-between items-center">
             <h1 className="text-xl font-semibold">Voiceover Artists</h1>
-            <nav>
+            <nav className="flex items-center gap-4">
+              {isAdmin && (
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate('/admin')}
+                  className="flex items-center gap-2"
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  Admin Dashboard
+                </Button>
+              )}
               {session ? (
                 <Button 
                   variant="ghost" 

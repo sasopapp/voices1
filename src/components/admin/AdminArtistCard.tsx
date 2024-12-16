@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"
-import { useQueryClient, useQuery } from "@tanstack/react-query"
+import { useQueryClient } from "@tanstack/react-query"
 
 interface AdminArtistCardProps {
   artist: VoiceoverArtist & { is_approved?: boolean }
@@ -21,27 +21,6 @@ interface AdminArtistCardProps {
 export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
-
-  // Fetch available languages from the database
-  const { data: availableLanguages = [] } = useQuery({
-    queryKey: ['languages'],
-    queryFn: async () => {
-      console.log('Fetching languages from database...')
-      const { data, error } = await supabase
-        .from('languages')
-        .select('name')
-        .order('name')
-
-      if (error) {
-        console.error('Error fetching languages:', error)
-        throw error
-      }
-
-      const languages = data.map(lang => lang.name)
-      console.log('Available languages from DB:', languages)
-      return languages
-    },
-  })
 
   const handleApprove = async () => {
     try {
@@ -68,7 +47,7 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
 
   // Make sure languages is always an array
   const languages = Array.isArray(artist.languages) ? artist.languages : []
-  console.log('Artist languages:', languages)
+  console.log('Artist languages in AdminArtistCard:', languages)
 
   return (
     <Card className="relative overflow-hidden">

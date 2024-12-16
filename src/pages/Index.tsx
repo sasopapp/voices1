@@ -71,7 +71,16 @@ const Index = () => {
       <header className="border-b">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 justify-between items-center">
-            <h1 className="text-2xl font-bold">Voiceover Artists</h1>
+            <div 
+              className="flex items-center gap-2 cursor-pointer" 
+              onClick={() => navigate('/')}
+            >
+              <img 
+                src="https://authenticvoices.eu/wp-content/uploads/2023/11/AV_logo_250px-1.png" 
+                alt="Authentic Voices Logo" 
+                className="h-8"
+              />
+            </div>
             <nav className="flex items-center gap-4">
               {isAdmin && (
                 <Button 

@@ -64,7 +64,10 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
 
       console.log('Artist deleted successfully')
       toast.success('Artist deleted successfully')
-      queryClient.invalidateQueries({ queryKey: ['admin-artists'] })
+      
+      // Immediately invalidate and refetch the artists query
+      await queryClient.invalidateQueries({ queryKey: ['admin-artists'] })
+      await queryClient.refetchQueries({ queryKey: ['admin-artists'] })
     } catch (error) {
       console.error('Error in handleDelete:', error)
       toast.error('An error occurred while deleting the artist')

@@ -73,7 +73,7 @@ const Index = () => {
     try {
       await supabase.auth.signOut();
       toast.success('Logged out successfully');
-      navigate('/login');
+      // Remove navigation to login page, as we want to stay on index
     } catch (error) {
       console.error('Error during logout:', error);
       toast.error('Error during logout');

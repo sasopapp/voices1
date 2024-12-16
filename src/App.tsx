@@ -2,8 +2,14 @@ import { Toaster } from "@/components/ui/toaster"
 import { Toaster as Sonner } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
-import { SessionContextProvider, useSessionContext } from "@supabase/auth-helpers-react"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { SessionContextProvider } from "@supabase/auth-helpers-react"
+import { supabase } from "./integrations/supabase/client"
+import { ProtectedRoute } from "./components/auth/ProtectedRoute"
+import { AuthRoute } from "./components/auth/AuthRoute"
+import { useInitializeSession } from "./hooks/useInitializeSession"
+
+// Pages
 import Index from "./pages/Index"
 import ArtistDetail from "./pages/ArtistDetail"
 import AdminDashboard from "./pages/admin/AdminDashboard"
@@ -11,9 +17,6 @@ import AdminNewArtist from "./pages/AdminPage"
 import AdminEditArtist from "./pages/admin/AdminEditArtist"
 import AdminLanguages from "./pages/admin/AdminLanguages"
 import Login from "./pages/Login"
-import { supabase } from "./integrations/supabase/client"
-import { useEffect, useState } from "react"
-import { toast } from "sonner"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,109 +27,8 @@ const queryClient = new QueryClient({
   },
 })
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { session, isLoading: sessionLoading } = useSessionContext()
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    const checkAdminStatus = async () => {
-      if (!session?.user?.id) {
-        console.log('No session or user ID found')
-        setIsAdmin(false)
-        setIsLoading(false)
-        return
-      }
-
-      try {
-        console.log('Checking admin status for user:', session.user.id)
-        const { data: profiles, error } = await supabase
-          .from('profiles')
-          .select('is_admin')
-          .eq('id', session.user.id)
-
-        if (error) {
-          console.error('Error fetching profile:', error)
-          toast.error('Error checking admin status')
-          setIsAdmin(false)
-          setIsLoading(false)
-          return
-        }
-
-        // Check if we got any profiles back
-        if (!profiles || profiles.length === 0) {
-          console.log('No profile found for user')
-          setIsAdmin(false)
-          setIsLoading(false)
-          return
-        }
-
-        const profile = profiles[0]
-        console.log('Profile data:', profile)
-        setIsAdmin(profile?.is_admin || false)
-        setIsLoading(false)
-      } catch (error) {
-        console.error('Error in admin check:', error)
-        toast.error('Error checking admin status')
-        setIsAdmin(false)
-        setIsLoading(false)
-      }
-    }
-
-    if (!sessionLoading) {
-      checkAdminStatus()
-    }
-  }, [session?.user?.id, sessionLoading])
-
-  if (sessionLoading || isLoading) {
-    console.log('Loading admin status...')
-    return <div>Loading...</div>
-  }
-
-  if (!session) {
-    console.log('No session, redirecting to login')
-    return <Navigate to="/login" replace />
-  }
-
-  if (!isAdmin) {
-    console.log('User is not admin, redirecting to home')
-    return <Navigate to="/" replace />
-  }
-
-  console.log('User is admin, rendering protected content')
-  return <>{children}</>
-}
-
-const AuthRoute = ({ children }: { children: React.ReactNode }) => {
-  const { session } = useSessionContext()
-
-  if (session) {
-    return <Navigate to="/" replace />
-  }
-
-  return <>{children}</>
-}
-
 const App = () => {
-  const [initialSession, setInitialSession] = useState(null)
-
-  useEffect(() => {
-    // Initialize session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('Initial session:', session)
-      setInitialSession(session)
-    })
-
-    // Set up auth state change listener
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log('Auth state changed:', session)
-      setInitialSession(session)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
+  const initialSession = useInitializeSession()
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -8,7 +8,7 @@ export function AdminHeader({ title }: { title: string }) {
 
   return (
     <header className="border-b">
-      <div className="flex h-16 items-center gap-4 px-6">
+      <div className="flex h-16 items-center px-6">
         <Button
           variant="ghost"
           size="icon"
@@ -18,14 +18,7 @@ export function AdminHeader({ title }: { title: string }) {
           <Home className="h-4 w-4" />
           <span className="sr-only">Go to home page</span>
         </Button>
-        <img 
-          src="https://authenticvoices.eu/wp-content/uploads/2023/11/AV_logo_250px-1.png"
-          alt="Authentic Voices Logo"
-          className="h-24 w-auto mr-4"
-        />
-        <div className="flex-1">
-          <h1 className="text-lg font-semibold">{title}</h1>
-        </div>
+        
         <nav className="flex items-center gap-2">
           <Button
             variant="ghost"
@@ -46,6 +39,18 @@ export function AdminHeader({ title }: { title: string }) {
             Languages
           </Button>
         </nav>
+
+        <div className="flex-1 flex justify-center">
+          <img 
+            src="https://authenticvoices.eu/wp-content/uploads/2023/11/AV_logo_250px-1.png"
+            alt="Authentic Voices Logo"
+            className="h-24 w-auto"
+          />
+        </div>
+
+        <div className="flex-1">
+          <h1 className="text-lg font-semibold">{title}</h1>
+        </div>
       </div>
     </header>
   )

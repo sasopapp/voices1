@@ -3,6 +3,18 @@ import { AdminArtistCard } from "@/components/admin/AdminArtistCard"
 import { AdminSidebar } from "@/components/admin/AdminSidebar"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { supabase } from "@/integrations/supabase/client"
+import { VoiceoverArtist } from "@/types/voiceover"
+
+interface DatabaseArtist {
+  id: string;
+  name: string;
+  languages: string[];
+  audio_demo: string | null;
+  avatar: string | null;
+  created_by: string | null;
+  is_approved: boolean | null;
+  created_at: string;
+}
 
 const AdminDashboard = () => {
   const { data: artists, isLoading, error } = useQuery({
@@ -23,7 +35,18 @@ const AdminDashboard = () => {
       }
 
       console.log('Artists data:', data);
-      return data || [];
+      
+      // Map database response to frontend type
+      return (data || []).map((artist: DatabaseArtist): VoiceoverArtist => ({
+        id: artist.id,
+        name: artist.name,
+        languages: artist.languages,
+        audioDemo: artist.audio_demo,
+        avatar: artist.avatar,
+        created_by: artist.created_by || undefined,
+        is_approved: artist.is_approved || false,
+        created_at: artist.created_at
+      }));
     },
   });
 

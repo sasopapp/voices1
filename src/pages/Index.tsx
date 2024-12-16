@@ -12,10 +12,10 @@ import { useQuery } from "@tanstack/react-query";
 
 // Helper function to validate languages
 const validateLanguages = (languages: string[]): Language[] => {
-  const validLanguages: Language[] = languages.filter((lang): lang is Language => {
-    return ['English', 'Spanish', 'French', 'German', 'Italian'].includes(lang);
-  });
-  return validLanguages;
+  const validLanguages = ['English', 'Spanish', 'French', 'German', 'Italian'];
+  return languages.filter((lang): lang is Language => 
+    validLanguages.includes(lang)
+  );
 };
 
 const Index = () => {
@@ -43,12 +43,17 @@ const Index = () => {
       }
 
       console.log('Artists data:', data);
+      
+      // Map and validate the data
       return data.map((artist): VoiceoverArtist => ({
         id: artist.id,
         name: artist.name,
-        languages: validateLanguages(artist.languages),
-        audioDemo: artist.audio_demo,
-        avatar: artist.avatar,
+        languages: validateLanguages(artist.languages || []),
+        audioDemo: artist.audio_demo || '',
+        avatar: artist.avatar || '',
+        created_by: artist.created_by,
+        is_approved: artist.is_approved,
+        created_at: artist.created_at
       }));
     },
   });

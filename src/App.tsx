@@ -25,6 +25,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       
       if (!session?.user?.id) {
         console.log('No session or user ID found')
+        setIsAdmin(false)
         setIsLoading(false)
         return
       }
@@ -42,7 +43,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
           setIsAdmin(false)
         } else {
           console.log('Profile data:', profile)
-          setIsAdmin(!!profile?.is_admin)
+          setIsAdmin(profile?.is_admin === true)
         }
       } catch (error) {
         console.error('Error in admin check:', error)
@@ -52,16 +53,15 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       }
     }
 
-    if (!sessionLoading) {
-      checkAdminStatus()
-    }
-  }, [session?.user?.id, sessionLoading])
+    checkAdminStatus()
+  }, [session?.user?.id])
 
   console.log('Current state:', {
     sessionLoading,
     isLoading,
     hasSession: !!session,
-    isAdmin
+    isAdmin,
+    userId: session?.user?.id
   })
 
   if (sessionLoading || isLoading) {
@@ -73,7 +73,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/login" replace />
   }
 
-  if (isAdmin === false) {
+  if (!isAdmin) {
     console.log('Redirecting to home - not admin')
     return <Navigate to="/" replace />
   }

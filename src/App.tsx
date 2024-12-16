@@ -9,6 +9,7 @@ import ArtistDetail from "./pages/ArtistDetail"
 import AdminDashboard from "./pages/admin/AdminDashboard"
 import AdminNewArtist from "./pages/AdminPage"
 import AdminEditArtist from "./pages/admin/AdminEditArtist"
+import AdminLanguages from "./pages/admin/AdminLanguages"
 import Login from "./pages/Login"
 import { supabase } from "./integrations/supabase/client"
 import { useEffect, useState } from "react"
@@ -144,6 +145,14 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <AdminEditArtist />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/languages" 
+                element={
+                  <ProtectedRoute>
+                    <AdminLanguages />
                   </ProtectedRoute>
                 } 
               />

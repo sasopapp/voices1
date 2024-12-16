@@ -1,4 +1,13 @@
-export type Language = "English" | "Spanish" | "French" | "German" | "Italian";
+export type Language = 
+  | "English" 
+  | "Spanish" 
+  | "French" 
+  | "German" 
+  | "Italian"
+  | "Croatian"
+  | "Serbian"
+  | "Slovak"
+  | "Slovene";
 
 export interface VoiceoverArtist {
   id: string;

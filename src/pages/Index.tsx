@@ -12,10 +12,18 @@ import { useQuery } from "@tanstack/react-query";
 
 // Helper function to validate languages
 const validateLanguages = (languages: string[]): Language[] => {
-  const validLanguages = ['English', 'Spanish', 'French', 'German', 'Italian'];
-  return languages.filter((lang): lang is Language => 
+  if (!Array.isArray(languages)) {
+    console.log('Languages is not an array:', languages);
+    return [];
+  }
+  
+  const validLanguages = ['English', 'Spanish', 'French', 'German', 'Italian', 'Croatian', 'Serbian', 'Slovak', 'Slovene'];
+  const validatedLanguages = languages.filter((lang): lang is Language => 
     validLanguages.includes(lang)
   );
+  
+  console.log('Validated languages:', validatedLanguages);
+  return validatedLanguages;
 };
 
 const Index = () => {
@@ -45,7 +53,7 @@ const Index = () => {
       console.log('Artists data:', data);
       
       // Map and validate the data
-      return data.map((artist): VoiceoverArtist => ({
+      const mappedArtists = data.map((artist): VoiceoverArtist => ({
         id: artist.id,
         name: artist.name,
         languages: validateLanguages(artist.languages || []),
@@ -55,6 +63,9 @@ const Index = () => {
         is_approved: artist.is_approved,
         created_at: artist.created_at
       }));
+
+      console.log('Mapped artists with validated languages:', mappedArtists);
+      return mappedArtists;
     },
   });
 
@@ -119,8 +130,9 @@ const Index = () => {
     }
   };
 
-  // Updated filtering logic
+  // Updated filtering logic with better logging
   const filteredArtists = artists.filter((artist) => {
+    console.log('Filtering artist:', artist.name, 'Languages:', artist.languages, 'Selected:', selectedLanguage);
     if (selectedLanguage === "all") return true;
     return artist.languages.includes(selectedLanguage);
   });

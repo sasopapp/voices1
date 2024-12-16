@@ -9,75 +9,123 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState } from "react"
 import { Language } from "@/types/voiceover"
+import { toast } from "sonner"
+import { useSessionContext } from "@supabase/auth-helpers-react"
 
 const AdminNewArtist = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const [name, setName] = useState("")
   const [languages, setLanguages] = useState<Language[]>([])
   const [audioDemo, setAudioDemo] = useState<File | null>(null)
   const [avatar, setAvatar] = useState<File | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { session } = useSessionContext()
 
   // Check if user is admin
   useEffect(() => {
     const checkAdmin = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
-        navigate('/login');
-        return;
+        console.log('No user found, redirecting to login')
+        navigate('/login')
+        return
       }
 
-      const { data: profile } = await supabase
+      const { data: profile, error } = await supabase
         .from('profiles')
         .select('is_admin')
         .eq('id', user.id)
-        .single();
+        .single()
 
-      if (!profile?.is_admin) {
-        navigate('/');
+      if (error || !profile?.is_admin) {
+        console.log('User is not admin, redirecting to home')
+        navigate('/')
       }
-    };
+    }
 
-    checkAdmin();
-  }, [navigate]);
+    checkAdmin()
+  }, [navigate])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    if (!session?.user?.id) {
+      toast.error('You must be logged in to create an artist')
+      return
+    }
 
     try {
-      let avatarUrl = null
-      let audioDemoUrl = null
+      setIsSubmitting(true)
+      console.log('Starting artist creation process...')
 
+      // Upload avatar if provided
+      let avatarUrl = null
       if (avatar) {
+        console.log('Uploading avatar...')
+        const avatarFileName = `${Date.now()}-${avatar.name}`
         const { data: avatarData, error: avatarError } = await supabase.storage
           .from('avatars')
-          .upload(`${Date.now()}-${avatar.name}`, avatar)
+          .upload(avatarFileName, avatar)
 
-        if (avatarError) throw avatarError
-        avatarUrl = avatarData.path
+        if (avatarError) {
+          console.error('Avatar upload error:', avatarError)
+          throw new Error('Failed to upload avatar')
+        }
+
+        const { data: { publicUrl: avatarPublicUrl } } = supabase.storage
+          .from('avatars')
+          .getPublicUrl(avatarFileName)
+        
+        avatarUrl = avatarPublicUrl
+        console.log('Avatar uploaded successfully:', avatarUrl)
       }
 
+      // Upload audio demo if provided
+      let audioDemoUrl = null
       if (audioDemo) {
+        console.log('Uploading audio demo...')
+        const audioFileName = `${Date.now()}-${audioDemo.name}`
         const { data: audioData, error: audioError } = await supabase.storage
           .from('demos')
-          .upload(`${Date.now()}-${audioDemo.name}`, audioDemo)
+          .upload(audioFileName, audioDemo)
 
-        if (audioError) throw audioError
-        audioDemoUrl = audioData.path
+        if (audioError) {
+          console.error('Audio demo upload error:', audioError)
+          throw new Error('Failed to upload audio demo')
+        }
+
+        const { data: { publicUrl: audioPublicUrl } } = supabase.storage
+          .from('demos')
+          .getPublicUrl(audioFileName)
+        
+        audioDemoUrl = audioPublicUrl
+        console.log('Audio demo uploaded successfully:', audioDemoUrl)
       }
 
-      const { error } = await supabase.from('artists').insert({
+      // Create artist record
+      console.log('Creating artist record...')
+      const { error: insertError } = await supabase.from('artists').insert({
         name,
         languages,
         audio_demo: audioDemoUrl,
         avatar: avatarUrl,
+        created_by: session.user.id,
         is_approved: false
       })
 
-      if (error) throw error
+      if (insertError) {
+        console.error('Error creating artist:', insertError)
+        throw insertError
+      }
 
+      console.log('Artist created successfully')
+      toast.success('Artist created successfully')
       navigate('/admin')
     } catch (error) {
-      console.error('Error creating artist:', error)
+      console.error('Error in handleSubmit:', error)
+      toast.error('Failed to create artist: ' + (error as Error).message)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -159,7 +207,9 @@ const AdminNewArtist = () => {
               />
             </div>
 
-            <Button type="submit">Create Artist</Button>
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Creating Artist...' : 'Create Artist'}
+            </Button>
           </form>
         </main>
       </div>

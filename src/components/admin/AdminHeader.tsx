@@ -33,18 +33,16 @@ export function AdminHeader({ title }: { title: string }) {
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
-            className="flex items-center gap-2"
+            className={`flex items-center gap-2 ${location.pathname === '/admin' ? 'bg-accent' : ''}`}
             onClick={() => navigate('/admin')}
-            data-active={location.pathname === '/admin'}
           >
             <Users className="h-4 w-4" />
             Artists
           </Button>
           <Button
             variant="ghost"
-            className="flex items-center gap-2"
-            onClick={() => navigate('/admin')}
-            data-active={location.pathname.includes('languages')}
+            className={`flex items-center gap-2 ${location.pathname === '/admin/languages' ? 'bg-accent' : ''}`}
+            onClick={() => navigate('/admin/languages')}
           >
             <Globe className="h-4 w-4" />
             Languages

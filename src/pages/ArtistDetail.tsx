@@ -34,7 +34,20 @@ const ArtistDetail = () => {
       }
 
       console.log('Artist data:', data);
-      return data as VoiceoverArtist;
+      
+      // Transform snake_case to camelCase
+      const transformedData: VoiceoverArtist = {
+        id: data.id,
+        name: data.name,
+        languages: data.languages,
+        audioDemo: data.audio_demo,
+        avatar: data.avatar,
+        created_by: data.created_by,
+        is_approved: data.is_approved,
+        created_at: data.created_at
+      };
+
+      return transformedData;
     },
   });
 

@@ -46,6 +46,29 @@ const Index = () => {
     },
   });
 
+  // Check if user is admin
+  useQuery({
+    queryKey: ['isAdmin', session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user?.id) return false;
+      
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', session.user.id)
+        .single();
+
+      if (error) {
+        console.error('Error checking admin status:', error);
+        return false;
+      }
+
+      setIsAdmin(profile?.is_admin || false);
+      return profile?.is_admin || false;
+    },
+    enabled: !!session?.user?.id,
+  });
+
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();

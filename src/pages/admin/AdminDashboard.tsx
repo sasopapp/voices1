@@ -2,13 +2,15 @@ import { useQuery } from "@tanstack/react-query"
 import { AdminArtistCard } from "@/components/admin/AdminArtistCard"
 import { AdminSidebar } from "@/components/admin/AdminSidebar"
 import { SidebarProvider } from "@/components/ui/sidebar"
-import { VoiceoverArtist, Language } from "@/types/voiceover"
+import { Language } from "@/types/voiceover"
 import { supabase } from "@/integrations/supabase/client"
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { useToast } from "@/components/ui/use-toast"
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   // Check if user is admin
   useEffect(() => {
@@ -33,19 +35,26 @@ const AdminDashboard = () => {
     checkAdmin();
   }, [navigate]);
 
-  const { data: artists, isLoading } = useQuery({
+  const { data: artists, isLoading, error } = useQuery({
     queryKey: ['admin-artists'],
     queryFn: async () => {
+      console.log('Fetching artists...');
       const { data, error } = await supabase
         .from('artists')
         .select('*')
-        .order('created_at', { ascending: false })
+        .order('created_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching artists:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load artists",
+          variant: "destructive",
+        });
         throw error;
       }
 
+      console.log('Artists data:', data);
       return data.map(artist => ({
         id: artist.id,
         name: artist.name,
@@ -55,12 +64,34 @@ const AdminDashboard = () => {
         audioDemo: artist.audio_demo,
         avatar: artist.avatar,
         is_approved: artist.is_approved
-      }))
+      }));
     },
-  })
+  });
+
+  if (error) {
+    return (
+      <SidebarProvider>
+        <div className="flex min-h-screen w-full">
+          <AdminSidebar />
+          <main className="flex-1 p-8">
+            <div className="text-red-500">Error loading artists</div>
+          </main>
+        </div>
+      </SidebarProvider>
+    );
+  }
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return (
+      <SidebarProvider>
+        <div className="flex min-h-screen w-full">
+          <AdminSidebar />
+          <main className="flex-1 p-8">
+            <div className="animate-pulse">Loading artists...</div>
+          </main>
+        </div>
+      </SidebarProvider>
+    );
   }
 
   return (
@@ -69,15 +100,19 @@ const AdminDashboard = () => {
         <AdminSidebar />
         <main className="flex-1 p-8">
           <h1 className="text-3xl font-bold mb-8">Manage Artists</h1>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {artists?.map((artist) => (
-              <AdminArtistCard key={artist.id} artist={artist} />
-            ))}
-          </div>
+          {artists && artists.length > 0 ? (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {artists.map((artist) => (
+                <AdminArtistCard key={artist.id} artist={artist} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-gray-500">No artists found</div>
+          )}
         </main>
       </div>
     </SidebarProvider>
-  )
-}
+  );
+};
 
-export default AdminDashboard
+export default AdminDashboard;

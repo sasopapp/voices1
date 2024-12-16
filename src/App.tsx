@@ -15,48 +15,61 @@ import { useEffect, useState } from "react"
 const queryClient = new QueryClient()
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { session, isLoading } = useSessionContext()
+  const { session, isLoading: sessionLoading } = useSessionContext()
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
-  const [checkingAdmin, setCheckingAdmin] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const checkAdminStatus = async () => {
       if (!session) {
-        setCheckingAdmin(false)
+        setIsLoading(false)
         return
       }
 
       try {
-        const { data: profile } = await supabase
+        console.log('Checking admin status for user:', session.user.id)
+        const { data: profile, error } = await supabase
           .from('profiles')
           .select('is_admin')
           .eq('id', session.user.id)
           .single()
 
-        setIsAdmin(profile?.is_admin || false)
+        if (error) {
+          console.error('Error fetching profile:', error)
+          setIsAdmin(false)
+        } else {
+          console.log('Profile data:', profile)
+          setIsAdmin(profile?.is_admin || false)
+        }
       } catch (error) {
-        console.error('Error checking admin status:', error)
+        console.error('Error in admin check:', error)
         setIsAdmin(false)
       }
       
-      setCheckingAdmin(false)
+      setIsLoading(false)
     }
 
-    checkAdminStatus()
-  }, [session])
+    if (!sessionLoading) {
+      checkAdminStatus()
+    }
+  }, [session, sessionLoading])
 
-  if (isLoading || checkingAdmin) {
+  if (sessionLoading || isLoading) {
+    console.log('Loading state:', { sessionLoading, isLoading })
     return <div>Loading...</div>
   }
 
   if (!session) {
+    console.log('No session, redirecting to login')
     return <Navigate to="/login" />
   }
 
-  if (!isAdmin) {
+  if (isAdmin === false) {
+    console.log('Not admin, redirecting to home')
     return <Navigate to="/" />
   }
 
+  console.log('Rendering protected content')
   return <>{children}</>
 }
 

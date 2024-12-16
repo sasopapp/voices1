@@ -114,11 +114,14 @@ const Index = () => {
     }
   };
 
-  const filteredArtists = artists.filter((artist) =>
-    selectedLanguage === "all"
-      ? true
-      : artist.languages.includes(selectedLanguage)
-  );
+  // Updated filtering logic
+  const filteredArtists = artists.filter((artist) => {
+    if (selectedLanguage === "all") return true;
+    return artist.languages.includes(selectedLanguage);
+  });
+
+  console.log('Selected language:', selectedLanguage);
+  console.log('Filtered artists:', filteredArtists);
 
   if (sessionLoading || isLoading || artistsLoading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;

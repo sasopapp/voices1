@@ -60,7 +60,7 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
           <h3 className="font-semibold text-lg">{artist.name}</h3>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <Globe className="h-4 w-4" />
-            {artist.languages.join(", ")}
+            {Array.isArray(artist.languages) ? artist.languages.join(", ") : 'No languages'}
           </div>
         </div>
         <div className="flex items-center gap-2">

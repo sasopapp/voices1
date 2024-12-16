@@ -1,9 +1,11 @@
 import { useParams } from "react-router-dom";
-import { voiceoverArtists } from "../data/voiceover-artists";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Globe, Mic } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { VoiceoverArtist } from "@/types/voiceover";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -15,10 +17,33 @@ import {
 
 const ArtistDetail = () => {
   const { id } = useParams();
-  const artist = voiceoverArtists.find((a) => a.id === id);
+
+  const { data: artist, isLoading } = useQuery({
+    queryKey: ['artist', id],
+    queryFn: async () => {
+      console.log('Fetching artist details for ID:', id);
+      const { data, error } = await supabase
+        .from('artists')
+        .select('*')
+        .eq('id', id)
+        .single();
+
+      if (error) {
+        console.error('Error fetching artist:', error);
+        throw error;
+      }
+
+      console.log('Artist data:', data);
+      return data as VoiceoverArtist;
+    },
+  });
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+  }
 
   if (!artist) {
-    return <div>Artist not found</div>;
+    return <div className="flex items-center justify-center min-h-screen">Artist not found</div>;
   }
 
   // Adding more demo tracks for the detail page
@@ -45,7 +70,7 @@ const ArtistDetail = () => {
 
         <div className="mb-8 flex items-center gap-6">
           <Avatar className="h-24 w-24">
-            <AvatarImage src={artist.avatar} alt={artist.name} />
+            <AvatarImage src={artist.avatar || ''} alt={artist.name} />
             <AvatarFallback>{artist.name[0]}</AvatarFallback>
           </Avatar>
           <div>
@@ -66,7 +91,7 @@ const ArtistDetail = () => {
                   <div className="flex items-center gap-2 rounded-lg bg-secondary p-4">
                     <Mic className="h-5 w-5 text-primary" />
                     <audio controls className="w-full">
-                      <source src={track.url} type="audio/mpeg" />
+                      <source src={track.url || ''} type="audio/mpeg" />
                       Your browser does not support the audio element.
                     </audio>
                   </div>

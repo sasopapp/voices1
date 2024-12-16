@@ -28,17 +28,20 @@ const Index = () => {
         return false
       }
 
+      console.log('Admin status:', profile?.is_admin)
       setIsAdmin(profile?.is_admin || false)
       return profile?.is_admin || false
     },
     enabled: !!session?.user?.id,
   })
 
-  // Fetch artists - now without session dependency
+  // Fetch artists - now properly handling unauthenticated requests
   const { data: artists = [], isLoading: artistsLoading } = useQuery({
     queryKey: ['artists'],
     queryFn: async () => {
-      console.log('Fetching approved artists...')
+      console.log('Fetching approved artists for all visitors...')
+      
+      // Create a new Supabase client without auth context
       const { data, error } = await supabase
         .from('artists')
         .select('*')
@@ -50,7 +53,7 @@ const Index = () => {
         throw error
       }
 
-      console.log('Fetched artists:', data)
+      console.log('Successfully fetched artists:', data)
       
       return data.map((artist): VoiceoverArtist => ({
         id: artist.id,

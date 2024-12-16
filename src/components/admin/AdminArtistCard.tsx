@@ -46,7 +46,7 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
     }
   }
 
-  // Ensure languages is always an array and contains valid languages
+  // Ensure languages is always an array of valid languages
   const languages = Array.isArray(artist.languages) ? artist.languages : []
   console.log('Languages for artist:', artist.name, languages)
 

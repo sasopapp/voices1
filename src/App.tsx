@@ -21,13 +21,16 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const checkAdminStatus = async () => {
-      if (!session) {
+      console.log('Starting admin status check')
+      
+      if (!session?.user?.id) {
+        console.log('No session or user ID found')
         setIsLoading(false)
         return
       }
 
       try {
-        console.log('Checking admin status for user:', session.user.id)
+        console.log('Fetching profile for user:', session.user.id)
         const { data: profile, error } = await supabase
           .from('profiles')
           .select('is_admin')
@@ -39,34 +42,40 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
           setIsAdmin(false)
         } else {
           console.log('Profile data:', profile)
-          setIsAdmin(profile?.is_admin || false)
+          setIsAdmin(!!profile?.is_admin)
         }
       } catch (error) {
         console.error('Error in admin check:', error)
         setIsAdmin(false)
+      } finally {
+        setIsLoading(false)
       }
-      
-      setIsLoading(false)
     }
 
     if (!sessionLoading) {
       checkAdminStatus()
     }
-  }, [session, sessionLoading])
+  }, [session?.user?.id, sessionLoading])
+
+  console.log('Current state:', {
+    sessionLoading,
+    isLoading,
+    hasSession: !!session,
+    isAdmin
+  })
 
   if (sessionLoading || isLoading) {
-    console.log('Loading state:', { sessionLoading, isLoading })
     return <div>Loading...</div>
   }
 
   if (!session) {
-    console.log('No session, redirecting to login')
-    return <Navigate to="/login" />
+    console.log('Redirecting to login - no session')
+    return <Navigate to="/login" replace />
   }
 
   if (isAdmin === false) {
-    console.log('Not admin, redirecting to home')
-    return <Navigate to="/" />
+    console.log('Redirecting to home - not admin')
+    return <Navigate to="/" replace />
   }
 
   console.log('Rendering protected content')

@@ -68,19 +68,22 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b">
+      <header className="border-b relative">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 justify-between items-center">
-            <div 
-              className="flex items-center gap-2 cursor-pointer" 
-              onClick={() => navigate('/')}
-            >
+            <div className="w-32">
+              {/* Empty div to maintain layout */}
+            </div>
+            
+            <div className="absolute left-1/2 transform -translate-x-1/2">
               <img 
                 src="https://authenticvoices.eu/wp-content/uploads/2023/11/AV_logo_250px-1.png" 
                 alt="Authentic Voices Logo" 
                 className="h-24"
+                onClick={() => navigate('/')}
               />
             </div>
+
             <nav className="flex items-center gap-4">
               {isAdmin && (
                 <Button 

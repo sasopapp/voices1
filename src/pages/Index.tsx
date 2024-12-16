@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ArtistCard } from "../components/ArtistCard";
 import { LanguageSelect } from "../components/LanguageSelect";
-import { VoiceoverArtist } from "../types/voiceover";
+import { VoiceoverArtist } from "@/types/voiceover";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,11 +16,11 @@ const Index = () => {
   const { session } = useSessionContext();
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // Fetch artists using React Query
+  // Fetch artists using React Query - now fetching approved artists for all visitors
   const { data: artists = [], isLoading: artistsLoading } = useQuery({
     queryKey: ['artists'],
     queryFn: async () => {
-      console.log('Fetching artists...');
+      console.log('Fetching approved artists...');
       const { data, error } = await supabase
         .from('artists')
         .select('*')
@@ -33,6 +33,8 @@ const Index = () => {
         throw error;
       }
 
+      console.log('Fetched artists:', data);
+      
       return data.map((artist): VoiceoverArtist => ({
         id: artist.id,
         name: artist.name,
@@ -46,7 +48,7 @@ const Index = () => {
     },
   });
 
-  // Check if user is admin
+  // Check if user is admin - only when session exists
   useQuery({
     queryKey: ['isAdmin', session?.user?.id],
     queryFn: async () => {
@@ -80,7 +82,6 @@ const Index = () => {
       }
 
       toast.success('Logged out successfully');
-      // Stay on index page
     } catch (error) {
       console.error('Error during logout:', error);
       toast.error('Error during logout');

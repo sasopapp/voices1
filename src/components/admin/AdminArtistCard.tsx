@@ -38,8 +38,9 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
         throw error
       }
 
-      console.log('Available languages from DB:', data)
-      return data.map(lang => lang.name as Language)
+      const languages = data.map(lang => lang.name)
+      console.log('Available languages from DB:', languages)
+      return languages
     },
   })
 
@@ -73,6 +74,7 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
       return []
     }
     
+    // Filter languages that exist in our available languages
     const validatedLanguages = artistLanguages.filter((lang): lang is Language => 
       availableLanguages.includes(lang)
     )

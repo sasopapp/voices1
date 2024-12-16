@@ -15,7 +15,7 @@ import { useEffect, useState } from "react"
 const queryClient = new QueryClient()
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const { session, isLoading: sessionLoading } = useSessionContext()
+  const { session } = useSessionContext()
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -24,7 +24,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
       console.log('Starting admin status check')
       
       if (!session?.user?.id) {
-        console.log('No session or user ID found')
+        console.log('No session or user ID found, redirecting to login')
         setIsAdmin(false)
         setIsLoading(false)
         return
@@ -56,29 +56,28 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     checkAdminStatus()
   }, [session?.user?.id])
 
-  console.log('Current state:', {
-    sessionLoading,
+  console.log('Protected Route State:', {
     isLoading,
     hasSession: !!session,
     isAdmin,
     userId: session?.user?.id
   })
 
-  if (sessionLoading || isLoading) {
+  if (isLoading) {
     return <div>Loading...</div>
   }
 
   if (!session) {
-    console.log('Redirecting to login - no session')
+    console.log('No session found, redirecting to login')
     return <Navigate to="/login" replace />
   }
 
-  if (!isAdmin) {
-    console.log('Redirecting to home - not admin')
+  if (isAdmin === false) {
+    console.log('User is not admin, redirecting to home')
     return <Navigate to="/" replace />
   }
 
-  console.log('Rendering protected content')
+  console.log('Rendering protected content - user is admin')
   return <>{children}</>
 }
 

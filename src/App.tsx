@@ -10,20 +10,53 @@ import AdminDashboard from "./pages/admin/AdminDashboard"
 import AdminNewArtist from "./pages/AdminPage"
 import Login from "./pages/Login"
 import { supabase } from "./integrations/supabase/client"
+import { useEffect, useState } from "react"
 
 const queryClient = new QueryClient()
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session, isLoading } = useSessionContext()
-  
-  if (isLoading) {
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null)
+  const [checkingAdmin, setCheckingAdmin] = useState(true)
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (!session) {
+        setCheckingAdmin(false)
+        return
+      }
+
+      try {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('is_admin')
+          .eq('id', session.user.id)
+          .single()
+
+        setIsAdmin(profile?.is_admin || false)
+      } catch (error) {
+        console.error('Error checking admin status:', error)
+        setIsAdmin(false)
+      }
+      
+      setCheckingAdmin(false)
+    }
+
+    checkAdminStatus()
+  }, [session])
+
+  if (isLoading || checkingAdmin) {
     return <div>Loading...</div>
   }
-  
+
   if (!session) {
     return <Navigate to="/login" />
   }
-  
+
+  if (!isAdmin) {
+    return <Navigate to="/" />
+  }
+
   return <>{children}</>
 }
 

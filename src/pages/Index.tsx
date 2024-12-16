@@ -35,43 +35,45 @@ const Index = () => {
     enabled: !!session?.user?.id,
   })
 
-  // Fetch artists - with detailed logging for debugging
+  // Fetch artists - simplified query with detailed logging
   const { data: artists = [], isLoading: artistsLoading } = useQuery({
     queryKey: ['artists'],
     queryFn: async () => {
-      console.log('Starting artist fetch...')
+      console.log('Starting simplified artist fetch...')
       
-      const query = supabase
+      const { data, error } = await supabase
         .from('artists')
-        .select('*')
+        .select('id, name, languages, audio_demo, avatar, created_by, is_approved, created_at')
         .eq('is_approved', true)
-        .order('created_at', { ascending: false })
-
-      console.log('Executing query:', query)
-      
-      const { data, error } = await query
 
       if (error) {
-        console.error('Error fetching artists:', error)
+        console.error('Error fetching artists:', error.message)
+        console.error('Error details:', error)
         throw error
       }
 
+      console.log('Raw query response:', data)
+      
       if (!data || data.length === 0) {
-        console.log('No artists found in the database')
-      } else {
-        console.log(`Found ${data.length} artists:`, data)
+        console.log('No approved artists found')
+        return []
       }
 
-      return data.map((artist): VoiceoverArtist => ({
+      console.log(`Found ${data.length} approved artists`)
+      
+      const mappedArtists = data.map((artist): VoiceoverArtist => ({
         id: artist.id,
         name: artist.name,
         languages: Array.isArray(artist.languages) ? artist.languages : [],
-        audioDemo: artist.audio_demo || '',
-        avatar: artist.avatar || '',
+        audioDemo: artist.audio_demo,
+        avatar: artist.avatar,
         created_by: artist.created_by,
         is_approved: artist.is_approved,
         created_at: artist.created_at
       }))
+
+      console.log('Mapped artists:', mappedArtists)
+      return mappedArtists
     },
   })
 

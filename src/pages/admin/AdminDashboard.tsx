@@ -3,9 +3,6 @@ import { AdminArtistCard } from "@/components/admin/AdminArtistCard"
 import { AdminHeader } from "@/components/admin/AdminHeader"
 import { supabase } from "@/integrations/supabase/client"
 import { VoiceoverArtist } from "@/types/voiceover"
-import { Button } from "@/components/ui/button"
-import { useNavigate } from "react-router-dom"
-import { Plus } from "lucide-react"
 import { useSessionContext } from "@supabase/auth-helpers-react"
 
 interface DatabaseArtist {
@@ -20,7 +17,6 @@ interface DatabaseArtist {
 }
 
 const AdminDashboard = () => {
-  const navigate = useNavigate()
   const { session } = useSessionContext()
 
   const { data: artists, isLoading, error } = useQuery({
@@ -65,13 +61,6 @@ const AdminDashboard = () => {
     <div className="flex min-h-screen w-full flex-col">
       <AdminHeader title="Admin Dashboard" />
       <main className="flex-1 p-6">
-        <div className="flex justify-end mb-6">
-          <Button onClick={() => navigate('/admin/new')} className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            Add New Artist
-          </Button>
-        </div>
-
         {error && (
           <div className="text-red-500 mb-4">
             Error loading artists: {(error as Error).message}

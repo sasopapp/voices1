@@ -32,11 +32,11 @@ const Index = () => {
     enabled: !!session?.user?.id,
   })
 
-  // Fetch artists - public query for approved artists
+  // Fetch all artists temporarily to debug
   const { data: artists = [], isLoading: artistsLoading } = useQuery({
     queryKey: ['artists'],
     queryFn: async () => {
-      console.log('Starting public artists fetch...')
+      console.log('Starting artists fetch (debug mode - showing all artists)...')
       console.log('Session state:', session ? 'logged in' : 'not logged in')
       
       try {
@@ -44,7 +44,7 @@ const Index = () => {
         const { data, error } = await supabase
           .from('artists')
           .select('*')
-          .eq('is_approved', true)
+          // Temporarily removed .eq('is_approved', true) for debugging
 
         console.log('Query completed')
 
@@ -58,7 +58,7 @@ const Index = () => {
         console.log('Number of artists found:', data?.length || 0)
         
         if (!data || data.length === 0) {
-          console.log('No approved artists found')
+          console.log('No artists found in database')
           return []
         }
 

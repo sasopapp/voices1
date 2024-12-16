@@ -1,11 +1,38 @@
 import { useQuery } from "@tanstack/react-query"
-import { supabase } from "@/integrations/supabase/client"
 import { AdminArtistCard } from "@/components/admin/AdminArtistCard"
 import { AdminSidebar } from "@/components/admin/AdminSidebar"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { VoiceoverArtist, Language } from "@/types/voiceover"
+import { supabase } from "@/integrations/supabase/client"
+import { useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+
+  // Check if user is admin
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate('/login');
+        return;
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', user.id)
+        .single();
+
+      if (!profile?.is_admin) {
+        navigate('/');
+      }
+    };
+
+    checkAdmin();
+  }, [navigate]);
+
   const { data: artists, isLoading } = useQuery({
     queryKey: ['admin-artists'],
     queryFn: async () => {
@@ -14,9 +41,11 @@ const AdminDashboard = () => {
         .select('*')
         .order('created_at', { ascending: false })
 
-      if (error) throw error
+      if (error) {
+        console.error('Error fetching artists:', error);
+        throw error;
+      }
 
-      // Map the database fields to match our VoiceoverArtist type
       return data.map(artist => ({
         id: artist.id,
         name: artist.name,

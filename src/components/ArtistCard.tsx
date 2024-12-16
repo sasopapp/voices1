@@ -2,14 +2,20 @@ import { VoiceoverArtist } from "../types/voiceover";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Globe, Mic } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface ArtistCardProps {
   artist: VoiceoverArtist;
 }
 
 export const ArtistCard = ({ artist }: ArtistCardProps) => {
+  const navigate = useNavigate();
+
   return (
-    <Card className="overflow-hidden transition-all hover:shadow-lg">
+    <Card 
+      className="overflow-hidden transition-all hover:shadow-lg cursor-pointer" 
+      onClick={() => navigate(`/artist/${artist.id}`)}
+    >
       <CardHeader className="flex flex-row items-center gap-4">
         <Avatar className="h-12 w-12">
           <AvatarImage src={artist.avatar} alt={artist.name} />

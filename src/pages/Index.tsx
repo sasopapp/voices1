@@ -70,17 +70,20 @@ const Index = () => {
 
         console.log('Current user:', session.user);
         
-        const { data: profile, error } = await supabase
+        const { data: profiles, error } = await supabase
           .from('profiles')
           .select('*')
-          .eq('id', session.user.id)
-          .single();
+          .eq('id', session.user.id);
           
         if (error) {
           console.error('Error fetching profile:', error);
           toast.error('Error loading user profile');
           setIsAdmin(false);
+        } else if (!profiles || profiles.length === 0) {
+          console.log('No profile found for user');
+          setIsAdmin(false);
         } else {
+          const profile = profiles[0];
           console.log('User profile:', profile);
           setIsAdmin(profile?.is_admin || false);
         }

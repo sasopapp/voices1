@@ -13,31 +13,35 @@ import { LayoutDashboard } from "lucide-react";
 const Index = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<Language | "all">("all");
   const navigate = useNavigate();
-  const { session } = useSessionContext();
+  const { session, isLoading: sessionLoading } = useSessionContext();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        console.log('Current user:', user);
+        if (!session?.user) {
+          console.log('No active session');
+          setIsAdmin(false);
+          setIsLoading(false);
+          return;
+        }
+
+        console.log('Current user:', session.user);
         
-        if (user) {
-          const { data: profile, error } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', user.id)
-            .single();
-            
-          if (error) {
-            console.error('Error fetching profile:', error);
-            toast.error('Error loading user profile');
-            setIsAdmin(false);
-          } else {
-            console.log('User profile:', profile);
-            setIsAdmin(profile?.is_admin || false);
-          }
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+          
+        if (error) {
+          console.error('Error fetching profile:', error);
+          toast.error('Error loading user profile');
+          setIsAdmin(false);
+        } else {
+          console.log('User profile:', profile);
+          setIsAdmin(profile?.is_admin || false);
         }
       } catch (error) {
         console.error('Session check error:', error);
@@ -48,8 +52,10 @@ const Index = () => {
       }
     };
     
-    checkSession();
-  }, []);
+    if (!sessionLoading) {
+      checkSession();
+    }
+  }, [session, sessionLoading]);
 
   const handleLogout = async () => {
     try {
@@ -73,7 +79,7 @@ const Index = () => {
       : artist.languages.includes(selectedLanguage as Language)
   );
 
-  if (isLoading) {
+  if (sessionLoading || isLoading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 

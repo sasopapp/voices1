@@ -43,7 +43,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
           setIsAdmin(false)
         } else {
           console.log('Profile data:', profile)
-          setIsAdmin(profile?.is_admin === true)
+          setIsAdmin(!!profile?.is_admin)  // Convert to boolean explicitly
         }
       } catch (error) {
         console.error('Error in admin check:', error)
@@ -72,13 +72,20 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/login" replace />
   }
 
+  // Only redirect if we're certain the user is not an admin
   if (isAdmin === false) {
     console.log('User is not admin, redirecting to home')
     return <Navigate to="/" replace />
   }
 
-  console.log('Rendering protected content - user is admin')
-  return <>{children}</>
+  // If isAdmin is true, render the protected content
+  if (isAdmin === true) {
+    console.log('Rendering protected content - user is admin')
+    return <>{children}</>
+  }
+
+  // If we're still not sure about admin status, show loading
+  return <div>Verifying admin status...</div>
 }
 
 const App = () => (

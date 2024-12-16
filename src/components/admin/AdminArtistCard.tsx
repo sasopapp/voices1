@@ -10,6 +10,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { supabase } from "@/integrations/supabase/client"
+import { toast } from "sonner"
+import { useQueryClient } from "@tanstack/react-query"
 
 interface AdminArtistCardProps {
   artist: VoiceoverArtist & { is_approved?: boolean }
@@ -17,6 +20,31 @@ interface AdminArtistCardProps {
 
 export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
+
+  const handleApprove = async () => {
+    try {
+      console.log('Approving artist:', artist.id)
+      const { error } = await supabase
+        .from('artists')
+        .update({ is_approved: true })
+        .eq('id', artist.id)
+
+      if (error) {
+        console.error('Error approving artist:', error)
+        toast.error('Failed to approve artist')
+        return
+      }
+
+      console.log('Artist approved successfully')
+      toast.success('Artist approved successfully')
+      // Invalidate and refetch the artists query
+      queryClient.invalidateQueries({ queryKey: ['admin-artists'] })
+    } catch (error) {
+      console.error('Error in handleApprove:', error)
+      toast.error('An error occurred while approving the artist')
+    }
+  }
 
   return (
     <Card className="relative overflow-hidden">
@@ -25,7 +53,7 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
       </div>
       <CardHeader className="flex flex-row items-center gap-4 pb-2">
         <Avatar className="h-12 w-12">
-          <AvatarImage src={artist.avatar} alt={artist.name} />
+          <AvatarImage src={artist.avatar || ''} alt={artist.name} />
           <AvatarFallback>{artist.name[0]}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col flex-1">
@@ -35,23 +63,35 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
             {artist.languages.join(", ")}
           </div>
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <MoreVertical className="h-4 w-4" />
+        <div className="flex items-center gap-2">
+          {!artist.is_approved && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={handleApprove}
+              className="text-green-600 hover:text-green-700 hover:bg-green-50"
+            >
+              Approve
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => navigate(`/admin/edit/${artist.id}`)}>
-              Edit Artist
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          )}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => navigate(`/admin/edit/${artist.id}`)}>
+                Edit Artist
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="rounded-lg bg-slate-100 p-4">
           <audio controls className="w-full h-12">
-            <source src={artist.audioDemo} type="audio/mpeg" />
+            <source src={artist.audioDemo || ''} type="audio/mpeg" />
             Your browser does not support the audio element.
           </audio>
         </div>

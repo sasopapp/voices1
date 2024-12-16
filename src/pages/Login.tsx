@@ -1,20 +1,19 @@
-import { Auth } from "@supabase/auth-ui-react";
-import { ThemeSupa } from "@supabase/auth-ui-shared";
-import { supabase } from "@/integrations/supabase/client";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Auth } from "@supabase/auth-ui-react"
+import { ThemeSupa } from "@supabase/auth-ui-shared"
+import { supabase } from "@/integrations/supabase/client"
+import { useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { useSessionContext } from "@supabase/auth-helpers-react"
 
 const Login = () => {
-  const navigate = useNavigate();
+  const { session } = useSessionContext()
+  const navigate = useNavigate()
 
   useEffect(() => {
-    // Check if user is already logged in
-    supabase.auth.onAuthStateChange((event, session) => {
-      if (session) {
-        navigate("/");
-      }
-    });
-  }, [navigate]);
+    if (session) {
+      navigate("/")
+    }
+  }, [session, navigate])
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -33,7 +32,7 @@ const Login = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

@@ -70,6 +70,16 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>
 }
 
+const AuthRoute = ({ children }: { children: React.ReactNode }) => {
+  const { session } = useSessionContext()
+
+  if (session) {
+    return <Navigate to="/" replace />
+  }
+
+  return <>{children}</>
+}
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <SessionContextProvider supabaseClient={supabase}>
@@ -78,7 +88,14 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/login" element={<Login />} />
+            <Route 
+              path="/login" 
+              element={
+                <AuthRoute>
+                  <Login />
+                </AuthRoute>
+              } 
+            />
             <Route path="/" element={<Index />} />
             <Route path="/artist/:id" element={<ArtistDetail />} />
             <Route 

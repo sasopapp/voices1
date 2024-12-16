@@ -1,184 +1,170 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { languages } from "@/data/voiceover-artists";
-import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { supabase } from "@/integrations/supabase/client"
+import { AdminSidebar } from "@/components/admin/AdminSidebar"
+import { SidebarProvider } from "@/components/ui/sidebar"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useState } from "react"
+import { Language } from "@/types/voiceover"
 
-const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  avatar: z.string().url({
-    message: "Please enter a valid URL for the avatar.",
-  }),
-  languages: z.array(z.string()).min(1, {
-    message: "Please select at least one language.",
-  }),
-  audioDemo: z.string().url({
-    message: "Please enter a valid URL for the audio demo.",
-  }),
-});
-
-const AdminPage = () => {
-  const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+const AdminNewArtist = () => {
   const navigate = useNavigate();
+  const [name, setName] = useState("")
+  const [languages, setLanguages] = useState<Language[]>([])
+  const [audioDemo, setAudioDemo] = useState<File | null>(null)
+  const [avatar, setAvatar] = useState<File | null>(null)
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: "",
-      avatar: "",
-      languages: [],
-      audioDemo: "",
-    },
-  });
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
+  // Check if user is admin
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        toast.error("You must be logged in to submit an artist");
-        navigate("/login");
+        navigate('/login');
         return;
       }
 
-      const { data: artist, error } = await supabase
-        .from("artists")
-        .insert({
-          name: values.name,
-          avatar: values.avatar,
-          languages: values.languages,
-          audio_demo: values.audioDemo,
-          created_by: user.id,
-        })
-        .select()
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', user.id)
         .single();
 
-      if (error) throw error;
-
-      // Notify admin about new submission
-      const response = await supabase.functions.invoke("notify-admin", {
-        body: {
-          artistName: values.name,
-          artistId: artist.id,
-        },
-      });
-
-      if (!response.error) {
-        toast.success("Artist submitted successfully!");
-        form.reset();
-        setSelectedLanguages([]);
-      } else {
-        console.error("Failed to send admin notification");
+      if (!profile?.is_admin) {
+        navigate('/');
       }
-    } catch (error: any) {
-      toast.error(error.message);
+    };
+
+    checkAdmin();
+  }, [navigate]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    try {
+      let avatarUrl = null
+      let audioDemoUrl = null
+
+      if (avatar) {
+        const { data: avatarData, error: avatarError } = await supabase.storage
+          .from('avatars')
+          .upload(`${Date.now()}-${avatar.name}`, avatar)
+
+        if (avatarError) throw avatarError
+        avatarUrl = avatarData.path
+      }
+
+      if (audioDemo) {
+        const { data: audioData, error: audioError } = await supabase.storage
+          .from('demos')
+          .upload(`${Date.now()}-${audioDemo.name}`, audioDemo)
+
+        if (audioError) throw audioError
+        audioDemoUrl = audioData.path
+      }
+
+      const { error } = await supabase.from('artists').insert({
+        name,
+        languages,
+        audio_demo: audioDemoUrl,
+        avatar: avatarUrl,
+        is_approved: false
+      })
+
+      if (error) throw error
+
+      navigate('/admin')
+    } catch (error) {
+      console.error('Error creating artist:', error)
     }
   }
 
-  const handleLanguageSelect = (language: string) => {
-    const newLanguages = selectedLanguages.includes(language)
-      ? selectedLanguages.filter((l) => l !== language)
-      : [...selectedLanguages, language];
-    
-    setSelectedLanguages(newLanguages);
-    form.setValue("languages", newLanguages);
-  };
-
   return (
-    <div className="min-h-screen bg-background p-8">
-      <div className="mx-auto max-w-2xl">
-        <h1 className="mb-8 text-3xl font-bold">Add New Artist</h1>
-        
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Artist name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+    <SidebarProvider>
+      <div className="flex min-h-screen">
+        <AdminSidebar />
+        <main className="flex-1 p-8">
+          <h1 className="text-3xl font-bold mb-8">Add New Artist</h1>
+          <form onSubmit={handleSubmit} className="space-y-6 max-w-xl">
+            <div>
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
 
-            <FormField
-              control={form.control}
-              name="avatar"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Avatar URL</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://example.com/avatar.jpg" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="languages"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Languages</FormLabel>
-                  <div className="flex flex-wrap gap-2">
-                    {languages.map((language) => (
-                      <Button
-                        key={language}
-                        type="button"
-                        variant={selectedLanguages.includes(language) ? "default" : "outline"}
-                        onClick={() => handleLanguageSelect(language)}
-                      >
-                        {language}
-                      </Button>
-                    ))}
+            <div>
+              <Label>Languages</Label>
+              <Select
+                onValueChange={(value) => 
+                  setLanguages([...languages, value as Language])
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select language" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="English">English</SelectItem>
+                  <SelectItem value="Spanish">Spanish</SelectItem>
+                  <SelectItem value="French">French</SelectItem>
+                  <SelectItem value="German">German</SelectItem>
+                  <SelectItem value="Italian">Italian</SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {languages.map((lang) => (
+                  <div
+                    key={lang}
+                    className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm flex items-center gap-2"
+                  >
+                    {lang}
+                    <button
+                      type="button"
+                      onClick={() => 
+                        setLanguages(languages.filter((l) => l !== lang))
+                      }
+                      className="text-secondary-foreground/50 hover:text-secondary-foreground"
+                    >
+                      ×
+                    </button>
                   </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                ))}
+              </div>
+            </div>
 
-            <FormField
-              control={form.control}
-              name="audioDemo"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Audio Demo URL</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://example.com/demo.mp3" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div>
+              <Label htmlFor="audio">Audio Demo</Label>
+              <Input
+                id="audio"
+                type="file"
+                accept="audio/*"
+                onChange={(e) => setAudioDemo(e.target.files?.[0] || null)}
+                required
+              />
+            </div>
 
-            <Button type="submit" className="w-full">Add Artist</Button>
+            <div>
+              <Label htmlFor="avatar">Avatar</Label>
+              <Input
+                id="avatar"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setAvatar(e.target.files?.[0] || null)}
+                required
+              />
+            </div>
+
+            <Button type="submit">Create Artist</Button>
           </form>
-        </Form>
+        </main>
       </div>
-    </div>
-  );
-};
+    </SidebarProvider>
+  )
+}
 
-export default AdminPage;
+export default AdminNewArtist

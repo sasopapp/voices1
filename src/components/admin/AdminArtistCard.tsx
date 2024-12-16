@@ -13,7 +13,6 @@ import {
 import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"
 import { useQueryClient, useQuery } from "@tanstack/react-query"
-import { Language } from "@/types/voiceover"
 
 interface AdminArtistCardProps {
   artist: VoiceoverArtist & { is_approved?: boolean }
@@ -68,14 +67,14 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
   }
 
   // Validate languages against the database languages
-  const validateLanguages = (artistLanguages: string[]): Language[] => {
+  const validateLanguages = (artistLanguages: string[]): string[] => {
     if (!Array.isArray(artistLanguages)) {
       console.log('Languages is not an array:', artistLanguages)
       return []
     }
     
     // Filter languages that exist in our available languages
-    const validatedLanguages = artistLanguages.filter((lang): lang is Language => 
+    const validatedLanguages = artistLanguages.filter(lang => 
       availableLanguages.includes(lang)
     )
     

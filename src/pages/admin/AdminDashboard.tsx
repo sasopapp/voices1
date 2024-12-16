@@ -3,7 +3,7 @@ import { AdminArtistCard } from "@/components/admin/AdminArtistCard"
 import { AdminSidebar } from "@/components/admin/AdminSidebar"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { supabase } from "@/integrations/supabase/client"
-import { VoiceoverArtist } from "@/types/voiceover"
+import { VoiceoverArtist, Language } from "@/types/voiceover"
 
 interface DatabaseArtist {
   id: string;
@@ -40,7 +40,9 @@ const AdminDashboard = () => {
       return (data || []).map((artist: DatabaseArtist): VoiceoverArtist => ({
         id: artist.id,
         name: artist.name,
-        languages: artist.languages,
+        languages: artist.languages.filter((lang): lang is Language => 
+          ['English', 'Spanish', 'French', 'German', 'Italian'].includes(lang)
+        ),
         audioDemo: artist.audio_demo,
         avatar: artist.avatar,
         created_by: artist.created_by || undefined,

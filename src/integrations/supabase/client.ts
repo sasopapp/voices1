@@ -12,8 +12,9 @@ export const supabase = createClient<Database>(
       persistSession: true,
       autoRefreshToken: true,
       detectSessionInUrl: true,
+      storage: localStorage,
       storageKey: 'voiceover-auth-token',
-      storage: window.localStorage
+      flowType: 'pkce'
     }
   }
 );

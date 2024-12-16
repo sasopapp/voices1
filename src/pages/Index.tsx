@@ -100,16 +100,26 @@ const Index = () => {
 
   const handleLogout = async () => {
     try {
-      // First try to sign out from Supabase
-      await supabase.auth.signOut();
-      toast.success('Logged out successfully');
+      if (!session) {
+        console.log('No active session found, redirecting to login');
+        navigate('/login');
+        return;
+      }
+
+      console.log('Attempting to sign out...');
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('Error during signOut:', error);
+        // Even if there's an error, we'll clear local state
+      }
     } catch (error) {
-      console.error('Error logging out:', error);
-      // Even if there's an error, we want to clear the local state
+      console.error('Exception during logout:', error);
     } finally {
-      // Clear any local storage items related to auth
-      localStorage.removeItem('voiceover-auth-token');
-      // Force navigation to login page
+      // Always clear local storage and redirect
+      console.log('Clearing local storage and redirecting...');
+      localStorage.clear(); // Clear all storage to be safe
+      toast.success('Logged out successfully');
       navigate('/login');
     }
   };

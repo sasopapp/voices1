@@ -9,6 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"
@@ -42,6 +43,31 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
     } catch (error) {
       console.error('Error in handleApprove:', error)
       toast.error('An error occurred while approving the artist')
+    }
+  }
+
+  const handleDelete = async () => {
+    try {
+      console.log('Deleting artist:', artist.id)
+      
+      // Delete the artist from the database
+      const { error } = await supabase
+        .from('artists')
+        .delete()
+        .eq('id', artist.id)
+
+      if (error) {
+        console.error('Error deleting artist:', error)
+        toast.error('Failed to delete artist')
+        return
+      }
+
+      console.log('Artist deleted successfully')
+      toast.success('Artist deleted successfully')
+      queryClient.invalidateQueries({ queryKey: ['admin-artists'] })
+    } catch (error) {
+      console.error('Error in handleDelete:', error)
+      toast.error('An error occurred while deleting the artist')
     }
   }
 
@@ -86,6 +112,13 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => navigate(`/admin/edit/${artist.id}`)}>
                 Edit Artist
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem 
+                onClick={handleDelete}
+                className="text-red-600 focus:text-red-600 focus:bg-red-50"
+              >
+                Delete Artist
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

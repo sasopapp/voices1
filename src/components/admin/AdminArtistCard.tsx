@@ -46,6 +46,10 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
     }
   }
 
+  // Ensure languages is always an array and contains valid languages
+  const languages = Array.isArray(artist.languages) ? artist.languages : []
+  console.log('Languages for artist:', artist.name, languages)
+
   return (
     <Card className="relative overflow-hidden">
       <div className={`absolute right-2 top-2 z-10 ${!artist.is_approved ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'} rounded-full px-3 py-1 text-xs font-medium`}>
@@ -60,7 +64,7 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
           <h3 className="font-semibold text-lg">{artist.name}</h3>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <Globe className="h-4 w-4" />
-            {Array.isArray(artist.languages) ? artist.languages.join(", ") : 'No languages'}
+            {languages.length > 0 ? languages.join(", ") : "No languages specified"}
           </div>
         </div>
         <div className="flex items-center gap-2">

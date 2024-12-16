@@ -78,7 +78,7 @@ const Index = () => {
               <img 
                 src="https://authenticvoices.eu/wp-content/uploads/2023/11/AV_logo_250px-1.png" 
                 alt="Authentic Voices Logo" 
-                className="h-12"
+                className="h-24"
               />
             </div>
             <nav className="flex items-center gap-4">

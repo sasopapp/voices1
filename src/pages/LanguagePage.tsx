@@ -6,7 +6,7 @@ import { Header } from "@/components/index/Header"
 import { ArtistCard } from "@/components/ArtistCard"
 import { useSessionContext } from "@supabase/auth-helpers-react"
 import { Button } from "@/components/ui/button"
-import { UserMale, UserFemale, Users } from "lucide-react"
+import { User, UserCircle, Users } from "lucide-react"
 import { useState } from "react"
 
 const LanguagePage = () => {
@@ -99,7 +99,7 @@ const LanguagePage = () => {
             onClick={() => setSelectedGender("male")}
             className="min-w-32"
           >
-            <UserMale className="mr-2" />
+            <User className="mr-2" />
             Male Voices
           </Button>
           <Button
@@ -107,7 +107,7 @@ const LanguagePage = () => {
             onClick={() => setSelectedGender("female")}
             className="min-w-32"
           >
-            <UserFemale className="mr-2" />
+            <UserCircle className="mr-2" />
             Female Voices
           </Button>
         </div>

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query"
 import { AdminHeader } from "@/components/admin/AdminHeader"
 import { supabase } from "@/integrations/supabase/client"
 import { ArtistEditForm } from "@/components/admin/ArtistEditForm"
+import { VoiceoverArtist } from "@/types/voiceover"
 
 const AdminEditArtist = () => {
   const { id } = useParams()
@@ -22,8 +23,24 @@ const AdminEditArtist = () => {
         throw error
       }
 
-      console.log('Artist details loaded:', data)
-      return data
+      // Map database fields to frontend model
+      const mappedArtist: VoiceoverArtist = {
+        id: data.id,
+        name: data.name,
+        languages: data.languages,
+        audioDemo: data.audio_demo,
+        avatar: data.avatar,
+        created_by: data.created_by,
+        is_approved: data.is_approved,
+        created_at: data.created_at,
+        voice_gender: data.voice_gender,
+        email: data.email,
+        firstname: data.firstname,
+        lastname: data.lastname
+      }
+
+      console.log('Artist details loaded:', mappedArtist)
+      return mappedArtist
     },
   })
 

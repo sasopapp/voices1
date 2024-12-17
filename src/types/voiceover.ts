@@ -8,4 +8,7 @@ export interface VoiceoverArtist {
   is_approved?: boolean;
   created_at?: string;
   voice_gender: string | null;
+  email: string;
+  firstname: string;
+  lastname: string;
 }

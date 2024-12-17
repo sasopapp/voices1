@@ -38,7 +38,7 @@ export const LanguageManager = () => {
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     staleTime: 0,
-    cacheTime: 0
+    gcTime: 0
   });
 
   const addLanguageMutation = useMutation({

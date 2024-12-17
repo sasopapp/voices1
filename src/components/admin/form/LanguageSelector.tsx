@@ -69,7 +69,7 @@ export const LanguageSelector = ({
             <SelectValue placeholder="Select a language" />
           </SelectTrigger>
           <SelectContent 
-            className="bg-white border border-input shadow-md max-h-[300px] overflow-y-auto"
+            className="bg-white border border-input shadow-md max-h-[300px] overflow-y-auto z-50"
             position="popper"
             sideOffset={4}
           >

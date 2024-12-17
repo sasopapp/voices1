@@ -60,8 +60,8 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
 
         if (isSessionNotFound) {
           console.log('Session not found, considering as logged out')
-          // Force clear any remaining session data
-          await supabase.auth.clearSession()
+          // Instead of clearSession, we'll set the session to null
+          await supabase.auth.setSession({ access_token: '', refresh_token: '' })
           toast.success('Logged out successfully')
           navigate('/login')
           return

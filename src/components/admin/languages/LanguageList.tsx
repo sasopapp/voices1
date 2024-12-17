@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Trash2, Pencil, X, Check } from "lucide-react"
+import { Trash2, Pencil, X, Check, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
 interface Language {
@@ -80,7 +80,10 @@ export const LanguageList = ({ languages, isLoading }: LanguageListProps) => {
   }
 
   const handleUpdate = (id: string) => {
-    if (!editedName.trim()) return
+    if (!editedName.trim()) {
+      toast.error('Language name cannot be empty')
+      return
+    }
     updateLanguageMutation.mutate({ id, name: editedName.trim() })
   }
 
@@ -90,11 +93,16 @@ export const LanguageList = ({ languages, isLoading }: LanguageListProps) => {
   }
 
   if (isLoading) {
-    return <div className="text-gray-600">Loading languages...</div>
+    return (
+      <div className="flex items-center justify-center p-4">
+        <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+        <span className="ml-2 text-gray-600">Loading languages...</span>
+      </div>
+    )
   }
 
   if (!languages || languages.length === 0) {
-    return <div className="text-gray-600">No languages found.</div>
+    return <div className="text-gray-600 p-4">No languages found.</div>
   }
 
   return (
@@ -119,7 +127,11 @@ export const LanguageList = ({ languages, isLoading }: LanguageListProps) => {
                 disabled={updateLanguageMutation.isPending}
                 className="text-green-500 hover:text-green-600 hover:bg-green-50"
               >
-                <Check className="h-4 w-4" />
+                {updateLanguageMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Check className="h-4 w-4" />
+                )}
               </Button>
               <Button
                 variant="ghost"
@@ -149,7 +161,11 @@ export const LanguageList = ({ languages, isLoading }: LanguageListProps) => {
                   disabled={deleteLanguageMutation.isPending}
                   className="text-red-500 hover:text-red-600 hover:bg-red-50"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  {deleteLanguageMutation.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-4 w-4" />
+                  )}
                 </Button>
               </div>
             </>

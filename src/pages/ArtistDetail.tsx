@@ -8,67 +8,67 @@ import { ArtistProfile } from "@/components/artist-detail/ArtistProfile"
 import { DemosList } from "@/components/artist-detail/DemosList"
 
 const ArtistDetail = () => {
-  const { id } = useParams()
-  const { session } = useSessionContext()
+  const { username } = useParams();
+  const { session } = useSessionContext();
 
   // Query to check if user is admin
   const { data: profile } = useQuery({
     queryKey: ['profile', session?.user?.id],
     queryFn: async () => {
-      if (!session?.user?.id) return null
+      if (!session?.user?.id) return null;
       const { data, error } = await supabase
         .from('profiles')
         .select('is_admin')
         .eq('id', session.user.id)
-        .single()
+        .single();
 
-      if (error) throw error
-      return data
+      if (error) throw error;
+      return data;
     },
     enabled: !!session?.user?.id,
-  })
+  });
 
   const { data: artist, isLoading } = useQuery({
-    queryKey: ['artist', id],
+    queryKey: ['artist', username],
     queryFn: async () => {
-      console.log('Fetching artist details for ID:', id)
+      console.log('Fetching artist details for username:', username);
       const { data: artistData, error: artistError } = await supabase
         .from('artists')
         .select('*')
-        .eq('id', id)
-        .single()
+        .ilike('username', username || '')
+        .single();
 
       if (artistError) {
-        console.error('Error fetching artist:', artistError)
-        throw artistError
+        console.error('Error fetching artist:', artistError);
+        throw artistError;
       }
 
       const { data: demos, error: demosError } = await supabase
         .from('demos')
         .select('*')
-        .eq('artist_id', id)
-        .order('is_main', { ascending: false })
+        .eq('artist_id', artistData.id)
+        .order('is_main', { ascending: false });
 
       if (demosError) {
-        console.error('Error fetching demos:', demosError)
-        throw demosError
+        console.error('Error fetching demos:', demosError);
+        throw demosError;
       }
 
-      console.log('Artist data:', { ...artistData, demos })
+      console.log('Artist data:', { ...artistData, demos });
       
       return {
         ...artistData,
         demos
-      }
+      };
     },
-  })
+  });
 
   if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
   if (!artist) {
-    return <div className="flex items-center justify-center min-h-screen">Artist not found</div>
+    return <div className="flex items-center justify-center min-h-screen">Artist not found</div>;
   }
 
   return (
@@ -87,7 +87,7 @@ const ArtistDetail = () => {
 
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default ArtistDetail
+export default ArtistDetail;

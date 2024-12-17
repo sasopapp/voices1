@@ -6,6 +6,7 @@ import { Header } from "@/components/index/Header"
 import { ArtistList } from "@/components/index/ArtistList"
 import { useSessionContext } from "@supabase/auth-helpers-react"
 import { useParams } from "react-router-dom"
+import { Footer } from "@/components/Footer"
 
 const LanguagePage = () => {
   const { language } = useParams()
@@ -97,6 +98,7 @@ const LanguagePage = () => {
           onLanguageChange={setSelectedLanguage}
         />
       </main>
+      <Footer />
     </div>
   )
 }

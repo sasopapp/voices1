@@ -1,5 +1,6 @@
 import { AdminHeader } from "@/components/admin/AdminHeader"
 import { LanguageManager } from "@/components/admin/LanguageManager"
+import { Footer } from "@/components/Footer"
 
 const AdminLanguages = () => {
   return (
@@ -10,6 +11,7 @@ const AdminLanguages = () => {
           <LanguageManager />
         </div>
       </main>
+      <Footer />
     </div>
   )
 }

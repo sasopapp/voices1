@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Footer } from "@/components/Footer";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,6 +14,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+
+// ... keep existing code (ArtistDetail component definition and content)
 
 const ArtistDetail = () => {
   const { id } = useParams();
@@ -64,8 +67,9 @@ const ArtistDetail = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background p-8">
-      <div className="mx-auto max-w-4xl">
+    <div className="min-h-screen bg-background flex flex-col">
+      <div className="p-8 flex-1">
+        <div className="mx-auto max-w-4xl">
         <Breadcrumb className="mb-6">
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -116,7 +120,9 @@ const ArtistDetail = () => {
             ))}
           </div>
         </ScrollArea>
+        </div>
       </div>
+      <Footer />
     </div>
   );
 };

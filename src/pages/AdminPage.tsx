@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { AdminHeader } from "@/components/admin/AdminHeader"
 import { supabase } from "@/integrations/supabase/client"
 import { NewArtistForm } from "@/components/admin/NewArtistForm"
+import { Footer } from "@/components/Footer"
 
 const AdminNewArtist = () => {
   // Fetch available languages
@@ -29,6 +30,7 @@ const AdminNewArtist = () => {
       <main className="flex-1 p-8">
         <NewArtistForm availableLanguages={availableLanguages} />
       </main>
+      <Footer />
     </div>
   )
 }

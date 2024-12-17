@@ -4,6 +4,7 @@ import { AdminHeader } from "@/components/admin/AdminHeader"
 import { supabase } from "@/integrations/supabase/client"
 import { VoiceoverArtist } from "@/types/voiceover"
 import { useSessionContext } from "@supabase/auth-helpers-react"
+import { Footer } from "@/components/Footer"
 
 interface DatabaseArtist {
   id: string
@@ -89,6 +90,7 @@ const AdminDashboard = () => {
           <div className="text-center text-gray-500">No artists found</div>
         )}
       </main>
+      <Footer />
     </div>
   )
 }

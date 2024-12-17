@@ -25,7 +25,7 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
   const { data: languages } = useQuery({
     queryKey: ['languages'],
     queryFn: async () => {
-      console.log('Fetching languages for admin dropdown')
+      console.log('Fetching languages for header dropdown')
       const { data, error } = await supabase
         .from('languages')
         .select('*')
@@ -105,7 +105,7 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
   }
 
   return (
-    <header className="border-b relative">
+    <header className="border-b relative z-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 justify-between items-center">
           <div className="w-32">
@@ -134,11 +134,15 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
                       Languages
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48 bg-background">
+                  <DropdownMenuContent 
+                    align="end" 
+                    className="w-48 bg-white border rounded-md shadow-lg"
+                  >
                     {languages?.map((language) => (
                       <DropdownMenuItem
                         key={language.id}
                         onClick={() => navigate(`/language/${language.name}`)}
+                        className="cursor-pointer hover:bg-gray-100"
                       >
                         {language.name}
                       </DropdownMenuItem>

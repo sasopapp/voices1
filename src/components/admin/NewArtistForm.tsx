@@ -110,11 +110,6 @@ export const NewArtistForm = () => {
         onBioChange={setBio}
       />
 
-      <UsernameField
-        username={username}
-        onUsernameChange={setUsername}
-      />
-
       <div>
         <LanguageSelector
           languages={languages}
@@ -122,6 +117,11 @@ export const NewArtistForm = () => {
           onLanguageRemove={(lang) => setLanguages(languages.filter(l => l !== lang))}
         />
       </div>
+
+      <UsernameField
+        username={username}
+        onUsernameChange={setUsername}
+      />
 
       <DemoManager
         artistId=""

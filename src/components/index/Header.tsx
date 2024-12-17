@@ -49,26 +49,30 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
       // Extract project reference from Supabase URL
       const projectRef = SUPABASE_URL.match(/https:\/\/(.*?)\.supabase\.co/)?.[1]
       
-      // Check current session first
-      const { data: { session } } = await supabase.auth.getSession()
+      // Get current session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
       
-      if (session) {
-        // Only attempt to sign out if we have a session
-        const { error } = await supabase.auth.signOut()
-        if (error && !error.message.includes('session_not_found')) {
-          console.error('Error during logout:', error)
-          toast.error('Error logging out')
-          return
-        }
-      } else {
-        console.log('No active session found, proceeding with cleanup...')
+      if (sessionError) {
+        console.error('Error getting session:', sessionError)
       }
 
-      // Always clean up local storage
+      // Clean up local storage first
       if (projectRef) {
         localStorage.removeItem(`sb-${projectRef}-auth-token`)
       }
-      
+
+      // Attempt to sign out if we have a session
+      if (session) {
+        const { error } = await supabase.auth.signOut()
+        if (error) {
+          console.error('Error during signOut:', error)
+          // Don't throw if it's just a session_not_found error
+          if (!error.message.includes('session_not_found')) {
+            throw error
+          }
+        }
+      }
+
       console.log('Logout successful')
       toast.success('Logged out successfully')
       
@@ -79,13 +83,9 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
       
     } catch (error) {
       console.error('Error during logout:', error)
-      // Even if we catch an error, try to clean up
-      const projectRef = SUPABASE_URL.match(/https:\/\/(.*?)\.supabase\.co/)?.[1]
-      if (projectRef) {
-        localStorage.removeItem(`sb-${projectRef}-auth-token`)
-      }
-      toast.error('Error during logout, please refresh the page')
-      window.location.href = '/' // Force a full page refresh
+      toast.error('Error during logout')
+      // Force a refresh even on error to ensure clean state
+      window.location.href = '/'
     }
   }
 

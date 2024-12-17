@@ -7,6 +7,8 @@ import { toast } from "sonner";
 interface Language {
   id: string;
   name: string;
+  created_at: string;
+  created_by: string | null;
 }
 
 interface LanguageListProps {
@@ -43,6 +45,10 @@ export const LanguageList = ({ languages, isLoading }: LanguageListProps) => {
 
   if (isLoading) {
     return <div>Loading languages...</div>;
+  }
+
+  if (!languages || languages.length === 0) {
+    return <div>No languages found.</div>;
   }
 
   return (

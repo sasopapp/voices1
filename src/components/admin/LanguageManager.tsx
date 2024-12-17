@@ -28,8 +28,6 @@ export const LanguageManager = () => {
       console.log('Languages loaded:', data);
       return data as Language[];
     },
-    staleTime: 30000, // Data stays fresh for 30 seconds
-    gcTime: 3600000,  // Keep unused data in cache for 1 hour
   });
 
   if (isLoading) {

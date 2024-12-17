@@ -46,30 +46,26 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
   const handleLogout = async () => {
     console.log('Starting logout process...')
     try {
-      // Extract project reference from Supabase URL
+      // Extract project reference from Supabase URL for localStorage cleanup
       const projectRef = SUPABASE_URL.match(/https:\/\/(.*?)\.supabase\.co/)?.[1]
       
-      // Get current session
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession()
-      
-      if (sessionError) {
-        console.error('Error getting session:', sessionError)
-      }
-
-      // Clean up local storage first
+      // Clean up all auth-related items from localStorage first
       if (projectRef) {
-        localStorage.removeItem(`sb-${projectRef}-auth-token`)
+        const keysToRemove = [
+          `sb-${projectRef}-auth-token`,
+          'supabase.auth.token',
+          'supabase.auth.refreshToken'
+        ]
+        keysToRemove.forEach(key => localStorage.removeItem(key))
       }
 
-      // Attempt to sign out if we have a session
-      if (session) {
-        const { error } = await supabase.auth.signOut()
-        if (error) {
-          console.error('Error during signOut:', error)
-          // Don't throw if it's just a session_not_found error
-          if (!error.message.includes('session_not_found')) {
-            throw error
-          }
+      // Attempt to sign out regardless of session state
+      const { error } = await supabase.auth.signOut()
+      if (error) {
+        console.error('Error during signOut:', error)
+        // Don't throw if it's a session-related error
+        if (!error.message.includes('session_not_found') && !error.message.includes('JWT')) {
+          throw error
         }
       }
 

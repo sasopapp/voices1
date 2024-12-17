@@ -5,9 +5,13 @@ import { VoiceoverArtist } from "@/types/voiceover"
 import { Header } from "@/components/index/Header"
 import { ArtistList } from "@/components/index/ArtistList"
 import { useSessionContext } from "@supabase/auth-helpers-react"
+import { useParams } from "react-router-dom"
 
 const LanguagePage = () => {
-  const [selectedLanguage, setSelectedLanguage] = useState<string | "all">("all")
+  const { language } = useParams()
+  const [selectedLanguage, setSelectedLanguage] = useState<string | "all">(
+    language ? language.charAt(0).toUpperCase() + language.slice(1) : "all"
+  )
   const { session } = useSessionContext()
 
   // Query to check if user is admin
@@ -41,7 +45,7 @@ const LanguagePage = () => {
         .from('artists')
         .select('*')
         .eq('is_approved', true)
-        .filter('languages', 'cs', selectedLanguage)
+        .contains('languages', [selectedLanguage])
 
       if (error) {
         console.error('Error fetching artists:', error)
@@ -74,7 +78,6 @@ const LanguagePage = () => {
       console.log('Mapped artists:', mappedArtists)
       return mappedArtists
     },
-    enabled: selectedLanguage !== "all"
   })
 
   if (isLoading) {

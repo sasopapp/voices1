@@ -34,14 +34,17 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
   return (
     <header className="border-b">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center">
-            <Link to="/">
-              <Logo className="h-8 w-auto" />
-            </Link>
+        <div className="flex h-16 items-center relative">
+          {/* Left side */}
+          <div className="flex-1" />
+          
+          {/* Centered Logo */}
+          <div className="absolute left-1/2 transform -translate-x-1/2">
+            <Logo />
           </div>
           
-          <div className="flex items-center gap-4">
+          {/* Right side auth buttons */}
+          <div className="flex-1 flex justify-end items-center gap-4">
             {isLoggedIn ? (
               <>
                 {isAdmin && (

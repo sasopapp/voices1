@@ -12,6 +12,7 @@ export type Database = {
       artists: {
         Row: {
           avatar: string | null
+          bio: string
           created_at: string
           created_by: string | null
           email: string
@@ -26,6 +27,7 @@ export type Database = {
         }
         Insert: {
           avatar?: string | null
+          bio: string
           created_at?: string
           created_by?: string | null
           email: string
@@ -40,6 +42,7 @@ export type Database = {
         }
         Update: {
           avatar?: string | null
+          bio?: string
           created_at?: string
           created_by?: string | null
           email?: string

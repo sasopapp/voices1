@@ -21,4 +21,5 @@ export interface VoiceoverArtist {
   firstname: string;
   lastname: string;
   username: string;
+  bio: string;
 }

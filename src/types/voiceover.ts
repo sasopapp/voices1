@@ -1,8 +1,17 @@
+export interface Demo {
+  id: string;
+  artist_id: string;
+  name: string;
+  url: string;
+  is_main: boolean;
+  created_at?: string;
+}
+
 export interface VoiceoverArtist {
   id: string;
   name: string;
   languages: string[];
-  audioDemo: string | null;
+  demos?: Demo[];
   avatar: string | null;
   created_by?: string;
   is_approved?: boolean;

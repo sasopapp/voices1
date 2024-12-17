@@ -11,7 +11,6 @@ export type Database = {
     Tables: {
       artists: {
         Row: {
-          audio_demo: string | null
           avatar: string | null
           created_at: string
           created_by: string | null
@@ -26,7 +25,6 @@ export type Database = {
           voice_gender: string | null
         }
         Insert: {
-          audio_demo?: string | null
           avatar?: string | null
           created_at?: string
           created_by?: string | null
@@ -41,7 +39,6 @@ export type Database = {
           voice_gender?: string | null
         }
         Update: {
-          audio_demo?: string | null
           avatar?: string | null
           created_at?: string
           created_by?: string | null
@@ -61,6 +58,41 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      demos: {
+        Row: {
+          artist_id: string | null
+          created_at: string
+          id: string
+          is_main: boolean | null
+          name: string
+          url: string
+        }
+        Insert: {
+          artist_id?: string | null
+          created_at?: string
+          id?: string
+          is_main?: boolean | null
+          name: string
+          url: string
+        }
+        Update: {
+          artist_id?: string | null
+          created_at?: string
+          id?: string
+          is_main?: boolean | null
+          name?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "demos_artist_id_fkey"
+            columns: ["artist_id"]
+            isOneToOne: false
+            referencedRelation: "artists"
             referencedColumns: ["id"]
           },
         ]

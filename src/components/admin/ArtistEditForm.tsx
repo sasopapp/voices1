@@ -5,11 +5,12 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { useQueryClient } from "@tanstack/react-query"
-import { VoiceoverArtist } from "@/types/voiceover"
+import { VoiceoverArtist, Demo } from "@/types/voiceover"
 import { BasicInfoFields } from "./form/BasicInfoFields"
 import { LanguageSelector } from "./form/LanguageSelector"
 import { MediaUploadFields } from "./form/MediaUploadFields"
 import { UsernameField } from "./form/UsernameField"
+import { DemoUploadFields } from "./form/DemoUploadFields"
 
 interface ArtistEditFormProps {
   artist: VoiceoverArtist & { 
@@ -27,10 +28,95 @@ export const ArtistEditForm = ({ artist }: ArtistEditFormProps) => {
   const [email, setEmail] = useState(artist.email)
   const [username, setUsername] = useState(artist.username)
   const [languages, setLanguages] = useState<string[]>(artist.languages)
-  const [audioDemo, setAudioDemo] = useState<File | null>(null)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [voiceGender, setVoiceGender] = useState<string>(artist.voice_gender || '')
+  const [demos, setDemos] = useState<Demo[]>(artist.demos || [])
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleDemoAdd = async (file: File, name: string, isMain: boolean) => {
+    try {
+      console.log('Uploading new demo:', name)
+      const fileName = `${Date.now()}-${file.name}`
+      const { error: uploadError } = await supabase.storage
+        .from('demos')
+        .upload(fileName, file)
+
+      if (uploadError) {
+        console.error('Demo upload error:', uploadError)
+        throw new Error('Failed to upload demo')
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('demos')
+        .getPublicUrl(fileName)
+
+      const { data: demoData, error: insertError } = await supabase
+        .from('demos')
+        .insert({
+          artist_id: artist.id,
+          name,
+          url: publicUrl,
+          is_main: isMain
+        })
+        .select()
+        .single()
+
+      if (insertError) {
+        console.error('Error inserting demo:', insertError)
+        throw insertError
+      }
+
+      console.log('Demo added successfully:', demoData)
+      setDemos([...demos, demoData])
+      toast.success('Demo added successfully')
+    } catch (error) {
+      console.error('Error in handleDemoAdd:', error)
+      toast.error('Failed to add demo: ' + (error as Error).message)
+    }
+  }
+
+  const handleDemoRemove = async (demoId: string) => {
+    try {
+      console.log('Removing demo:', demoId)
+      const { error } = await supabase
+        .from('demos')
+        .delete()
+        .eq('id', demoId)
+
+      if (error) {
+        console.error('Error removing demo:', error)
+        throw error
+      }
+
+      setDemos(demos.filter(demo => demo.id !== demoId))
+      toast.success('Demo removed successfully')
+    } catch (error) {
+      console.error('Error in handleDemoRemove:', error)
+      toast.error('Failed to remove demo: ' + (error as Error).message)
+    }
+  }
+
+  const handleDemoNameChange = async (demoId: string, name: string) => {
+    try {
+      console.log('Updating demo name:', demoId, name)
+      const { error } = await supabase
+        .from('demos')
+        .update({ name })
+        .eq('id', demoId)
+
+      if (error) {
+        console.error('Error updating demo name:', error)
+        throw error
+      }
+
+      setDemos(demos.map(demo => 
+        demo.id === demoId ? { ...demo, name } : demo
+      ))
+    } catch (error) {
+      console.error('Error in handleDemoNameChange:', error)
+      toast.error('Failed to update demo name: ' + (error as Error).message)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -44,7 +130,6 @@ export const ArtistEditForm = ({ artist }: ArtistEditFormProps) => {
       console.log('Starting artist update process...')
 
       let avatarUrl = artist.avatar
-      let audioDemoUrl = artist.audioDemo
 
       if (avatar) {
         console.log('Uploading new avatar...')
@@ -66,26 +151,6 @@ export const ArtistEditForm = ({ artist }: ArtistEditFormProps) => {
         console.log('New avatar uploaded successfully:', avatarUrl)
       }
 
-      if (audioDemo) {
-        console.log('Uploading new audio demo...')
-        const audioFileName = `${Date.now()}-${audioDemo.name}`
-        const { error: audioError } = await supabase.storage
-          .from('demos')
-          .upload(audioFileName, audioDemo)
-
-        if (audioError) {
-          console.error('Audio demo upload error:', audioError)
-          throw new Error('Failed to upload audio demo')
-        }
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('demos')
-          .getPublicUrl(audioFileName)
-        
-        audioDemoUrl = publicUrl
-        console.log('New audio demo uploaded successfully:', audioDemoUrl)
-      }
-
       console.log('Updating artist record...')
       const { error: updateError } = await supabase
         .from('artists')
@@ -97,7 +162,6 @@ export const ArtistEditForm = ({ artist }: ArtistEditFormProps) => {
           username,
           languages,
           avatar: avatarUrl,
-          audio_demo: audioDemoUrl,
           voice_gender: voiceGender,
         })
         .eq('id', artist.id)
@@ -147,8 +211,14 @@ export const ArtistEditForm = ({ artist }: ArtistEditFormProps) => {
         />
       </div>
 
+      <DemoUploadFields
+        demos={demos}
+        onDemoAdd={handleDemoAdd}
+        onDemoRemove={handleDemoRemove}
+        onDemoNameChange={handleDemoNameChange}
+      />
+
       <MediaUploadFields
-        onAudioChange={setAudioDemo}
         onAvatarChange={setAvatar}
       />
 

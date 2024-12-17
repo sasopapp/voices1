@@ -13,6 +13,9 @@ export const ArtistCard = ({ artist }: ArtistCardProps) => {
 
   // Ensure languages is always an array
   const languages = Array.isArray(artist.languages) ? artist.languages : [];
+  
+  // Find the main demo
+  const mainDemo = artist.demos?.find(demo => demo.is_main);
 
   return (
     <Card 
@@ -39,10 +42,12 @@ export const ArtistCard = ({ artist }: ArtistCardProps) => {
         </div>
       </CardHeader>
       <CardContent>
-        <audio controls className="w-full">
-          <source src={artist.audioDemo || ''} type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </audio>
+        {mainDemo && (
+          <audio controls className="w-full">
+            <source src={mainDemo.url} type="audio/mpeg" />
+            Your browser does not support the audio element.
+          </audio>
+        )}
       </CardContent>
     </Card>
   );

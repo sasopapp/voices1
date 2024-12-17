@@ -88,7 +88,7 @@ export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) =>
   return (
     <Card 
       className={cn(
-        "p-4 bg-secondary/50 border-none shadow-none", 
+        "py-3 px-4 bg-secondary/50 border-none shadow-none", 
         className
       )}
       onClick={(e) => e.stopPropagation()}
@@ -97,13 +97,13 @@ export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) =>
         <Button
           variant="ghost"
           size="icon"
-          className="h-10 w-10 hover:bg-secondary" 
+          className="h-9 w-9 hover:bg-secondary" 
           onClick={togglePlayPause}
         >
           {isPlaying ? (
-            <Pause className="h-5 w-5" />
+            <Pause className="h-4 w-4" />
           ) : (
-            <Play className="h-5 w-5" />
+            <Play className="h-4 w-4" />
           )}
         </Button>
         <div className="flex-1">
@@ -112,7 +112,7 @@ export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) =>
             onValueChange={handleSliderChange}
             max={100}
             step={0.1}
-            className="my-2"
+            className="my-1"
             onClick={handleSliderClick}
           />
         </div>
@@ -120,13 +120,13 @@ export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) =>
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 hover:bg-secondary"
+            className="h-7 w-7 hover:bg-secondary"
             onClick={toggleMute}
           >
             {isMuted ? (
-              <VolumeX className="h-4 w-4" />
+              <VolumeX className="h-3.5 w-3.5" />
             ) : (
-              <Volume2 className="h-4 w-4" />
+              <Volume2 className="h-3.5 w-3.5" />
             )}
           </Button>
           <Slider

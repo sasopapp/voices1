@@ -82,11 +82,11 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
       </div>
       <CardHeader className="flex flex-row items-center gap-4 pb-2">
         <Avatar className="h-12 w-12">
-          <AvatarImage src={artist.avatar || ''} alt={artist.name} />
-          <AvatarFallback>{artist.name[0]}</AvatarFallback>
+          <AvatarImage src={artist.avatar || ''} alt={artist.username} />
+          <AvatarFallback>{artist.username[0]}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col flex-1">
-          <h3 className="font-semibold text-lg">{artist.name}</h3>
+          <h3 className="font-semibold text-lg">@{artist.username}</h3>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <Globe className="h-4 w-4" />

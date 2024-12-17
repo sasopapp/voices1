@@ -35,7 +35,7 @@ export function AdminHeader({ title }: { title: string }) {
   })
 
   return (
-    <header className="border-b">
+    <header className="border-b bg-white relative z-10">
       <div className="flex h-16 items-center px-6">
         <div className="flex items-center gap-4">
           <Button
@@ -54,7 +54,7 @@ export function AdminHeader({ title }: { title: string }) {
           <img 
             src="https://authenticvoices.eu/wp-content/uploads/2023/11/AV_logo_250px-1.png"
             alt="Authentic Voices Logo"
-            className="h-24 w-auto absolute top-0"
+            className="h-12 w-auto"
           />
         </div>
 

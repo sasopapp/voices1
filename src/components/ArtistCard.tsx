@@ -33,7 +33,7 @@ export const ArtistCard = ({ artist }: ArtistCardProps) => {
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <Mic2 className="h-4 w-4" />
-              {artist.voice_gender ? artist.voice_gender.charAt(0).toUpperCase() + artist.voice_gender.slice(1) : "Not specified"}
+              {artist.voice_gender ? artist.voice_gender : "Not specified"}
             </div>
           </div>
         </div>

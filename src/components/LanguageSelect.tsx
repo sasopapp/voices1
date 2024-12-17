@@ -53,7 +53,7 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
       onValueChange={onChange}
     >
       <SelectTrigger className="w-[180px] bg-white">
-        <SelectValue>
+        <SelectValue placeholder="Select language">
           {value === "all" ? "All Languages" : value}
         </SelectValue>
       </SelectTrigger>

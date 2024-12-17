@@ -2,19 +2,15 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { useSessionContext } from "@supabase/auth-helpers-react"
 import { BasicInfoFields } from "./form/BasicInfoFields"
 import { LanguageSelector } from "./form/LanguageSelector"
 import { MediaUploadFields } from "./form/MediaUploadFields"
 import { UsernameField } from "./form/UsernameField"
+import { DemoManager } from "./form/DemoManager"
 
-interface NewArtistFormProps {
-  availableLanguages: string[]
-}
-
-export const NewArtistForm = ({ availableLanguages }: NewArtistFormProps) => {
+export const NewArtistForm = () => {
   const navigate = useNavigate()
   const { session } = useSessionContext()
   const [firstname, setFirstname] = useState("")
@@ -66,7 +62,7 @@ export const NewArtistForm = ({ availableLanguages }: NewArtistFormProps) => {
       }
 
       console.log('Creating artist record...')
-      const { error: insertError } = await supabase
+      const { data: artistData, error: insertError } = await supabase
         .from('artists')
         .insert({
           firstname,
@@ -80,6 +76,8 @@ export const NewArtistForm = ({ availableLanguages }: NewArtistFormProps) => {
           voice_gender: voiceGender,
           bio,
         })
+        .select()
+        .single()
 
       if (insertError) {
         console.error('Error creating artist:', insertError)

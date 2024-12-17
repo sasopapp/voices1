@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Footer } from "@/components/Footer"
@@ -6,9 +6,11 @@ import { useSessionContext } from "@supabase/auth-helpers-react"
 import { ArtistDetailHeader } from "@/components/artist-detail/ArtistDetailHeader"
 import { ArtistProfile } from "@/components/artist-detail/ArtistProfile"
 import { DemosList } from "@/components/artist-detail/DemosList"
+import { toast } from "sonner"
 
 const ArtistDetail = () => {
-  const { id } = useParams()
+  const { username } = useParams()
+  const navigate = useNavigate()
   const { session } = useSessionContext()
 
   // Query to check if user is admin
@@ -29,24 +31,29 @@ const ArtistDetail = () => {
   })
 
   const { data: artist, isLoading } = useQuery({
-    queryKey: ['artist', id],
+    queryKey: ['artist', username],
     queryFn: async () => {
-      console.log('Fetching artist details for ID:', id)
+      console.log('Fetching artist details for username:', username)
       const { data: artistData, error: artistError } = await supabase
         .from('artists')
         .select('*')
-        .eq('id', id)
+        .ilike('username', username || '')
         .single()
 
       if (artistError) {
         console.error('Error fetching artist:', artistError)
+        if (artistError.code === 'PGRST116') {
+          toast.error('Artist not found')
+          navigate('/')
+          return null
+        }
         throw artistError
       }
 
       const { data: demos, error: demosError } = await supabase
         .from('demos')
         .select('*')
-        .eq('artist_id', id)
+        .eq('artist_id', artistData.id)
         .order('is_main', { ascending: false })
 
       if (demosError) {

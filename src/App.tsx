@@ -51,7 +51,7 @@ const App = () => {
                 } 
               />
               <Route path="/" element={<Index />} />
-              <Route path="/artist/:id" element={<ArtistDetail />} />
+              <Route path="/artist/:username" element={<ArtistDetail />} />
               <Route path="/language/:language" element={<LanguagePage />} />
               <Route 
                 path="/admin" 

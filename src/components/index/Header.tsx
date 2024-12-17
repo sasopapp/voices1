@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { Button } from "../ui/button"
 import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"
@@ -19,8 +19,10 @@ interface HeaderProps {
 
 export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
   const navigate = useNavigate()
+  const location = useLocation()
+  const isAdminRoute = location.pathname.startsWith('/admin')
 
-  // Fetch languages for the dropdown only if user is admin
+  // Fetch languages for the dropdown only if user is admin and on admin route
   const { data: languages = [] } = useQuery({
     queryKey: ['languages'],
     queryFn: async () => {
@@ -38,7 +40,7 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
       console.log('Languages loaded:', data)
       return data
     },
-    enabled: isAdmin // Only fetch if user is admin
+    enabled: isAdmin && isAdminRoute // Only fetch if user is admin and on admin route
   })
 
   const handleLogout = async () => {
@@ -77,8 +79,8 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
 
         {/* Desktop Navigation */}
         <div className="flex-1 flex justify-end items-center gap-4">
-          {/* Language Pages Dropdown - Only show for admin users */}
-          {isAdmin && (
+          {/* Language Pages Dropdown - Only show for admin users on admin routes */}
+          {isAdmin && isAdminRoute && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center gap-2">
@@ -127,8 +129,8 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              {/* Only show language options for admin users */}
-              {isAdmin && languages.map((lang) => (
+              {/* Only show language options for admin users on admin routes */}
+              {isAdmin && isAdminRoute && languages.map((lang) => (
                 <DropdownMenuItem 
                   key={lang.name}
                   onClick={() => navigate(`/language/${encodeURIComponent(lang.name.toLowerCase())}`)}

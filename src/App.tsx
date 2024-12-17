@@ -17,6 +17,7 @@ import AdminNewArtist from "./pages/AdminPage"
 import AdminEditArtist from "./pages/admin/AdminEditArtist"
 import AdminLanguages from "./pages/admin/AdminLanguages"
 import Login from "./pages/Login"
+import LanguagePage from "./pages/LanguagePage"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -51,6 +52,7 @@ const App = () => {
               />
               <Route path="/" element={<Index />} />
               <Route path="/artist/:id" element={<ArtistDetail />} />
+              <Route path="/language/:language" element={<LanguagePage />} />
               <Route 
                 path="/admin" 
                 element={

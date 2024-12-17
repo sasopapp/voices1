@@ -66,21 +66,30 @@ const ArtistDetail = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="mb-4"
-            onClick={() => navigate(-1)}
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back
-          </Button>
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold">Voice Artist Profile</h1>
+      <header className="border-b bg-white relative z-10">
+        <div className="flex h-16 items-center px-6">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => navigate(-1)}
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span className="sr-only">Go back</span>
+            </Button>
+            
+            <h1 className="text-lg font-semibold">Voice Artist Profile</h1>
           </div>
+
+          <div className="flex-1 flex justify-center">
+            <img 
+              src="https://authenticvoices.eu/wp-content/uploads/2023/11/AV_logo_250px-1.png"
+              alt="Authentic Voices Logo"
+              className="h-24 w-auto"
+            />
+          </div>
+
+          <div className="w-[68px]" /> {/* Spacer to balance the layout */}
         </div>
       </header>
 
@@ -93,7 +102,7 @@ const ArtistDetail = () => {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>{artist.name}</BreadcrumbPage>
+                <BreadcrumbPage>{artist?.name}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>

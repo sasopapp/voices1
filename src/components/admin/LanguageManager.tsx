@@ -6,6 +6,8 @@ import { LanguageList } from "./languages/LanguageList";
 interface Language {
   id: string;
   name: string;
+  created_at: string;
+  created_by: string | null;
 }
 
 export const LanguageManager = () => {

@@ -53,7 +53,7 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
         <SelectItem value="all" className="bg-white hover:bg-gray-100">
           All Languages
         </SelectItem>
-        {languages.map((language) => (
+        {languages.map((language: Language) => (
           <SelectItem 
             key={language.id} 
             value={language.name}

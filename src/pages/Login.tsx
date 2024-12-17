@@ -7,14 +7,21 @@ import { useSessionContext } from "@supabase/auth-helpers-react"
 import { Footer } from "@/components/Footer"
 
 const Login = () => {
-  const { session } = useSessionContext()
+  const { session, isLoading } = useSessionContext()
   const navigate = useNavigate()
 
   useEffect(() => {
+    console.log("Login page - Session status:", { session, isLoading })
+    
     if (session) {
+      console.log("User is authenticated, redirecting to home")
       navigate("/")
     }
   }, [session, navigate])
+
+  if (isLoading) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Slider } from "./ui/slider";
-import { Play, Pause } from "lucide-react";
+import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card } from "./ui/card";
 
@@ -13,6 +13,7 @@ interface CustomAudioPlayerProps {
 export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -46,6 +47,15 @@ export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) =>
         audioRef.current.play();
       }
       setIsPlaying(!isPlaying);
+    }
+  };
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    
+    if (audioRef.current) {
+      audioRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
     }
   };
 
@@ -92,6 +102,18 @@ export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) =>
             onClick={handleSliderClick}
           />
         </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-9 w-9 hover:bg-secondary"
+          onClick={toggleMute}
+        >
+          {isMuted ? (
+            <VolumeX className="h-4 w-4" />
+          ) : (
+            <Volume2 className="h-4 w-4" />
+          )}
+        </Button>
       </div>
     </Card>
   );

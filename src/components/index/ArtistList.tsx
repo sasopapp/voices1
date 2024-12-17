@@ -30,7 +30,7 @@ export const ArtistList = ({
       <div className="mb-12 text-center">
         <h2 className="mb-4 text-4xl font-bold text-[#1a365d]">Find Your Voice</h2>
         <p className="mb-8 text-lg text-gray-600">
-          Discover professional voiceover artists in multiple languages
+          Discover professional voiceover artists in multiple languages. Only real voices, no AI!
         </p>
         <div className="flex flex-col items-center gap-4">
           <LanguageSelect value={selectedLanguage} onChange={onLanguageChange} />

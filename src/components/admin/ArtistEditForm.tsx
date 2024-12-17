@@ -9,6 +9,7 @@ import { VoiceoverArtist } from "@/types/voiceover"
 import { BasicInfoFields } from "./form/BasicInfoFields"
 import { LanguageSelector } from "./form/LanguageSelector"
 import { MediaUploadFields } from "./form/MediaUploadFields"
+import { UsernameField } from "./form/UsernameField"
 
 interface ArtistEditFormProps {
   artist: VoiceoverArtist & { 
@@ -24,6 +25,7 @@ export const ArtistEditForm = ({ artist }: ArtistEditFormProps) => {
   const [firstname, setFirstname] = useState(artist.firstname)
   const [lastname, setLastname] = useState(artist.lastname)
   const [email, setEmail] = useState(artist.email)
+  const [username, setUsername] = useState(artist.username)
   const [languages, setLanguages] = useState<string[]>(artist.languages)
   const [audioDemo, setAudioDemo] = useState<File | null>(null)
   const [avatar, setAvatar] = useState<File | null>(null)
@@ -32,7 +34,7 @@ export const ArtistEditForm = ({ artist }: ArtistEditFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!firstname || !lastname || !email || languages.length === 0 || !voiceGender) {
+    if (!firstname || !lastname || !email || !username || languages.length === 0 || !voiceGender) {
       toast.error('Please fill in all required fields')
       return
     }
@@ -92,6 +94,7 @@ export const ArtistEditForm = ({ artist }: ArtistEditFormProps) => {
           lastname,
           name: `${firstname} ${lastname}`,
           email,
+          username,
           languages,
           avatar: avatarUrl,
           audio_demo: audioDemoUrl,
@@ -128,6 +131,11 @@ export const ArtistEditForm = ({ artist }: ArtistEditFormProps) => {
         onLastnameChange={setLastname}
         onEmailChange={setEmail}
         onVoiceGenderChange={setVoiceGender}
+      />
+
+      <UsernameField
+        username={username}
+        onUsernameChange={setUsername}
       />
 
       <div>

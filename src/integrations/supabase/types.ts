@@ -22,6 +22,7 @@ export type Database = {
           languages: string[]
           lastname: string
           name: string
+          username: string
           voice_gender: string | null
         }
         Insert: {
@@ -36,6 +37,7 @@ export type Database = {
           languages?: string[]
           lastname: string
           name: string
+          username: string
           voice_gender?: string | null
         }
         Update: {
@@ -50,6 +52,7 @@ export type Database = {
           languages?: string[]
           lastname?: string
           name?: string
+          username?: string
           voice_gender?: string | null
         }
         Relationships: [

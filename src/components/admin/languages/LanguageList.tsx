@@ -1,10 +1,10 @@
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Trash2, Pencil, X, Check, Loader2 } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import { LanguageItem } from "./LanguageItem"
+import { LanguageEditForm } from "./LanguageEditForm"
 
 interface Language {
   id: string
@@ -108,67 +108,21 @@ export const LanguageList = ({ languages, isLoading }: LanguageListProps) => {
   return (
     <div className="space-y-2">
       {languages.map((language) => (
-        <div 
-          key={language.id} 
-          className="flex items-center justify-between p-4 bg-white rounded-lg border"
-        >
+        <div key={language.id}>
           {editingId === language.id ? (
-            <div className="flex items-center gap-2 flex-1">
-              <Input
-                value={editedName}
-                onChange={(e) => setEditedName(e.target.value)}
-                className="flex-1"
-                placeholder="Enter language name"
-              />
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => handleUpdate(language.id)}
-                disabled={updateLanguageMutation.isPending}
-                className="text-green-500 hover:text-green-600 hover:bg-green-50"
-              >
-                {updateLanguageMutation.isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Check className="h-4 w-4" />
-                )}
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleCancel}
-                className="text-gray-500 hover:text-gray-600 hover:bg-gray-50"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
+            <LanguageEditForm
+              editedName={editedName}
+              onNameChange={setEditedName}
+              onUpdate={() => handleUpdate(language.id)}
+              onCancel={handleCancel}
+              updateLanguageMutation={updateLanguageMutation}
+            />
           ) : (
-            <>
-              <span className="text-gray-900">{language.name}</span>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => handleEdit(language)}
-                  className="text-blue-500 hover:text-blue-600 hover:bg-blue-50"
-                >
-                  <Pencil className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => deleteLanguageMutation.mutate(language.id)}
-                  disabled={deleteLanguageMutation.isPending}
-                  className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                >
-                  {deleteLanguageMutation.isPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Trash2 className="h-4 w-4" />
-                  )}
-                </Button>
-              </div>
-            </>
+            <LanguageItem
+              language={language}
+              onEdit={handleEdit}
+              deleteLanguageMutation={deleteLanguageMutation}
+            />
           )}
         </div>
       ))}

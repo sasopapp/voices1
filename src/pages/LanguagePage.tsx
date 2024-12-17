@@ -5,10 +5,15 @@ import { VoiceoverArtist } from "@/types/voiceover"
 import { Header } from "@/components/index/Header"
 import { ArtistCard } from "@/components/ArtistCard"
 import { useSessionContext } from "@supabase/auth-helpers-react"
+import { Button } from "@/components/ui/button"
+import { UserMale, UserFemale, Users } from "lucide-react"
+import { useState } from "react"
 
 const LanguagePage = () => {
   const { language } = useParams()
   const { session } = useSessionContext()
+  const [selectedGender, setSelectedGender] = useState<string | null>(null)
+  
   const decodedLanguage = decodeURIComponent(language || '').split('-').map(word => 
     word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
   ).join(' ')
@@ -63,6 +68,11 @@ const LanguagePage = () => {
     },
   })
 
+  const filteredArtists = artists.filter(artist => {
+    if (!selectedGender) return true;
+    return artist.voice_gender?.toLowerCase() === selectedGender.toLowerCase();
+  });
+
   if (isLoading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>
   }
@@ -74,8 +84,36 @@ const LanguagePage = () => {
         <h1 className="text-4xl font-bold mb-8 text-center text-gray-900">
           Professional {decodedLanguage} Voice Over Artists
         </h1>
+        
+        <div className="flex justify-center gap-4 mb-8">
+          <Button
+            variant={selectedGender === null ? "secondary" : "outline"}
+            onClick={() => setSelectedGender(null)}
+            className="min-w-32"
+          >
+            <Users className="mr-2" />
+            All Voices
+          </Button>
+          <Button
+            variant={selectedGender === "male" ? "secondary" : "outline"}
+            onClick={() => setSelectedGender("male")}
+            className="min-w-32"
+          >
+            <UserMale className="mr-2" />
+            Male Voices
+          </Button>
+          <Button
+            variant={selectedGender === "female" ? "secondary" : "outline"}
+            onClick={() => setSelectedGender("female")}
+            className="min-w-32"
+          >
+            <UserFemale className="mr-2" />
+            Female Voices
+          </Button>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {artists.map((artist) => (
+          {filteredArtists.map((artist) => (
             <ArtistCard key={artist.id} artist={artist} />
           ))}
         </div>

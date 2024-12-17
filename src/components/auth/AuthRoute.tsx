@@ -6,8 +6,13 @@ export const AuthRoute = ({ children }: { children: React.ReactNode }) => {
 
   console.log("AuthRoute - Session status:", { session, isLoading })
 
-  if (isLoading) {
-    return <div>Loading...</div>
+  // Only show loading state for initial session check
+  if (isLoading && !session) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">Loading...</div>
+      </div>
+    )
   }
 
   if (!session) {

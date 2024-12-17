@@ -19,8 +19,14 @@ const Login = () => {
     }
   }, [session, navigate])
 
-  if (isLoading) {
-    return <div>Loading...</div>
+  // Only show loading state for initial session check
+  if (isLoading && !session) {
+    console.log("Initial session check...")
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">Loading...</div>
+      </div>
+    )
   }
 
   return (

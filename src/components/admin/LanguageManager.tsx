@@ -15,7 +15,6 @@ export const LanguageManager = () => {
   const [newLanguage, setNewLanguage] = useState("");
   const queryClient = useQueryClient();
 
-  // Updated query configuration
   const { data: languages = [], isLoading } = useQuery({
     queryKey: ['languages'],
     queryFn: async () => {
@@ -34,9 +33,12 @@ export const LanguageManager = () => {
       console.log('Languages loaded:', data);
       return data as Language[];
     },
-    // Added these options to ensure proper data fetching
+    initialData: [],
+    enabled: true,
     refetchOnMount: true,
-    staleTime: 0
+    refetchOnWindowFocus: true,
+    staleTime: 0,
+    cacheTime: 0
   });
 
   const addLanguageMutation = useMutation({

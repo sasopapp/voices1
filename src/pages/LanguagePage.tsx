@@ -14,6 +14,30 @@ const LanguagePage = () => {
   const { session } = useSessionContext()
   const [selectedGender, setSelectedGender] = useState<string | null>(null)
   
+  // Add query to check if user is admin
+  const { data: profile } = useQuery({
+    queryKey: ['user-profile', session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user?.id) return null
+      
+      console.log('Fetching user profile for admin check...')
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single()
+      
+      if (error) {
+        console.error('Error fetching profile:', error)
+        return null
+      }
+      
+      console.log('Profile data:', data)
+      return data
+    },
+    enabled: !!session?.user?.id
+  })
+  
   const decodedLanguage = decodeURIComponent(language || '').split('-').map(word => 
     word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
   ).join(' ')
@@ -79,7 +103,10 @@ const LanguagePage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header isAdmin={false} isLoggedIn={!!session} />
+      <Header 
+        isAdmin={!!profile?.is_admin} 
+        isLoggedIn={!!session} 
+      />
       <main className="p-8">
         <h1 className="text-4xl font-bold mb-8 text-center text-gray-900">
           Professional {decodedLanguage} Voice Over Artists

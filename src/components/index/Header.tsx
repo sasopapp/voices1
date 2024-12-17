@@ -22,7 +22,6 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
   const location = useLocation()
   const isAdminRoute = location.pathname.startsWith('/admin')
 
-  // Fetch languages for the dropdown only if user is admin and on admin route
   const { data: languages = [] } = useQuery({
     queryKey: ['languages'],
     queryFn: async () => {
@@ -101,7 +100,7 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
             </DropdownMenu>
           )}
 
-          {isLoggedIn ? (
+          {isLoggedIn && (
             <>
               {isAdmin && (
                 <Button variant="ghost" asChild>
@@ -112,10 +111,6 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
                 Logout
               </Button>
             </>
-          ) : (
-            <Button variant="ghost" asChild>
-              <Link to="/login">Login</Link>
-            </Button>
           )}
         </div>
 
@@ -138,7 +133,7 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
                   {lang.name}
                 </DropdownMenuItem>
               ))}
-              {isLoggedIn ? (
+              {isLoggedIn && (
                 <>
                   {isAdmin && (
                     <DropdownMenuItem onClick={() => navigate('/admin')}>
@@ -149,10 +144,6 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
                     Logout
                   </DropdownMenuItem>
                 </>
-              ) : (
-                <DropdownMenuItem onClick={() => navigate('/login')}>
-                  Login
-                </DropdownMenuItem>
               )}
             </DropdownMenuContent>
           </DropdownMenu>

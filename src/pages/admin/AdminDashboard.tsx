@@ -34,7 +34,8 @@ const AdminDashboard = () => {
   })
 
   const filteredArtists = artists.filter((artist: VoiceoverArtist) => {
-    const matchesLanguage = selectedLanguage === "all" || artist.languages.includes(selectedLanguage)
+    const matchesLanguage = selectedLanguage === "all" || 
+      (Array.isArray(artist.languages) && artist.languages.includes(selectedLanguage))
     const matchesGender = !selectedGender || 
       (artist.voice_gender?.toLowerCase() === selectedGender.toLowerCase())
     return matchesLanguage && matchesGender

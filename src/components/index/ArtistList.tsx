@@ -4,6 +4,7 @@ import { ArtistCard } from "../ArtistCard"
 import { LanguageSelect } from "../LanguageSelect"
 import { Button } from "../ui/button"
 import { Users, User, UserCircle } from "lucide-react"
+import { useLocation } from "react-router-dom"
 
 interface ArtistListProps {
   artists: VoiceoverArtist[]
@@ -17,6 +18,8 @@ export const ArtistList = ({
   onLanguageChange 
 }: ArtistListProps) => {
   const [selectedGender, setSelectedGender] = useState<string | null>(null)
+  const location = useLocation()
+  const isLanguagePage = location.pathname.startsWith('/language/')
 
   const filteredArtists = artists.filter((artist) => {
     const matchesLanguage = selectedLanguage === "all" || artist.languages.includes(selectedLanguage)
@@ -28,12 +31,19 @@ export const ArtistList = ({
   return (
     <div className="mx-auto max-w-7xl">
       <div className="mb-[27px] text-center">
-        <h2 className="mb-[19px] text-4xl font-bold text-[#1a365d]">Let's find the best voice for your next project</h2>
+        <h2 className="mb-[19px] text-4xl font-bold text-[#1a365d]">
+          {selectedLanguage !== "all" 
+            ? `Let's find the best ${selectedLanguage} voice for your next project`
+            : "Let's find the best voice for your next project"
+          }
+        </h2>
         <p className="mb-[23px] text-lg text-gray-600">
           Discover professional voiceover artists in multiple languages. Only real voices, no AI!
         </p>
         <div className="flex flex-col items-center gap-[19px]">
-          <LanguageSelect value={selectedLanguage} onChange={onLanguageChange} />
+          {!isLanguagePage && (
+            <LanguageSelect value={selectedLanguage} onChange={onLanguageChange} />
+          )}
           
           <div className="flex justify-center gap-[19px]">
             <Button

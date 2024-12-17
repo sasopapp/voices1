@@ -102,18 +102,18 @@ const ArtistDetail = () => {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>{artist?.name}</BreadcrumbPage>
+                <BreadcrumbPage>@{artist.username}</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
 
           <div className="mb-8 flex items-center gap-6">
             <Avatar className="h-24 w-24">
-              <AvatarImage src={artist.avatar || ''} alt={artist.name} />
-              <AvatarFallback>{artist.name[0]}</AvatarFallback>
+              <AvatarImage src={artist.avatar || ''} alt={artist.username} />
+              <AvatarFallback>{artist.username[0]}</AvatarFallback>
             </Avatar>
             <div>
-              <h1 className="mb-2 text-3xl font-bold">{artist.name}</h1>
+              <h1 className="mb-2 text-3xl font-bold">@{artist.username}</h1>
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Globe className="h-4 w-4" />

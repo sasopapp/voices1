@@ -1,9 +1,16 @@
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
-import { LayoutDashboard } from "lucide-react"
+import { LayoutDashboard, Globe } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"
 import { useSessionContext } from "@supabase/auth-helpers-react"
+import { useQuery } from "@tanstack/react-query"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 interface HeaderProps {
   isAdmin: boolean
@@ -13,6 +20,27 @@ interface HeaderProps {
 export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
   const navigate = useNavigate()
   const { session } = useSessionContext()
+
+  // Fetch languages for the dropdown
+  const { data: languages } = useQuery({
+    queryKey: ['languages'],
+    queryFn: async () => {
+      console.log('Fetching languages for admin dropdown')
+      const { data, error } = await supabase
+        .from('languages')
+        .select('*')
+        .order('name')
+      
+      if (error) {
+        console.error('Error fetching languages:', error)
+        toast.error('Failed to load languages')
+        return []
+      }
+      
+      return data || []
+    },
+    enabled: isAdmin // Only fetch if user is admin
+  })
 
   const handleLogout = async () => {
     try {
@@ -94,14 +122,37 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
 
           <nav className="flex items-center gap-4">
             {isAdmin && (
-              <Button 
-                variant="ghost" 
-                onClick={() => navigate('/admin')}
-                className="flex items-center gap-2"
-              >
-                <LayoutDashboard className="h-4 w-4" />
-                Admin Dashboard
-              </Button>
+              <>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      className="flex items-center gap-2"
+                    >
+                      <Globe className="h-4 w-4" />
+                      Languages
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    {languages?.map((language) => (
+                      <DropdownMenuItem
+                        key={language.id}
+                        onClick={() => navigate(`/language/${language.name}`)}
+                      >
+                        {language.name}
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate('/admin')}
+                  className="flex items-center gap-2"
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  Admin Dashboard
+                </Button>
+              </>
             )}
             {isLoggedIn ? (
               <Button 

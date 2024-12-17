@@ -5,7 +5,14 @@ export const voiceoverArtists: VoiceoverArtist[] = [
     id: "1",
     name: "Sarah Johnson",
     languages: ["English", "French"],
-    audioDemo: "https://example.com/demo1.mp3",
+    demos: [{
+      id: "1",
+      artist_id: "1",
+      name: "Main Demo",
+      url: "https://example.com/demo1.mp3",
+      is_main: true,
+      created_at: new Date().toISOString()
+    }],
     avatar: "/placeholder.svg",
     voice_gender: "female",
     email: "sarah.johnson@example.com",
@@ -17,7 +24,14 @@ export const voiceoverArtists: VoiceoverArtist[] = [
     id: "2",
     name: "Miguel Rodriguez",
     languages: ["Spanish", "English"],
-    audioDemo: "https://example.com/demo2.mp3",
+    demos: [{
+      id: "2",
+      artist_id: "2",
+      name: "Main Demo",
+      url: "https://example.com/demo2.mp3",
+      is_main: true,
+      created_at: new Date().toISOString()
+    }],
     avatar: "/placeholder.svg",
     voice_gender: "male",
     email: "miguel.rodriguez@example.com",
@@ -29,7 +43,14 @@ export const voiceoverArtists: VoiceoverArtist[] = [
     id: "3",
     name: "Anna Schmidt",
     languages: ["German", "English"],
-    audioDemo: "https://example.com/demo3.mp3",
+    demos: [{
+      id: "3",
+      artist_id: "3",
+      name: "Main Demo",
+      url: "https://example.com/demo3.mp3",
+      is_main: true,
+      created_at: new Date().toISOString()
+    }],
     avatar: "/placeholder.svg",
     voice_gender: "female",
     email: "anna.schmidt@example.com",
@@ -41,7 +62,14 @@ export const voiceoverArtists: VoiceoverArtist[] = [
     id: "4",
     name: "Marco Rossi",
     languages: ["Italian", "English"],
-    audioDemo: "https://example.com/demo4.mp3",
+    demos: [{
+      id: "4",
+      artist_id: "4",
+      name: "Main Demo",
+      url: "https://example.com/demo4.mp3",
+      is_main: true,
+      created_at: new Date().toISOString()
+    }],
     avatar: "/placeholder.svg",
     voice_gender: "male",
     email: "marco.rossi@example.com",

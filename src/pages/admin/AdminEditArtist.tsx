@@ -14,7 +14,10 @@ const AdminEditArtist = () => {
       console.log('Fetching artist details for editing:', id)
       const { data, error } = await supabase
         .from('artists')
-        .select('*')
+        .select(`
+          *,
+          demos (*)
+        `)
         .eq('id', id)
         .single()
 
@@ -28,7 +31,7 @@ const AdminEditArtist = () => {
         id: data.id,
         name: data.name,
         languages: data.languages,
-        audioDemo: data.audio_demo,
+        demos: data.demos,
         avatar: data.avatar,
         created_by: data.created_by,
         is_approved: data.is_approved,

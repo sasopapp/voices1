@@ -75,6 +75,9 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
   // Ensure languages is always an array
   const languages = Array.isArray(artist.languages) ? artist.languages : []
 
+  // Find the main demo
+  const mainDemo = artist.demos?.find(demo => demo.is_main);
+
   return (
     <Card className="relative overflow-hidden">
       <div className={`absolute right-2 top-2 z-10 ${!artist.is_approved ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'} rounded-full px-3 py-1 text-xs font-medium`}>
@@ -90,7 +93,7 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <Globe className="h-4 w-4" />
-              {languages.length > 0 ? languages.join(", ") : "No languages specified"}
+              {artist.languages.length > 0 ? artist.languages.join(", ") : "No languages specified"}
             </div>
             {artist.voice_gender && (
               <div className="flex items-center gap-2 text-sm text-gray-500">
@@ -136,12 +139,14 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="rounded-lg bg-slate-100 p-4">
-          <audio controls className="w-full h-12">
-            <source src={artist.audioDemo || ''} type="audio/mpeg" />
-            Your browser does not support the audio element.
-          </audio>
-        </div>
+        {mainDemo && (
+          <div className="rounded-lg bg-slate-100 p-4">
+            <audio controls className="w-full h-12">
+              <source src={mainDemo.url} type="audio/mpeg" />
+              Your browser does not support the audio element.
+            </audio>
+          </div>
+        )}
       </CardContent>
     </Card>
   )

@@ -10,7 +10,7 @@ interface DatabaseArtist {
   id: string
   name: string
   languages: string[]
-  audio_demo: string | null
+  demos: any[]
   avatar: string | null
   created_by: string | null
   is_approved: boolean | null
@@ -39,7 +39,10 @@ const AdminDashboard = () => {
 
       const { data, error } = await supabase
         .from('artists')
-        .select('*')
+        .select(`
+          *,
+          demos (*)
+        `)
         .order('created_at', { ascending: false })
 
       if (error) {
@@ -53,7 +56,7 @@ const AdminDashboard = () => {
         id: artist.id,
         name: artist.name,
         languages: artist.languages,
-        audioDemo: artist.audio_demo || '',
+        demos: artist.demos,
         avatar: artist.avatar || '',
         created_by: artist.created_by,
         is_approved: artist.is_approved || false,

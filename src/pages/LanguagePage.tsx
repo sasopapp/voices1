@@ -44,7 +44,10 @@ const LanguagePage = () => {
 
       const { data, error } = await supabase
         .from('artists')
-        .select('*')
+        .select(`
+          *,
+          demos (*)
+        `)
         .eq('is_approved', true)
         .contains('languages', [selectedLanguage])
 
@@ -64,7 +67,7 @@ const LanguagePage = () => {
         id: artist.id,
         name: artist.name,
         languages: Array.isArray(artist.languages) ? artist.languages : [],
-        audioDemo: artist.audio_demo,
+        demos: artist.demos,
         avatar: artist.avatar,
         created_by: artist.created_by,
         is_approved: artist.is_approved,

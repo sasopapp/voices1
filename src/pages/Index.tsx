@@ -55,14 +55,15 @@ const Index = () => {
       console.log('Query completed successfully')
       console.log('Raw data received:', data)
       console.log('Number of approved artists found:', data?.length || 0)
-      
+
       if (!data || data.length === 0) {
         console.log('No approved artists found in database')
         return []
       }
 
-      const mappedArtists = data.map((artist): VoiceoverArtist => {
-        console.log('Mapping artist:', artist)
+      // Log each artist being mapped
+      const mappedArtists = data.map((artist, index): VoiceoverArtist => {
+        console.log(`Mapping artist ${index + 1}:`, artist)
         return {
           id: artist.id,
           name: artist.name,
@@ -75,7 +76,7 @@ const Index = () => {
         }
       })
 
-      console.log('Artists mapped successfully:', mappedArtists)
+      console.log('Final mapped artists:', mappedArtists)
       return mappedArtists
     },
   })

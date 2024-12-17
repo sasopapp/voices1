@@ -37,37 +37,45 @@ const Index = () => {
     queryKey: ['approved-artists'],
     queryFn: async () => {
       console.log('Starting approved artists fetch...')
+      console.log('Making Supabase query to fetch approved artists...')
       
       const { data, error } = await supabase
         .from('artists')
         .select('*')
         .eq('is_approved', true)
 
+      // Log the raw response
+      console.log('Raw Supabase response:', { data, error })
+
       if (error) {
         console.error('Error fetching approved artists:', error)
         throw error
       }
 
-      console.log('Query completed')
+      console.log('Query completed successfully')
+      console.log('Raw data received:', data)
       console.log('Number of approved artists found:', data?.length || 0)
       
       if (!data || data.length === 0) {
-        console.log('No approved artists found')
+        console.log('No approved artists found in database')
         return []
       }
 
-      const mappedArtists = data.map((artist): VoiceoverArtist => ({
-        id: artist.id,
-        name: artist.name,
-        languages: Array.isArray(artist.languages) ? artist.languages : [],
-        audioDemo: artist.audio_demo,
-        avatar: artist.avatar,
-        created_by: artist.created_by,
-        is_approved: artist.is_approved,
-        created_at: artist.created_at
-      }))
+      const mappedArtists = data.map((artist): VoiceoverArtist => {
+        console.log('Mapping artist:', artist)
+        return {
+          id: artist.id,
+          name: artist.name,
+          languages: Array.isArray(artist.languages) ? artist.languages : [],
+          audioDemo: artist.audio_demo,
+          avatar: artist.avatar,
+          created_by: artist.created_by,
+          is_approved: artist.is_approved,
+          created_at: artist.created_at
+        }
+      })
 
-      console.log('Artists mapped successfully')
+      console.log('Artists mapped successfully:', mappedArtists)
       return mappedArtists
     },
   })

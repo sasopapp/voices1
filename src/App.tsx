@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import Index from "./pages/Index"
 import Login from "./pages/Login"
 import AdminPage from "./pages/AdminPage"
@@ -11,30 +12,42 @@ import { AuthRoute } from "./components/auth/AuthRoute"
 import { ProtectedRoute } from "./components/auth/ProtectedRoute"
 import "./App.css"
 
+// Create a client
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      retry: 1,
+    },
+  },
+})
+
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/language/:language" element={<LanguagePage />} />
-        <Route path="/artist/:username" element={<ArtistDetail />} />
-        <Route
-          path="/admin"
-          element={
-            <AuthRoute>
-              <ProtectedRoute>
-                <AdminPage />
-              </ProtectedRoute>
-            </AuthRoute>
-          }
-        >
-          <Route index element={<AdminDashboard />} />
-          <Route path="edit/:id" element={<AdminEditArtist />} />
-          <Route path="languages" element={<AdminLanguages />} />
-        </Route>
-      </Routes>
-    </Router>
+    <QueryClientProvider client={queryClient}>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/language/:language" element={<LanguagePage />} />
+          <Route path="/artist/:username" element={<ArtistDetail />} />
+          <Route
+            path="/admin"
+            element={
+              <AuthRoute>
+                <ProtectedRoute>
+                  <AdminPage />
+                </ProtectedRoute>
+              </AuthRoute>
+            }
+          >
+            <Route index element={<AdminDashboard />} />
+            <Route path="edit/:id" element={<AdminEditArtist />} />
+            <Route path="languages" element={<AdminLanguages />} />
+          </Route>
+        </Routes>
+      </Router>
+    </QueryClientProvider>
   )
 }
 

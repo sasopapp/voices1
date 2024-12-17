@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Globe, Mic } from "lucide-react";
+import { Globe, Mic, Mic2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQuery } from "@tanstack/react-query";
@@ -35,19 +35,17 @@ const ArtistDetail = () => {
 
       console.log('Artist data:', data);
       
-      // Transform snake_case to camelCase and ensure proper typing
-      const transformedData: VoiceoverArtist = {
+      return {
         id: data.id,
         name: data.name,
-        languages: data.languages as string[], // Type assertion since we know the values match the Language enum
+        languages: data.languages as string[],
         audioDemo: data.audio_demo,
         avatar: data.avatar,
         created_by: data.created_by,
         is_approved: data.is_approved,
-        created_at: data.created_at
+        created_at: data.created_at,
+        voice_gender: data.voice_gender
       };
-
-      return transformedData;
     },
   });
 
@@ -88,9 +86,17 @@ const ArtistDetail = () => {
           </Avatar>
           <div>
             <h1 className="mb-2 text-3xl font-bold">{artist.name}</h1>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Globe className="h-4 w-4" />
-              {artist.languages.join(", ")}
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Globe className="h-4 w-4" />
+                {artist.languages.join(", ")}
+              </div>
+              {artist.voice_gender && (
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Mic2 className="h-4 w-4" />
+                  {artist.voice_gender.charAt(0).toUpperCase() + artist.voice_gender.slice(1)} Voice
+                </div>
+              )}
             </div>
           </div>
         </div>

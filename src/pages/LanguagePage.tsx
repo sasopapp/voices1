@@ -9,7 +9,9 @@ import { useSessionContext } from "@supabase/auth-helpers-react"
 const LanguagePage = () => {
   const { language } = useParams()
   const { session } = useSessionContext()
-  const decodedLanguage = decodeURIComponent(language || '')
+  const decodedLanguage = decodeURIComponent(language || '').split('-').map(word => 
+    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+  ).join(' ')
   
   const { data: artists = [], isLoading } = useQuery({
     queryKey: ['artists-by-language', decodedLanguage],
@@ -20,7 +22,6 @@ const LanguagePage = () => {
         .from('artists')
         .select('*')
         .eq('is_approved', true)
-        .contains('languages', [decodedLanguage])
       
       console.log('Raw Supabase response:', { data, error })
       
@@ -34,9 +35,18 @@ const LanguagePage = () => {
         return []
       }
       
-      console.log('Number of approved artists found:', data.length)
+      // Filter artists that have the specified language
+      const filteredArtists = data.filter(artist => 
+        Array.isArray(artist.languages) && 
+        artist.languages.some(lang => 
+          lang.toLowerCase() === decodedLanguage.toLowerCase() ||
+          lang.toLowerCase().includes(decodedLanguage.toLowerCase())
+        )
+      )
       
-      const mappedArtists = data.map((artist): VoiceoverArtist => ({
+      console.log('Number of filtered artists found:', filteredArtists.length)
+      
+      const mappedArtists = filteredArtists.map((artist): VoiceoverArtist => ({
         id: artist.id,
         name: artist.name,
         languages: Array.isArray(artist.languages) ? artist.languages : [],
@@ -48,7 +58,7 @@ const LanguagePage = () => {
         voice_gender: artist.voice_gender
       }))
       
-      console.log('Mapped approved artists:', mappedArtists)
+      console.log('Mapped filtered artists:', mappedArtists)
       return mappedArtists
     },
   })

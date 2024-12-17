@@ -16,7 +16,7 @@ interface ArtistEditFormProps {
     email: string
     firstname: string
     lastname: string
-  } | null
+  }
   availableLanguages: string[]
   onSuccess: () => void
 }

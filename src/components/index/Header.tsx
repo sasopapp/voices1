@@ -20,7 +20,7 @@ interface HeaderProps {
 export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
   const navigate = useNavigate()
 
-  // Fetch languages for the dropdown
+  // Fetch languages for the dropdown only if user is admin
   const { data: languages = [] } = useQuery({
     queryKey: ['languages'],
     queryFn: async () => {
@@ -38,6 +38,7 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
       console.log('Languages loaded:', data)
       return data
     },
+    enabled: isAdmin // Only fetch if user is admin
   })
 
   const handleLogout = async () => {
@@ -75,25 +76,27 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
 
         {/* Desktop Navigation */}
         <div className="flex-1 flex justify-end items-center gap-4">
-          {/* Language Pages Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center gap-2">
-                <Globe className="h-4 w-4" />
-                Language Pages
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              {languages.map((lang) => (
-                <DropdownMenuItem 
-                  key={lang.name}
-                  onClick={() => navigate(`/language/${encodeURIComponent(lang.name.toLowerCase())}`)}
-                >
-                  {lang.name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* Language Pages Dropdown - Only show for admin users */}
+          {isAdmin && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center gap-2">
+                  <Globe className="h-4 w-4" />
+                  Language Pages
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                {languages.map((lang) => (
+                  <DropdownMenuItem 
+                    key={lang.name}
+                    onClick={() => navigate(`/language/${encodeURIComponent(lang.name.toLowerCase())}`)}
+                  >
+                    {lang.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
           {isLoggedIn ? (
             <>
@@ -123,7 +126,8 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              {languages.map((lang) => (
+              {/* Only show language options for admin users */}
+              {isAdmin && languages.map((lang) => (
                 <DropdownMenuItem 
                   key={lang.name}
                   onClick={() => navigate(`/language/${encodeURIComponent(lang.name.toLowerCase())}`)}

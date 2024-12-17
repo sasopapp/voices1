@@ -29,9 +29,10 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
       if (error) {
         console.error('Error during logout:', error)
         
-        // If the error is due to session not found, we can safely proceed
-        if (error.message.includes('session_not_found')) {
-          console.log('Session already expired, proceeding with navigation')
+        // Handle session not found case
+        if (error.message?.toLowerCase().includes('session not found') || 
+            error.message?.toLowerCase().includes('body stream already read')) {
+          console.log('Session already expired or invalid, proceeding with navigation')
           navigate('/login')
           toast.success('Logged out successfully')
           return

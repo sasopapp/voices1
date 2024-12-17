@@ -49,7 +49,10 @@ export const ArtistCard = ({ artist }: ArtistCardProps) => {
       <CardContent>
         <p className="text-sm text-gray-600 mb-3">{truncatedBio}</p>
         {mainDemo && (
-          <audio controls className="w-full">
+          <audio 
+            controls 
+            className="w-full h-8 [&::-webkit-media-controls-panel]:bg-secondary [&::-webkit-media-controls-current-time-display]:hidden [&::-webkit-media-controls-time-remaining-display]:hidden [&::-webkit-media-controls-timeline]:mx-2 [&::-webkit-media-controls-play-button]:mx-2 [&::-webkit-media-controls-mute-button]:mx-2 [&::-webkit-media-controls-volume-slider]:hidden [&::-webkit-media-controls-download-button]:hidden [&::-webkit-media-controls-enclosure]:bg-secondary"
+          >
             <source src={mainDemo.url} type="audio/mpeg" />
             Your browser does not support the audio element.
           </audio>

@@ -18,20 +18,23 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
     try {
       console.log('Starting logout process...')
       
+      // If there's no session, just redirect to login
       if (!session) {
         console.log('No active session found, redirecting to login')
         navigate('/login')
         return
       }
 
+      // Attempt to sign out
       const { error } = await supabase.auth.signOut()
       
       if (error) {
         console.error('Error during logout:', error)
         
-        // Handle session not found case
+        // Handle all session-related error cases
         if (error.message?.toLowerCase().includes('session not found') || 
-            error.message?.toLowerCase().includes('body stream already read')) {
+            error.message?.toLowerCase().includes('body stream already read') ||
+            error.message?.toLowerCase().includes('jwt expired')) {
           console.log('Session already expired or invalid, proceeding with navigation')
           navigate('/login')
           toast.success('Logged out successfully')

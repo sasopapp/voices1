@@ -62,19 +62,19 @@ export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) =>
 
   return (
     <div 
-      className={cn("flex items-center gap-2 w-full", className)}
+      className={cn("flex items-center gap-4 w-full", className)}
       onClick={(e) => e.stopPropagation()} // Prevent event from bubbling up to parent card
     >
       <Button
         variant="ghost"
         size="icon"
-        className="h-10 w-10" // Changed from h-8 w-8 to h-10 w-10
+        className="h-12 w-12 shrink-0" 
         onClick={togglePlayPause}
       >
         {isPlaying ? (
-          <Pause className="h-5 w-5" /> // Changed from h-4 w-4 to h-5 w-5
+          <Pause className="h-6 w-6" />
         ) : (
-          <Play className="h-5 w-5" /> // Changed from h-4 w-4 to h-5 w-5
+          <Play className="h-6 w-6" />
         )}
       </Button>
       <Slider

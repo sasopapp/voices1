@@ -23,7 +23,7 @@ export const LanguageList = ({ languages, isLoading }: LanguageListProps) => {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editedName, setEditedName] = useState("")
 
-  console.log('Languages in LanguageList:', languages.map(l => l.name))
+  console.log('Languages in LanguageList:', languages.map(l => ({ id: l.id, name: l.name })))
 
   const deleteLanguageMutation = useMutation({
     mutationFn: async (id: string) => {

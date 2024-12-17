@@ -27,7 +27,7 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
       console.log('Fetching languages for select...')
       const { data, error } = await supabase
         .from('languages')
-        .select('*')
+        .select('id, name')
         .order('name')
 
       if (error) {
@@ -38,7 +38,6 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
       console.log('Languages loaded:', data)
       return data as Language[]
     },
-    initialData: [], 
     staleTime: 0,
     refetchOnMount: 'always'
   })
@@ -58,10 +57,14 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
         </SelectValue>
       </SelectTrigger>
       <SelectContent className="bg-white border border-input shadow-md">
-        <SelectItem value="all" className="bg-white hover:bg-gray-100 cursor-pointer">
+        <SelectItem 
+          key="all" 
+          value="all" 
+          className="bg-white hover:bg-gray-100 cursor-pointer"
+        >
           All Languages
         </SelectItem>
-        {languages.map((language: Language) => (
+        {languages.map((language) => (
           <SelectItem 
             key={language.id} 
             value={language.name}

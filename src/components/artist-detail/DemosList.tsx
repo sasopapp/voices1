@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Mic } from "lucide-react"
 import { Demo } from "@/types/voiceover"
+import { CustomAudioPlayer } from "@/components/CustomAudioPlayer"
 
 interface DemosListProps {
   demos: Demo[]
@@ -14,7 +15,7 @@ export const DemosList = ({ demos }: DemosListProps) => {
         {demos?.map((demo) => (
           <Card key={demo.id}>
             <CardContent className="p-4">
-              <div className="mb-2 font-semibold flex items-center gap-2">
+              <div className="mb-4 font-semibold flex items-center gap-2">
                 {demo.name}
                 {demo.is_main && (
                   <span className="text-xs bg-primary/10 text-primary rounded-full px-2 py-1">
@@ -22,13 +23,7 @@ export const DemosList = ({ demos }: DemosListProps) => {
                   </span>
                 )}
               </div>
-              <div className="flex items-center gap-2 rounded-lg bg-secondary p-4">
-                <Mic className="h-5 w-5 text-primary" />
-                <audio controls className="w-full">
-                  <source src={demo.url} type="audio/mpeg" />
-                  Your browser does not support the audio element.
-                </audio>
-              </div>
+              <CustomAudioPlayer url={demo.url} />
             </CardContent>
           </Card>
         ))}

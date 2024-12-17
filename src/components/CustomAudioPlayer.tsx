@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Slider } from "./ui/slider";
-import { Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { Play, Pause, Volume, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Card } from "./ui/card";
 
@@ -13,7 +13,6 @@ interface CustomAudioPlayerProps {
 export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [volume, setVolume] = useState(100);
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -59,25 +58,11 @@ export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) =>
     }
   };
 
-  const handleVolumeChange = (value: number[]) => {
-    if (audioRef.current) {
-      const newVolume = value[0];
-      audioRef.current.volume = newVolume / 100;
-      setVolume(newVolume);
-      setIsMuted(newVolume === 0);
-    }
-  };
-
   const toggleMute = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (audioRef.current) {
-      if (isMuted) {
-        audioRef.current.volume = volume / 100;
-        setIsMuted(false);
-      } else {
-        audioRef.current.volume = 0;
-        setIsMuted(true);
-      }
+      audioRef.current.muted = !isMuted;
+      setIsMuted(!isMuted);
     }
   };
 
@@ -116,28 +101,18 @@ export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) =>
             onClick={handleSliderClick}
           />
         </div>
-        <div className="flex items-center gap-2 min-w-[120px]">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7 hover:bg-secondary"
-            onClick={toggleMute}
-          >
-            {isMuted ? (
-              <VolumeX className="h-3.5 w-3.5" />
-            ) : (
-              <Volume2 className="h-3.5 w-3.5" />
-            )}
-          </Button>
-          <Slider
-            value={[isMuted ? 0 : volume]}
-            onValueChange={handleVolumeChange}
-            max={100}
-            step={1}
-            className="w-20"
-            onClick={handleSliderClick}
-          />
-        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-9 w-9 hover:bg-secondary"
+          onClick={toggleMute}
+        >
+          {isMuted ? (
+            <VolumeX className="h-4 w-4" />
+          ) : (
+            <Volume className="h-4 w-4" />
+          )}
+        </Button>
       </div>
     </Card>
   );

@@ -104,30 +104,32 @@ export const LanguageManager = () => {
             value={newLanguage}
             onChange={(e) => setNewLanguage(e.target.value)}
             placeholder="Add new language..."
-            className="max-w-xs"
+            className="flex-1"
           />
           <Button 
             type="submit" 
+            variant="secondary"
             disabled={addLanguageMutation.isPending || !newLanguage.trim()}
           >
             Add Language
           </Button>
         </form>
 
-        <div className="grid gap-2">
+        <div className="space-y-2">
           {languages.map((language) => (
             <div 
               key={language.id} 
-              className="flex items-center justify-between p-3 bg-white rounded-lg shadow"
+              className="flex items-center justify-between p-4 bg-white rounded-lg border"
             >
-              <span>{language.name}</span>
+              <span className="text-gray-900">{language.name}</span>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => deleteLanguageMutation.mutate(language.id)}
                 disabled={deleteLanguageMutation.isPending}
+                className="text-red-500 hover:text-red-600 hover:bg-red-50"
               >
-                <Trash2 className="h-4 w-4 text-red-500" />
+                <Trash2 className="h-4 w-4" />
               </Button>
             </div>
           ))}

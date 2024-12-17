@@ -2,7 +2,7 @@ import { Link } from "react-router-dom"
 import { Button } from "../ui/button"
 import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"
-import { Home, Globe } from "lucide-react"
+import { Globe } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import {
   DropdownMenu,
@@ -46,7 +46,6 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
       const { error } = await supabase.auth.signOut()
       if (error) {
         console.error('Error during logout:', error)
-        // If it's a session error, we can consider the user logged out anyway
         if (error.message.includes('session_not_found')) {
           toast.success('Logged out successfully')
           return
@@ -62,31 +61,20 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
   }
 
   return (
-    <header className="border-b">
+    <header className="border-b bg-white relative z-10">
       <div className="flex h-16 items-center px-6">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => navigate('/')}
-          >
-            <Home className="h-4 w-4" />
-            <span className="sr-only">Go to home page</span>
-          </Button>
-          
-          <h1 className="text-lg font-semibold">Authentic Voices</h1>
-        </div>
+        <div className="flex-1" /> {/* Left spacer */}
 
-        <div className="flex-1 flex justify-center">
+        <div className="flex justify-center">
           <img 
             src="https://authenticvoices.eu/wp-content/uploads/2023/11/AV_logo_250px-1.png"
             alt="Authentic Voices Logo"
-            className="h-24 w-auto absolute top-0"
+            className="h-12 w-auto"
           />
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="flex-1 flex justify-end items-center gap-4">
           {/* Language Pages Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

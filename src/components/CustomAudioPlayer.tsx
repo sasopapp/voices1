@@ -35,7 +35,9 @@ export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) =>
     }
   };
 
-  const togglePlayPause = () => {
+  const togglePlayPause = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event from bubbling up to parent card
+    
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
@@ -54,8 +56,15 @@ export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) =>
     }
   };
 
+  const handleSliderClick = (e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent event from bubbling up to parent card
+  };
+
   return (
-    <div className={cn("flex items-center gap-2 w-full", className)}>
+    <div 
+      className={cn("flex items-center gap-2 w-full", className)}
+      onClick={(e) => e.stopPropagation()} // Prevent event from bubbling up to parent card
+    >
       <Button
         variant="ghost"
         size="icon"
@@ -74,6 +83,7 @@ export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) =>
         max={100}
         step={0.1}
         className="flex-1"
+        onClick={handleSliderClick}
       />
     </div>
   );

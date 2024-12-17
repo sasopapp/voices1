@@ -31,6 +31,8 @@ export const LanguageManager = () => {
     },
     staleTime: 0, // This ensures the data is considered stale immediately
     refetchOnMount: 'always', // This ensures we always refetch when the component mounts
+    initialData: [], // Provide initial empty array to prevent undefined
+    refetchInterval: 1000, // Refetch every second to ensure data is fresh
   })
 
   if (error) {

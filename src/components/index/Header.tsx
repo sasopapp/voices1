@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { LayoutDashboard } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"
+import { useSessionContext } from "@supabase/auth-helpers-react"
 
 interface HeaderProps {
   isAdmin: boolean
@@ -11,18 +12,38 @@ interface HeaderProps {
 
 export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
   const navigate = useNavigate()
+  const { session } = useSessionContext()
 
   const handleLogout = async () => {
     try {
+      console.log('Starting logout process...')
+      
+      if (!session) {
+        console.log('No active session found, redirecting to login')
+        navigate('/login')
+        return
+      }
+
       const { error } = await supabase.auth.signOut()
       
       if (error) {
         console.error('Error during logout:', error)
+        
+        // If the error is due to session not found, we can safely proceed
+        if (error.message.includes('session_not_found')) {
+          console.log('Session already expired, proceeding with navigation')
+          navigate('/login')
+          toast.success('Logged out successfully')
+          return
+        }
+        
         toast.error('Error during logout')
         return
       }
 
+      console.log('Logout successful')
       toast.success('Logged out successfully')
+      navigate('/login')
     } catch (error) {
       console.error('Error during logout:', error)
       toast.error('Error during logout')

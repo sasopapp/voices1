@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { Edit } from "lucide-react"
+import { Edit, ArrowLeft } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 
 interface ArtistDetailHeaderProps {
@@ -18,6 +18,7 @@ export const ArtistDetailHeader = ({ artistId, isAdmin }: ArtistDetailHeaderProp
             variant="ghost"
             onClick={() => navigate(-1)}
           >
+            <ArrowLeft className="h-4 w-4" />
             <span className="sr-only">Go back</span>
           </Button>
           

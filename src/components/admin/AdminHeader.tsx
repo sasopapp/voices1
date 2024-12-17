@@ -54,7 +54,7 @@ export function AdminHeader({ title }: { title: string }) {
           <img 
             src="https://authenticvoices.eu/wp-content/uploads/2023/11/AV_logo_250px-1.png"
             alt="Authentic Voices Logo"
-            className="h-24 w-auto" {/* Updated from h-12 to h-24 */}
+            className="h-24 w-auto"
           />
         </div>
 

@@ -43,6 +43,8 @@ export const LanguageSelector = ({
       console.log('Languages loaded:', data)
       return data as Language[]
     },
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    cacheTime: 10 * 60 * 1000, // Keep data in cache for 10 minutes
   })
 
   if (isLoading) {
@@ -66,7 +68,7 @@ export const LanguageSelector = ({
           <SelectValue placeholder="Select a language" />
         </SelectTrigger>
         <SelectContent 
-          className="bg-white border border-input shadow-md max-h-[300px] overflow-y-auto z-50"
+          className="bg-white border border-input shadow-md max-h-[300px] overflow-y-auto"
           position="popper"
           sideOffset={4}
         >
@@ -74,7 +76,7 @@ export const LanguageSelector = ({
             <SelectItem 
               key={lang.id} 
               value={lang.name}
-              className="bg-white hover:bg-accent hover:text-accent-foreground cursor-pointer py-2 px-3"
+              className="bg-white hover:bg-gray-100 cursor-pointer py-2 px-3"
             >
               {lang.name}
             </SelectItem>

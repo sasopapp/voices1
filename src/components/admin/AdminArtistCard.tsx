@@ -7,6 +7,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { ArtistStatusBadge } from "./artist-card/ArtistStatusBadge"
 import { ArtistCardHeader } from "./artist-card/ArtistCardHeader"
 import { ArtistActions } from "./artist-card/ArtistActions"
+import { CustomAudioPlayer } from "../CustomAudioPlayer"
 
 interface AdminArtistCardProps {
   artist: VoiceoverArtist & { is_approved?: boolean }
@@ -95,12 +96,7 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
       </CardHeader>
       <CardContent>
         {mainDemo && (
-          <div className="rounded-lg bg-slate-100 p-4">
-            <audio controls className="w-full h-12">
-              <source src={mainDemo.url} type="audio/mpeg" />
-              Your browser does not support the audio element.
-            </audio>
-          </div>
+          <CustomAudioPlayer url={mainDemo.url} />
         )}
       </CardContent>
     </Card>

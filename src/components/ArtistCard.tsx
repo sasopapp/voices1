@@ -51,7 +51,7 @@ export const ArtistCard = ({ artist }: ArtistCardProps) => {
         {mainDemo && (
           <audio 
             controls 
-            className="w-full h-8 [&::-webkit-media-controls-panel]:bg-secondary [&::-webkit-media-controls-current-time-display]:hidden [&::-webkit-media-controls-time-remaining-display]:hidden [&::-webkit-media-controls-timeline]:mx-2 [&::-webkit-media-controls-play-button]:mx-2 [&::-webkit-media-controls-mute-button]:mx-2 [&::-webkit-media-controls-volume-slider]:hidden [&::-webkit-media-controls-download-button]:hidden [&::-webkit-media-controls-enclosure]:bg-secondary"
+            className="w-full h-8 [&::-webkit-media-controls-panel]:bg-secondary [&::-webkit-media-controls-current-time-display]:hidden [&::-webkit-media-controls-time-remaining-display]:hidden [&::-webkit-media-controls-timeline]:mx-2 [&::-webkit-media-controls-play-button]:mx-2 [&::-webkit-media-controls-mute-button]:mx-2 [&::-webkit-media-controls-volume-slider]:hidden [&::-webkit-media-controls-download-button]:hidden [&::-webkit-media-controls-enclosure]:bg-secondary [&::-webkit-media-controls-toggle-closed-captions-button]:hidden [&::-webkit-media-controls-playback-button]:hidden"
           >
             <source src={mainDemo.url} type="audio/mpeg" />
             Your browser does not support the audio element.

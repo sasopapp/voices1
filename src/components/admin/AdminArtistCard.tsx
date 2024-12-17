@@ -71,7 +71,7 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
   const mainDemo = artist.demos?.find(demo => demo.is_main)
 
   const handleCardClick = () => {
-    navigate(`/artist/${artist.id}`)
+    navigate(`/vo/${artist.username.toLowerCase()}`)
   }
 
   const handleDropdownClick = (e: React.MouseEvent) => {

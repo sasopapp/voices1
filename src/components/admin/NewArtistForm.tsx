@@ -111,7 +111,7 @@ export const NewArtistForm = () => {
       />
 
       <div className="space-y-2">
-        <Label>Voice Gender</Label>
+        <Label>Voice Gender <span className="text-red-500">*</span></Label>
         <RadioGroup
           value={voiceGender}
           onValueChange={setVoiceGender}
@@ -129,7 +129,7 @@ export const NewArtistForm = () => {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="bio">Bio (250 characters max)</Label>
+        <Label htmlFor="bio">Bio (250 characters max) <span className="text-red-500">*</span></Label>
         <Textarea
           id="bio"
           placeholder="Enter your bio"
@@ -148,6 +148,7 @@ export const NewArtistForm = () => {
       </div>
 
       <div>
+        <Label className="mb-2 block">Languages <span className="text-red-500">*</span></Label>
         <LanguageSelector
           languages={languages}
           onLanguageAdd={(lang) => setLanguages(prev => [...prev, lang])}

@@ -26,7 +26,7 @@ export const BasicInfoFields = ({
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="firstname">First Name</Label>
+          <Label htmlFor="firstname">First Name <span className="text-red-500">*</span></Label>
           <Input
             id="firstname"
             placeholder="First name"
@@ -35,7 +35,7 @@ export const BasicInfoFields = ({
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="lastname">Last Name</Label>
+          <Label htmlFor="lastname">Last Name <span className="text-red-500">*</span></Label>
           <Input
             id="lastname"
             placeholder="Last name"
@@ -47,7 +47,7 @@ export const BasicInfoFields = ({
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">Email <span className="text-red-500">*</span></Label>
           <Input
             id="email"
             type="email"
@@ -57,7 +57,7 @@ export const BasicInfoFields = ({
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="username">Username</Label>
+          <Label htmlFor="username">Username <span className="text-red-500">*</span></Label>
           <Input
             id="username"
             placeholder="Username"

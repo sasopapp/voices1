@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { AdminHeader } from "@/components/admin/AdminHeader"
-import { ArtistCard } from "@/components/admin/artist-card/ArtistCard"
+import { AdminArtistCard } from "@/components/admin/AdminArtistCard"
 import { VoiceoverArtist } from "@/types/voiceover"
 
 const AdminDashboard = () => {
@@ -35,7 +35,7 @@ const AdminDashboard = () => {
         <h2 className="text-2xl font-bold mb-4">Artists</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {artists.map((artist: VoiceoverArtist & { is_approved?: boolean }) => (
-            <ArtistCard key={artist.id} artist={artist} />
+            <AdminArtistCard key={artist.id} artist={artist} />
           ))}
         </div>
       </main>

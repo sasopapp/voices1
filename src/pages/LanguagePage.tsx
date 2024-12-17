@@ -71,6 +71,9 @@ const LanguagePage = () => {
     <div className="min-h-screen bg-background">
       <Header isAdmin={false} isLoggedIn={!!session} />
       <main className="p-8">
+        <h1 className="text-4xl font-bold mb-8 text-center">
+          Professional {decodedLanguage} Voice Over Artists
+        </h1>
         <ArtistList 
           artists={artists}
           selectedLanguage={decodedLanguage}

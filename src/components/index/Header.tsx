@@ -45,6 +45,9 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
   const handleLogout = async () => {
     console.log('Starting logout process...')
     try {
+      // Extract project reference from Supabase URL
+      const projectRef = supabase.supabaseUrl.match(/https:\/\/(.*?)\.supabase\.co/)?.[1]
+      
       // First, try to sign out normally
       const { error } = await supabase.auth.signOut()
       
@@ -54,7 +57,9 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
         if (error.message.includes('session_not_found')) {
           console.log('Session already expired, cleaning up...')
           // Clear any remaining session data from localStorage
-          localStorage.removeItem('sb-' + supabase.projectRef + '-auth-token')
+          if (projectRef) {
+            localStorage.removeItem('sb-' + projectRef + '-auth-token')
+          }
           toast.success('Logged out successfully')
           window.location.href = '/' // Force a full page refresh
           return
@@ -68,7 +73,10 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
     } catch (error) {
       console.error('Error during logout:', error)
       // If we catch any error, we should still try to clean up
-      localStorage.removeItem('sb-' + supabase.projectRef + '-auth-token')
+      const projectRef = supabase.supabaseUrl.match(/https:\/\/(.*?)\.supabase\.co/)?.[1]
+      if (projectRef) {
+        localStorage.removeItem('sb-' + projectRef + '-auth-token')
+      }
       toast.error('Error during logout, please refresh the page')
       window.location.href = '/' // Force a full page refresh
     }

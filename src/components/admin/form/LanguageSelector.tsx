@@ -22,7 +22,7 @@ export const LanguageSelector = ({
   onLanguageAdd,
   onLanguageRemove,
 }: LanguageSelectorProps) => {
-  const { data: availableLanguages = [] } = useQuery({
+  const { data: availableLanguages = [], isLoading } = useQuery({
     queryKey: ['languages'],
     queryFn: async () => {
       console.log('Fetching available languages...')
@@ -41,6 +41,10 @@ export const LanguageSelector = ({
     },
   })
 
+  if (isLoading) {
+    return <div>Loading languages...</div>
+  }
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -55,12 +59,16 @@ export const LanguageSelector = ({
           <SelectTrigger className="w-full bg-white border border-input">
             <SelectValue placeholder="Select a language" />
           </SelectTrigger>
-          <SelectContent className="bg-white border border-input shadow-md max-h-[300px]">
+          <SelectContent 
+            className="bg-white border border-input shadow-md max-h-[300px] overflow-y-auto"
+            position="popper"
+            sideOffset={4}
+          >
             {availableLanguages.map((lang) => (
               <SelectItem 
                 key={lang.name} 
                 value={lang.name}
-                className="bg-white hover:bg-gray-100 cursor-pointer py-2"
+                className="bg-white hover:bg-accent hover:text-accent-foreground cursor-pointer py-2 px-3"
               >
                 {lang.name}
               </SelectItem>
@@ -74,12 +82,13 @@ export const LanguageSelector = ({
           <Badge
             key={language}
             variant="secondary"
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 py-1 px-2"
           >
             {language}
             <button
               onClick={() => onLanguageRemove(language)}
-              className="ml-1 rounded-full hover:bg-secondary"
+              className="ml-1 hover:bg-secondary/80 rounded-full p-0.5"
+              type="button"
             >
               <X className="h-3 w-3" />
               <span className="sr-only">Remove {language}</span>

@@ -27,15 +27,15 @@ export const ArtistList = ({
 
   return (
     <div className="mx-auto max-w-7xl">
-      <div className="mb-12 text-center">
-        <h2 className="mb-4 text-4xl font-bold text-[#1a365d]">Let's find the best voice for your next project</h2>
-        <p className="mb-8 text-lg text-gray-600">
+      <div className="mb-[27px] text-center">
+        <h2 className="mb-[19px] text-4xl font-bold text-[#1a365d]">Let's find the best voice for your next project</h2>
+        <p className="mb-[23px] text-lg text-gray-600">
           Discover professional voiceover artists in multiple languages. Only real voices, no AI!
         </p>
-        <div className="flex flex-col items-center gap-4">
+        <div className="flex flex-col items-center gap-[19px]">
           <LanguageSelect value={selectedLanguage} onChange={onLanguageChange} />
           
-          <div className="flex justify-center gap-4">
+          <div className="flex justify-center gap-[19px]">
             <Button
               variant={selectedGender === null ? "secondary" : "outline"}
               onClick={() => setSelectedGender(null)}
@@ -65,7 +65,7 @@ export const ArtistList = ({
       </div>
       
       {filteredArtists.length > 0 ? (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-[19px] md:grid-cols-2 lg:grid-cols-3">
           {filteredArtists.map((artist) => (
             <ArtistCard key={artist.id} artist={artist} />
           ))}

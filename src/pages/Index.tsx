@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { VoiceoverArtist } from "@/types/voiceover"
 import { Header } from "@/components/index/Header"
 import { ArtistList } from "@/components/index/ArtistList"
+import { Footer } from "@/components/Footer"
 import { useSessionContext } from "@supabase/auth-helpers-react"
 
 const Index = () => {
@@ -82,18 +83,19 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="flex min-h-screen flex-col bg-background">
       <Header 
         isAdmin={!!profile?.is_admin} 
         isLoggedIn={!!session} 
       />
-      <main className="p-8">
+      <main className="flex-1 p-8">
         <ArtistList 
           artists={artists}
           selectedLanguage={selectedLanguage}
           onLanguageChange={setSelectedLanguage}
         />
       </main>
+      <Footer />
     </div>
   )
 }

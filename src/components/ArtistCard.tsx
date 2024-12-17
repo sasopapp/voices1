@@ -26,7 +26,7 @@ export const ArtistCard = ({ artist }: ArtistCardProps) => {
   return (
     <Card 
       className="overflow-hidden transition-all hover:shadow-lg cursor-pointer" 
-      onClick={() => navigate(`/artist/${artist.username.toLowerCase()}`)}
+      onClick={() => navigate(`/vo/${artist.username.toLowerCase()}`)}
     >
       <CardHeader className="flex flex-row items-center gap-4 pb-3">
         <Avatar className="h-10 w-10">

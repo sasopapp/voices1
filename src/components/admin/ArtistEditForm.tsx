@@ -22,13 +22,13 @@ interface ArtistEditFormProps {
 }
 
 export const ArtistEditForm = ({ artist, availableLanguages, onSuccess }: ArtistEditFormProps) => {
-  const [firstname, setFirstname] = useState(artist?.firstname || "")
-  const [lastname, setLastname] = useState(artist?.lastname || "")
-  const [email, setEmail] = useState(artist?.email || "")
-  const [languages, setLanguages] = useState<string[]>(artist?.languages || [])
+  const [firstname, setFirstname] = useState(artist.firstname)
+  const [lastname, setLastname] = useState(artist.lastname)
+  const [email, setEmail] = useState(artist.email)
+  const [languages, setLanguages] = useState<string[]>(artist.languages)
   const [audioDemo, setAudioDemo] = useState<File | null>(null)
   const [avatar, setAvatar] = useState<File | null>(null)
-  const [voiceGender, setVoiceGender] = useState<string>(artist?.voice_gender || "")
+  const [voiceGender, setVoiceGender] = useState<string>(artist.voice_gender || "")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -90,7 +90,7 @@ export const ArtistEditForm = ({ artist, availableLanguages, onSuccess }: Artist
       const { error: updateError } = await supabase
         .from('artists')
         .update(updates)
-        .eq('id', artist?.id)
+        .eq('id', artist.id)
 
       if (updateError) {
         console.error('Error updating artist:', updateError)

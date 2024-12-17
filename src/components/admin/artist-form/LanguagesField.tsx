@@ -52,9 +52,7 @@ export const LanguagesField = ({
             {lang}
             <button
               type="button"
-              onClick={() => 
-                setLanguages(languages.filter((l) => l !== lang))
-              }
+              onClick={() => setLanguages(languages.filter((l) => l !== lang))}
               className="text-secondary-foreground/50 hover:text-secondary-foreground"
             >
               ×

@@ -115,6 +115,25 @@ export const NewArtistForm = () => {
         onUsernameChange={setUsername}
       />
 
+      <div className="space-y-2">
+        <Label htmlFor="bio">Bio (250 characters max)</Label>
+        <Textarea
+          id="bio"
+          placeholder="Enter your bio"
+          value={bio}
+          onChange={(e) => {
+            if (e.target.value.length <= 250) {
+              onBioChange(e.target.value)
+            }
+          }}
+          maxLength={250}
+          className="resize-none"
+        />
+        <div className="text-sm text-muted-foreground text-right">
+          {bio.length}/250
+        </div>
+      </div>
+
       <div>
         <LanguageSelector
           languages={languages}

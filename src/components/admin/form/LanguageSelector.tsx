@@ -52,12 +52,16 @@ export const LanguageSelector = ({
             }
           }}
         >
-          <SelectTrigger>
+          <SelectTrigger className="w-full bg-white border border-input">
             <SelectValue placeholder="Select a language" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white border border-input shadow-md max-h-[300px]">
             {availableLanguages.map((lang) => (
-              <SelectItem key={lang.name} value={lang.name}>
+              <SelectItem 
+                key={lang.name} 
+                value={lang.name}
+                className="bg-white hover:bg-gray-100 cursor-pointer py-2"
+              >
                 {lang.name}
               </SelectItem>
             ))}

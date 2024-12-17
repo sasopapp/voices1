@@ -10,7 +10,6 @@ import { useSessionContext } from "@supabase/auth-helpers-react"
 import { BasicInfoFields } from "./form/BasicInfoFields"
 import { LanguageSelector } from "./form/LanguageSelector"
 import { MediaUploadFields } from "./form/MediaUploadFields"
-import { UsernameField } from "./form/UsernameField"
 import { DemoManager } from "./form/DemoManager"
 
 export const NewArtistForm = () => {
@@ -104,13 +103,10 @@ export const NewArtistForm = () => {
         firstname={firstname}
         lastname={lastname}
         email={email}
+        username={username}
         onFirstnameChange={setFirstname}
         onLastnameChange={setLastname}
         onEmailChange={setEmail}
-      />
-
-      <UsernameField
-        username={username}
         onUsernameChange={setUsername}
       />
 

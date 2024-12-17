@@ -5,18 +5,22 @@ interface BasicInfoFieldsProps {
   firstname: string
   lastname: string
   email: string
+  username: string
   onFirstnameChange: (value: string) => void
   onLastnameChange: (value: string) => void
   onEmailChange: (value: string) => void
+  onUsernameChange: (value: string) => void
 }
 
 export const BasicInfoFields = ({
   firstname,
   lastname,
   email,
+  username,
   onFirstnameChange,
   onLastnameChange,
   onEmailChange,
+  onUsernameChange,
 }: BasicInfoFieldsProps) => {
   return (
     <div className="space-y-4">
@@ -41,15 +45,27 @@ export const BasicInfoFields = ({
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          placeholder="Email address"
-          value={email}
-          onChange={(e) => onEmailChange(e.target.value)}
-        />
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="Email address"
+            value={email}
+            onChange={(e) => onEmailChange(e.target.value)}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="username">Username</Label>
+          <Input
+            id="username"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => onUsernameChange(e.target.value)}
+            required
+          />
+        </div>
       </div>
     </div>
   )

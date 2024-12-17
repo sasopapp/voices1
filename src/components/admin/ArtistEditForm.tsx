@@ -8,7 +8,6 @@ import { VoiceoverArtist } from "@/types/voiceover"
 import { BasicInfoFields } from "./form/BasicInfoFields"
 import { LanguageSelector } from "./form/LanguageSelector"
 import { MediaUploadFields } from "./form/MediaUploadFields"
-import { UsernameField } from "./form/UsernameField"
 import { DemoManager } from "./form/DemoManager"
 
 interface ArtistEditFormProps {
@@ -105,17 +104,10 @@ export const ArtistEditForm = ({ artist }: ArtistEditFormProps) => {
         firstname={firstname}
         lastname={lastname}
         email={email}
-        voiceGender={voiceGender}
-        bio={bio}
+        username={username}
         onFirstnameChange={setFirstname}
         onLastnameChange={setLastname}
         onEmailChange={setEmail}
-        onVoiceGenderChange={setVoiceGender}
-        onBioChange={setBio}
-      />
-
-      <UsernameField
-        username={username}
         onUsernameChange={setUsername}
       />
 

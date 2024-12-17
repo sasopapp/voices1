@@ -27,7 +27,7 @@ export const LanguageSelector = ({
   onLanguageRemove,
 }: LanguageSelectorProps) => {
   const { data: availableLanguages = [], isLoading } = useQuery({
-    queryKey: ['languages'],
+    queryKey: ['available-languages'],
     queryFn: async () => {
       console.log('Fetching available languages...')
       const { data, error } = await supabase
@@ -42,10 +42,7 @@ export const LanguageSelector = ({
 
       console.log('Languages loaded:', data)
       return data as Language[]
-    },
-    initialData: [],
-    staleTime: 0,
-    refetchOnMount: 'always'
+    }
   })
 
   if (isLoading) {

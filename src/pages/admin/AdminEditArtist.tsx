@@ -9,7 +9,7 @@ const AdminEditArtist = () => {
   const { id } = useParams()
 
   // Fetch available languages
-  const { data: availableLanguages = [] } = useQuery({
+  const { data: availableLanguages = [], isLoading: isLoadingLanguages } = useQuery({
     queryKey: ['languages'],
     queryFn: async () => {
       console.log('Fetching available languages...')
@@ -51,12 +51,23 @@ const AdminEditArtist = () => {
     },
   })
 
-  if (isLoadingArtist) {
+  if (isLoadingArtist || isLoadingLanguages) {
     return (
       <div className="flex min-h-screen flex-col">
         <AdminHeader title="Edit Artist" />
         <main className="flex-1 p-8">
           <div>Loading...</div>
+        </main>
+      </div>
+    )
+  }
+
+  if (!artist) {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <AdminHeader title="Edit Artist" />
+        <main className="flex-1 p-8">
+          <div>Artist not found</div>
         </main>
       </div>
     )
@@ -69,7 +80,7 @@ const AdminEditArtist = () => {
         <div className="max-w-xl mx-auto">
           <ArtistEditForm
             artist={artist}
-            availableLanguages={availableLanguages}
+            availableLanguages={availableLanguages || []}
             onSuccess={() => navigate('/admin')}
           />
         </div>

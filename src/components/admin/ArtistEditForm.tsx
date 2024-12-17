@@ -2,6 +2,9 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { toast } from "sonner"
 import { useQueryClient } from "@tanstack/react-query"
 import { VoiceoverArtist } from "@/types/voiceover"
@@ -110,6 +113,43 @@ export const ArtistEditForm = ({ artist }: ArtistEditFormProps) => {
         onEmailChange={setEmail}
         onUsernameChange={setUsername}
       />
+
+      <div className="space-y-2">
+        <Label>Voice Gender</Label>
+        <RadioGroup
+          value={voiceGender}
+          onValueChange={setVoiceGender}
+          className="flex flex-col space-y-1"
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="male" id="male" />
+            <Label htmlFor="male">Male</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="female" id="female" />
+            <Label htmlFor="female">Female</Label>
+          </div>
+        </RadioGroup>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="bio">Bio (250 characters max)</Label>
+        <Textarea
+          id="bio"
+          placeholder="Enter artist bio"
+          value={bio}
+          onChange={(e) => {
+            if (e.target.value.length <= 250) {
+              setBio(e.target.value)
+            }
+          }}
+          maxLength={250}
+          className="resize-none"
+        />
+        <div className="text-sm text-muted-foreground text-right">
+          {bio.length}/250
+        </div>
+      </div>
 
       <div>
         <LanguageSelector

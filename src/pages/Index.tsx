@@ -32,32 +32,31 @@ const Index = () => {
     enabled: !!session?.user?.id,
   })
 
-  // Fetch only approved artists
+  // Fetch all artists without approval filter
   const { data: artists = [], isLoading: artistsLoading } = useQuery({
-    queryKey: ['approved-artists'],
+    queryKey: ['all-artists'],
     queryFn: async () => {
-      console.log('Starting approved artists fetch...')
-      console.log('Making Supabase query to fetch approved artists...')
+      console.log('Starting artists fetch...')
+      console.log('Making Supabase query to fetch all artists...')
       
       const { data, error } = await supabase
         .from('artists')
         .select('*')
-        .eq('is_approved', true)
 
       // Log the raw response
       console.log('Raw Supabase response:', { data, error })
 
       if (error) {
-        console.error('Error fetching approved artists:', error)
+        console.error('Error fetching artists:', error)
         throw error
       }
 
       console.log('Query completed successfully')
       console.log('Raw data received:', data)
-      console.log('Number of approved artists found:', data?.length || 0)
+      console.log('Number of artists found:', data?.length || 0)
 
       if (!data || data.length === 0) {
-        console.log('No approved artists found in database')
+        console.log('No artists found in database')
         return []
       }
 

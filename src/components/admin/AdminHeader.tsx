@@ -14,7 +14,7 @@ export function AdminHeader({ title }: { title: string }) {
   const navigate = useNavigate()
   const location = useLocation()
 
-  // Fetch languages for the dropdown
+  // Only fetch languages for the dropdown
   const { data: languages = [] } = useQuery({
     queryKey: ['languages'],
     queryFn: async () => {

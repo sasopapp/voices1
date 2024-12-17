@@ -47,19 +47,31 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
     try {
       const { error } = await supabase.auth.signOut()
       
-      // If there's an error but it's because the session is not found,
-      // we consider this as a successful logout since the user is effectively logged out
       if (error) {
         console.log('Logout error:', error)
-        if (error.message.includes('session_not_found')) {
+        
+        // Check if the error is due to session not found
+        const isSessionNotFound = 
+          error.message?.includes('session_not_found') || 
+          (typeof error === 'object' && 
+           'body' in error && 
+           typeof error.body === 'string' && 
+           error.body.includes('session_not_found'))
+
+        if (isSessionNotFound) {
           console.log('Session not found, considering as logged out')
+          // Force clear any remaining session data
+          await supabase.auth.clearSession()
           toast.success('Logged out successfully')
           navigate('/login')
           return
         }
+
         // For other types of errors, show an error message
+        console.error('Unexpected logout error:', error)
         toast.error('Error logging out')
       } else {
+        console.log('Logout successful')
         toast.success('Logged out successfully')
         navigate('/login')
       }

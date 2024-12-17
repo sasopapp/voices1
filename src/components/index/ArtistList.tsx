@@ -30,11 +30,19 @@ export const ArtistList = ({
         </div>
       </div>
       
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {filteredArtists.map((artist) => (
-          <ArtistCard key={artist.id} artist={artist} />
-        ))}
-      </div>
+      {filteredArtists.length > 0 ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {filteredArtists.map((artist) => (
+            <ArtistCard key={artist.id} artist={artist} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-12">
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Sorry, no voices available at the moment. Please contact us and we will help you find a voice for your project.
+          </p>
+        </div>
+      )}
     </div>
   )
 }

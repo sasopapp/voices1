@@ -48,10 +48,8 @@ const AdminDashboard = () => {
     <div className="flex min-h-screen flex-col">
       <AdminHeader title="Admin Dashboard" />
       <main className="flex-1 p-8">
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-6">Artists</h2>
-          
-          <div className="flex flex-col items-center gap-4 mb-6">
+        <div className="mb-8">          
+          <div className="flex flex-col items-center gap-4">
             <LanguageSelect value={selectedLanguage} onChange={setSelectedLanguage} />
             
             <div className="flex justify-center gap-4">

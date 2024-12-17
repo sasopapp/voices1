@@ -88,7 +88,7 @@ export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) =>
   return (
     <Card 
       className={cn(
-        "py-3 px-4 bg-secondary/50 border-none shadow-none", 
+        "py-2 px-3 bg-secondary/50 border-none shadow-none", 
         className
       )}
       onClick={(e) => e.stopPropagation()}

@@ -7,10 +7,32 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useQuery } from "@tanstack/react-query"
+import { supabase } from "@/integrations/supabase/client"
 
 export function AdminHeader({ title }: { title: string }) {
   const navigate = useNavigate()
   const location = useLocation()
+
+  // Fetch languages for the dropdown
+  const { data: languages = [] } = useQuery({
+    queryKey: ['languages'],
+    queryFn: async () => {
+      console.log('Fetching languages for header dropdown...')
+      const { data, error } = await supabase
+        .from('languages')
+        .select('name')
+        .order('name')
+
+      if (error) {
+        console.error('Error fetching languages:', error)
+        throw error
+      }
+
+      console.log('Languages loaded:', data)
+      return data
+    },
+  })
 
   return (
     <header className="border-b">
@@ -32,7 +54,7 @@ export function AdminHeader({ title }: { title: string }) {
           <img 
             src="https://authenticvoices.eu/wp-content/uploads/2023/11/AV_logo_250px-1.png"
             alt="Authentic Voices Logo"
-            className="h-16 w-auto absolute top-0"
+            className="h-24 w-auto absolute top-0"
           />
         </div>
 
@@ -54,6 +76,27 @@ export function AdminHeader({ title }: { title: string }) {
             <Globe className="h-4 w-4" />
             Languages
           </Button>
+
+          {/* Language Pages Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="flex items-center gap-2">
+                <Globe className="h-4 w-4" />
+                Language Pages
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              {languages.map((lang) => (
+                <DropdownMenuItem 
+                  key={lang.name}
+                  onClick={() => navigate(`/language/${encodeURIComponent(lang.name.toLowerCase())}`)}
+                >
+                  {lang.name}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <Button
             onClick={() => navigate('/admin/new')}
             className="flex items-center gap-2"
@@ -81,6 +124,14 @@ export function AdminHeader({ title }: { title: string }) {
                 <Globe className="mr-2 h-4 w-4" />
                 <span>Languages</span>
               </DropdownMenuItem>
+              {languages.map((lang) => (
+                <DropdownMenuItem 
+                  key={lang.name}
+                  onClick={() => navigate(`/language/${encodeURIComponent(lang.name.toLowerCase())}`)}
+                >
+                  {lang.name}
+                </DropdownMenuItem>
+              ))}
               <DropdownMenuItem onClick={() => navigate('/admin/new')}>
                 <Plus className="mr-2 h-4 w-4" />
                 <span>Add New Artist</span>

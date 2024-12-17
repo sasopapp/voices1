@@ -22,8 +22,9 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
       const { data: { session: currentSession } } = await supabase.auth.getSession()
       
       if (!currentSession) {
-        console.log('No active session found, redirecting to login')
-        navigate('/login')
+        console.log('No active session found, redirecting to index')
+        navigate('/')
+        window.location.reload()
         toast.success('Logged out successfully')
         return
       }
@@ -37,7 +38,8 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
         // If session not found, consider it a successful logout
         if (error.message?.toLowerCase().includes('session not found')) {
           console.log('Session not found, considering as logged out')
-          navigate('/login')
+          navigate('/')
+          window.location.reload()
           toast.success('Logged out successfully')
           return
         }
@@ -45,7 +47,8 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
         // For other errors, try one more time to sign out
         try {
           await supabase.auth.signOut()
-          navigate('/login')
+          navigate('/')
+          window.location.reload()
           toast.success('Logged out successfully')
         } catch (retryError) {
           console.error('Error during logout retry:', retryError)
@@ -56,7 +59,8 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
 
       console.log('Logout successful')
       toast.success('Logged out successfully')
-      navigate('/login')
+      navigate('/')
+      window.location.reload()
     } catch (error) {
       console.error('Unexpected error during logout:', error)
       // Try to sign out one last time in case of unexpected errors
@@ -66,7 +70,8 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
         console.error('Final logout attempt failed:', finalError)
       }
       toast.error('Error during logout')
-      navigate('/login')
+      navigate('/')
+      window.location.reload()
     }
   }
 

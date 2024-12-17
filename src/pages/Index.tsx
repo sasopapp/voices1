@@ -18,6 +18,7 @@ const Index = () => {
       const { data, error } = await supabase
         .from('artists')
         .select('*')
+        .eq('is_approved', true) // Only fetch approved artists
       
       console.log('Raw Supabase response:', { data, error })
       
@@ -31,7 +32,7 @@ const Index = () => {
         return []
       }
       
-      console.log('Number of artists found:', data.length)
+      console.log('Number of approved artists found:', data.length)
       
       const mappedArtists = data.map((artist): VoiceoverArtist => ({
         id: artist.id,
@@ -44,7 +45,7 @@ const Index = () => {
         created_at: artist.created_at
       }))
       
-      console.log('Mapped artists:', mappedArtists)
+      console.log('Mapped approved artists:', mappedArtists)
       return mappedArtists
     },
   })

@@ -1,11 +1,13 @@
 import { useParams } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Globe, Mic, Mic2 } from "lucide-react";
+import { Globe, Mic, Mic2, ArrowLeft } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Footer } from "@/components/Footer";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -17,6 +19,7 @@ import {
 
 const ArtistDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const { data: artist, isLoading } = useQuery({
     queryKey: ['artist', id],
@@ -63,6 +66,24 @@ const ArtistDetail = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {/* Header */}
+      <header className="border-b">
+        <div className="container mx-auto px-4 py-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="mb-4"
+            onClick={() => navigate(-1)}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back
+          </Button>
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold">Voice Artist Profile</h1>
+          </div>
+        </div>
+      </header>
+
       <div className="p-8 flex-1">
         <div className="mx-auto max-w-4xl">
           <Breadcrumb className="mb-6">

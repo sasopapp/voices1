@@ -87,7 +87,7 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
                       className="flex items-center gap-2"
                     >
                       <Globe className="h-4 w-4" />
-                      Languages
+                      Language Pages
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent 

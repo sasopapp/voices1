@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { VoiceoverArtist } from "@/types/voiceover"
 import { ArtistCard } from "../ArtistCard"
 import { LanguageSelect } from "../LanguageSelect"
@@ -15,7 +16,7 @@ export const ArtistList = ({
   selectedLanguage, 
   onLanguageChange 
 }: ArtistListProps) => {
-  const [selectedGender, setSelectedGender] = React.useState<string | null>(null)
+  const [selectedGender, setSelectedGender] = useState<string | null>(null)
 
   const filteredArtists = artists.filter((artist) => {
     const matchesLanguage = selectedLanguage === "all" || artist.languages.includes(selectedLanguage)

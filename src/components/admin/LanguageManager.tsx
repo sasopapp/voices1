@@ -30,9 +30,7 @@ export const LanguageManager = () => {
     },
   });
 
-  if (isLoading) {
-    console.log('Loading languages...');
-  }
+  console.log('Current languages in LanguageManager:', languages);
 
   return (
     <div className="space-y-6">

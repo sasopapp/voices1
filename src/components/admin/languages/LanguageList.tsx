@@ -19,6 +19,8 @@ interface LanguageListProps {
 export const LanguageList = ({ languages, isLoading }: LanguageListProps) => {
   const queryClient = useQueryClient();
 
+  console.log('Languages in LanguageList:', languages);
+
   const deleteLanguageMutation = useMutation({
     mutationFn: async (id: string) => {
       console.log('Deleting language:', id);
@@ -44,11 +46,11 @@ export const LanguageList = ({ languages, isLoading }: LanguageListProps) => {
   });
 
   if (isLoading) {
-    return <div>Loading languages...</div>;
+    return <div className="text-gray-600">Loading languages...</div>;
   }
 
   if (!languages || languages.length === 0) {
-    return <div>No languages found.</div>;
+    return <div className="text-gray-600">No languages found.</div>;
   }
 
   return (

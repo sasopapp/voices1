@@ -47,6 +47,7 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
       const { error } = await supabase.auth.signOut()
       if (error) {
         console.error('Error during logout:', error)
+        // If the error is session_not_found, the user is already logged out
         if (error.message.includes('session_not_found')) {
           toast.success('Logged out successfully')
           return

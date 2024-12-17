@@ -84,7 +84,10 @@ const LanguagePage = () => {
         created_by: artist.created_by,
         is_approved: artist.is_approved,
         created_at: artist.created_at,
-        voice_gender: artist.voice_gender
+        voice_gender: artist.voice_gender,
+        email: artist.email,
+        firstname: artist.firstname,
+        lastname: artist.lastname
       }))
       
       console.log('Mapped filtered artists:', mappedArtists)

@@ -15,6 +15,9 @@ interface DatabaseArtist {
   is_approved: boolean | null
   created_at: string
   voice_gender: string | null
+  email: string
+  firstname: string
+  lastname: string
 }
 
 const AdminDashboard = () => {
@@ -53,7 +56,10 @@ const AdminDashboard = () => {
         created_by: artist.created_by,
         is_approved: artist.is_approved || false,
         created_at: artist.created_at,
-        voice_gender: artist.voice_gender
+        voice_gender: artist.voice_gender,
+        email: artist.email,
+        firstname: artist.firstname,
+        lastname: artist.lastname
       }))
     },
     enabled: !!session

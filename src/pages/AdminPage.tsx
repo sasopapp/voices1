@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { toast } from "sonner"
 import { useQuery } from "@tanstack/react-query"
+import { useSessionContext } from "@supabase/auth-helpers-react"
 
 const AdminNewArtist = () => {
   const navigate = useNavigate()
@@ -16,6 +17,7 @@ const AdminNewArtist = () => {
   const [audioDemo, setAudioDemo] = useState<File | null>(null)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const { session } = useSessionContext()
 
   // Fetch available languages
   const { data: availableLanguages = [] } = useQuery({
@@ -40,6 +42,11 @@ const AdminNewArtist = () => {
     e.preventDefault()
     if (!name || languages.length === 0) {
       toast.error('Please fill in all required fields')
+      return
+    }
+
+    if (!session?.user?.id) {
+      toast.error('You must be logged in to create an artist')
       return
     }
 
@@ -92,7 +99,7 @@ const AdminNewArtist = () => {
         console.log('Audio demo uploaded successfully:', audioDemoUrl)
       }
 
-      // Create artist record
+      // Create artist record with created_by field
       console.log('Creating artist record...')
       const { error: insertError } = await supabase
         .from('artists')
@@ -101,6 +108,7 @@ const AdminNewArtist = () => {
           languages,
           avatar: avatarUrl,
           audio_demo: audioDemoUrl,
+          created_by: session.user.id, // Add the created_by field
         })
 
       if (insertError) {

@@ -22,6 +22,7 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
       if (!session) {
         console.log('No active session found, redirecting to login')
         navigate('/login')
+        toast.success('Logged out successfully')
         return
       }
 
@@ -34,7 +35,8 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
         // Handle all session-related error cases
         if (error.message?.toLowerCase().includes('session not found') || 
             error.message?.toLowerCase().includes('body stream already read') ||
-            error.message?.toLowerCase().includes('jwt expired')) {
+            error.message?.toLowerCase().includes('jwt expired') ||
+            error.message?.toLowerCase().includes('invalid session')) {
           console.log('Session already expired or invalid, proceeding with navigation')
           navigate('/login')
           toast.success('Logged out successfully')
@@ -49,8 +51,10 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
       toast.success('Logged out successfully')
       navigate('/login')
     } catch (error) {
-      console.error('Error during logout:', error)
+      console.error('Unexpected error during logout:', error)
       toast.error('Error during logout')
+      // In case of unexpected errors, still try to redirect
+      navigate('/login')
     }
   }
 

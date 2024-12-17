@@ -28,7 +28,7 @@ export const ArtistList = ({
   return (
     <div className="mx-auto max-w-7xl">
       <div className="mb-12 text-center">
-        <h2 className="mb-4 text-4xl font-bold text-[#1a365d]">Let us help you find the best voice for your next project</h2>
+        <h2 className="mb-4 text-4xl font-bold text-[#1a365d]">Let's find the best voice for your next project</h2>
         <p className="mb-8 text-lg text-gray-600">
           Discover professional voiceover artists in multiple languages. Only real voices, no AI!
         </p>

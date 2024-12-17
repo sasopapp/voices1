@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
-import { useNavigate } from "react-router-dom"
 import {
   Select,
   SelectContent,
@@ -22,8 +21,6 @@ interface LanguageSelectProps {
 }
 
 export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
-  const navigate = useNavigate()
-  
   const { data: languages = [], isLoading } = useQuery({
     queryKey: ['languages'],
     queryFn: async () => {
@@ -43,19 +40,12 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
     },
   })
 
-  const handleValueChange = (newValue: string) => {
-    onChange(newValue)
-    if (newValue !== 'all') {
-      navigate(`/language/${encodeURIComponent(newValue.toLowerCase().replace(/\s+/g, '-'))}`)
-    }
-  }
-
   if (isLoading) {
     return <div>Loading languages...</div>
   }
 
   return (
-    <Select value={value} onValueChange={handleValueChange}>
+    <Select value={value} onValueChange={onChange}>
       <SelectTrigger className="w-[180px] bg-white">
         <SelectValue placeholder="Select language" />
       </SelectTrigger>

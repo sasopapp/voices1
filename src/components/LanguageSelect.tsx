@@ -48,9 +48,14 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
   }
 
   return (
-    <Select value={value} onValueChange={onChange}>
+    <Select 
+      value={value} 
+      onValueChange={onChange}
+    >
       <SelectTrigger className="w-[180px] bg-white">
-        <SelectValue placeholder="Select language" />
+        <SelectValue placeholder="Select language">
+          {value === "all" ? "All Languages" : value}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent className="bg-white">
         <SelectItem value="all" className="bg-white hover:bg-gray-100">

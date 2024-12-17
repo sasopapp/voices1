@@ -22,7 +22,9 @@ export const ArtistDetailHeader = ({ artistId, isAdmin }: ArtistDetailHeaderProp
             <span className="sr-only">Go back</span>
           </Button>
           
-          <h1 className="text-lg font-semibold">Voice Artist Profile</h1>
+          {isAdmin && (
+            <h1 className="text-lg font-semibold">Voice Artist Profile</h1>
+          )}
         </div>
 
         <div className="flex-1 flex justify-center">

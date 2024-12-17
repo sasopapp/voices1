@@ -1,7 +1,14 @@
 import { useQuery } from "@tanstack/react-query"
 import { supabase } from "@/integrations/supabase/client"
 import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { X } from "lucide-react"
 
 interface LanguageSelectorProps {
@@ -10,10 +17,10 @@ interface LanguageSelectorProps {
   onLanguageRemove: (language: string) => void
 }
 
-export const LanguageSelector = ({ 
-  languages, 
-  onLanguageAdd, 
-  onLanguageRemove 
+export const LanguageSelector = ({
+  languages,
+  onLanguageAdd,
+  onLanguageRemove,
 }: LanguageSelectorProps) => {
   const { data: availableLanguages = [] } = useQuery({
     queryKey: ['languages'],
@@ -30,39 +37,49 @@ export const LanguageSelector = ({
       }
 
       console.log('Languages loaded:', data)
-      // Map the language objects to just their names
-      return data.map(lang => lang.name)
+      return data
     },
   })
 
-  const unusedLanguages = availableLanguages.filter(lang => !languages.includes(lang))
-
   return (
     <div className="space-y-4">
-      <Select
-        onValueChange={onLanguageAdd}
-        disabled={unusedLanguages.length === 0}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Add a language" />
-        </SelectTrigger>
-        <SelectContent>
-          {unusedLanguages.map((language) => (
-            <SelectItem key={language} value={language}>
-              {language}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="space-y-2">
+        <Label>Languages</Label>
+        <Select
+          onValueChange={(value) => {
+            if (!languages.includes(value)) {
+              onLanguageAdd(value)
+            }
+          }}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select a language" />
+          </SelectTrigger>
+          <SelectContent>
+            {availableLanguages.map((lang) => (
+              <SelectItem key={lang.name} value={lang.name}>
+                {lang.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
 
       <div className="flex flex-wrap gap-2">
         {languages.map((language) => (
-          <Badge key={language} variant="secondary" className="flex items-center gap-1">
+          <Badge
+            key={language}
+            variant="secondary"
+            className="flex items-center gap-1"
+          >
             {language}
-            <X
-              className="h-3 w-3 cursor-pointer"
+            <button
               onClick={() => onLanguageRemove(language)}
-            />
+              className="ml-1 rounded-full hover:bg-secondary"
+            >
+              <X className="h-3 w-3" />
+              <span className="sr-only">Remove {language}</span>
+            </button>
           </Badge>
         ))}
       </div>

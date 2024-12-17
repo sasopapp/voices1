@@ -16,7 +16,7 @@ export const Logo = ({ className }: LogoProps) => {
       <img 
         src="https://authenticvoices.eu/wp-content/uploads/2023/11/AV_logo_250px-1.png" 
         alt="Authentic Voices Logo" 
-        className="h-12 w-auto"
+        className="h-24 w-auto"
       />
     </div>
   )

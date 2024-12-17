@@ -17,6 +17,11 @@ interface LanguageSelectorProps {
   onLanguageRemove: (language: string) => void
 }
 
+interface Language {
+  id: string
+  name: string
+}
+
 export const LanguageSelector = ({
   languages,
   onLanguageAdd,
@@ -28,7 +33,7 @@ export const LanguageSelector = ({
       console.log('Fetching available languages...')
       const { data, error } = await supabase
         .from('languages')
-        .select('name')
+        .select('*')
         .order('name')
 
       if (error) {
@@ -37,13 +42,17 @@ export const LanguageSelector = ({
       }
 
       console.log('Languages loaded:', data)
-      return data
+      return data as Language[]
     },
   })
 
   if (isLoading) {
     return <div>Loading languages...</div>
   }
+
+  const availableLanguagesForSelect = availableLanguages.filter(
+    lang => !languages.includes(lang.name)
+  )
 
   return (
     <div className="space-y-4">
@@ -64,9 +73,9 @@ export const LanguageSelector = ({
             position="popper"
             sideOffset={4}
           >
-            {availableLanguages.map((lang) => (
+            {availableLanguagesForSelect.map((lang) => (
               <SelectItem 
-                key={lang.name} 
+                key={lang.id} 
                 value={lang.name}
                 className="bg-white hover:bg-accent hover:text-accent-foreground cursor-pointer py-2 px-3"
               >

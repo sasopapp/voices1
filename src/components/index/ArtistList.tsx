@@ -73,7 +73,7 @@ export const ArtistList = ({
       ) : (
         <div className="text-center py-12">
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Sorry, no voices available at the moment. Please contact us and we will help you find a voice for your project.
+            Sorry, there are no voices available at the moment. Please contact us and we'll help you find the best voice for your project.
           </p>
         </div>
       )}

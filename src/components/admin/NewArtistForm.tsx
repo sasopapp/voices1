@@ -11,6 +11,7 @@ import { BasicInfoFields } from "./form/BasicInfoFields"
 import { LanguageSelector } from "./form/LanguageSelector"
 import { MediaUploadFields } from "./form/MediaUploadFields"
 import { DemoManager } from "./form/DemoManager"
+import { Plus } from "lucide-react"
 
 export const NewArtistForm = () => {
   const navigate = useNavigate()
@@ -98,7 +99,7 @@ export const NewArtistForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-xl mx-auto">
+    <form id="new-artist-form" onSubmit={handleSubmit} className="space-y-6 max-w-xl mx-auto">
       <BasicInfoFields
         firstname={firstname}
         lastname={lastname}
@@ -164,7 +165,8 @@ export const NewArtistForm = () => {
         onAvatarChange={setAvatar}
       />
 
-      <Button type="submit" disabled={isSubmitting}>
+      <Button type="submit" disabled={isSubmitting} className="flex items-center gap-2">
+        <Plus className="h-4 w-4" />
         {isSubmitting ? 'Creating Artist...' : 'Create Artist'}
       </Button>
     </form>

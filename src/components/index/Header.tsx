@@ -18,9 +18,10 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
     try {
       console.log('Starting logout process...')
       
-      // If there's no session, just redirect to login
+      // If there's no session, just clear local state and redirect
       if (!session) {
-        console.log('No active session found, redirecting to login')
+        console.log('No active session found, clearing local state')
+        await supabase.auth.clearSession()
         navigate('/login')
         toast.success('Logged out successfully')
         return
@@ -32,12 +33,13 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
       if (error) {
         console.error('Error during logout:', error)
         
-        // Handle all session-related error cases
+        // Handle session-related error cases
         if (error.message?.toLowerCase().includes('session not found') || 
             error.message?.toLowerCase().includes('body stream already read') ||
             error.message?.toLowerCase().includes('jwt expired') ||
             error.message?.toLowerCase().includes('invalid session')) {
-          console.log('Session already expired or invalid, proceeding with navigation')
+          console.log('Session already expired or invalid, clearing local state')
+          await supabase.auth.clearSession()
           navigate('/login')
           toast.success('Logged out successfully')
           return
@@ -52,8 +54,9 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
       navigate('/login')
     } catch (error) {
       console.error('Unexpected error during logout:', error)
+      // Clear local session state in case of errors
+      await supabase.auth.clearSession()
       toast.error('Error during logout')
-      // In case of unexpected errors, still try to redirect
       navigate('/login')
     }
   }

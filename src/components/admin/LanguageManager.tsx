@@ -26,11 +26,8 @@ export const LanguageManager = () => {
       console.log('Languages loaded:', data);
       return data as Language[];
     },
-    enabled: true,
-    refetchOnMount: true,
-    refetchOnWindowFocus: true,
-    staleTime: 1000,
-    gcTime: 0
+    staleTime: 30000, // Data stays fresh for 30 seconds
+    gcTime: 3600000,  // Keep unused data in cache for 1 hour
   });
 
   if (isLoading) {

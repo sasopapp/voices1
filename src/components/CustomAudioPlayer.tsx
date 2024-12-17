@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Slider } from "./ui/slider";
-import { Play, Pause } from "lucide-react";
+import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Card } from "./ui/card";
 
 interface CustomAudioPlayerProps {
   url: string;
@@ -12,6 +13,8 @@ interface CustomAudioPlayerProps {
 export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [volume, setVolume] = useState(100);
+  const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -36,7 +39,7 @@ export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) =>
   };
 
   const togglePlayPause = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent event from bubbling up to parent card
+    e.stopPropagation();
     
     if (audioRef.current) {
       if (isPlaying) {
@@ -56,35 +59,86 @@ export const CustomAudioPlayer = ({ url, className }: CustomAudioPlayerProps) =>
     }
   };
 
+  const handleVolumeChange = (value: number[]) => {
+    if (audioRef.current) {
+      const newVolume = value[0];
+      audioRef.current.volume = newVolume / 100;
+      setVolume(newVolume);
+      setIsMuted(newVolume === 0);
+    }
+  };
+
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (audioRef.current) {
+      if (isMuted) {
+        audioRef.current.volume = volume / 100;
+        setIsMuted(false);
+      } else {
+        audioRef.current.volume = 0;
+        setIsMuted(true);
+      }
+    }
+  };
+
   const handleSliderClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent event from bubbling up to parent card
+    e.stopPropagation();
   };
 
   return (
-    <div 
-      className={cn("flex items-center gap-2 w-full", className)}
-      onClick={(e) => e.stopPropagation()} // Prevent event from bubbling up to parent card
+    <Card 
+      className={cn(
+        "p-4 bg-secondary/50 border-none shadow-none", 
+        className
+      )}
+      onClick={(e) => e.stopPropagation()}
     >
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-10 w-10" 
-        onClick={togglePlayPause}
-      >
-        {isPlaying ? (
-          <Pause className="h-5 w-5" />
-        ) : (
-          <Play className="h-5 w-5" />
-        )}
-      </Button>
-      <Slider
-        value={[progress]}
-        onValueChange={handleSliderChange}
-        max={100}
-        step={0.1}
-        className="flex-1"
-        onClick={handleSliderClick}
-      />
-    </div>
+      <div className="flex items-center gap-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-10 w-10 hover:bg-secondary" 
+          onClick={togglePlayPause}
+        >
+          {isPlaying ? (
+            <Pause className="h-5 w-5" />
+          ) : (
+            <Play className="h-5 w-5" />
+          )}
+        </Button>
+        <div className="flex-1">
+          <Slider
+            value={[progress]}
+            onValueChange={handleSliderChange}
+            max={100}
+            step={0.1}
+            className="my-2"
+            onClick={handleSliderClick}
+          />
+        </div>
+        <div className="flex items-center gap-2 min-w-[120px]">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 hover:bg-secondary"
+            onClick={toggleMute}
+          >
+            {isMuted ? (
+              <VolumeX className="h-4 w-4" />
+            ) : (
+              <Volume2 className="h-4 w-4" />
+            )}
+          </Button>
+          <Slider
+            value={[isMuted ? 0 : volume]}
+            onValueChange={handleVolumeChange}
+            max={100}
+            step={1}
+            className="w-20"
+            onClick={handleSliderClick}
+          />
+        </div>
+      </div>
+    </Card>
   );
 };

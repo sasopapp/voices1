@@ -32,7 +32,6 @@ export const LanguageManager = () => {
   })
 
   if (error) {
-    console.error('Error in LanguageManager:', error)
     return (
       <div className="space-y-6">
         <div className="flex flex-col space-y-4">

@@ -7,27 +7,14 @@ import { useSessionContext } from "@supabase/auth-helpers-react"
 import { Footer } from "@/components/Footer"
 
 const Login = () => {
-  const { session, isLoading } = useSessionContext()
+  const { session } = useSessionContext()
   const navigate = useNavigate()
 
   useEffect(() => {
-    console.log("Login page - Session status:", { session, isLoading })
-    
     if (session) {
-      console.log("User is authenticated, redirecting to home")
       navigate("/")
     }
   }, [session, navigate])
-
-  // Only show loading state for initial session check
-  if (isLoading && !session) {
-    console.log("Initial session check...")
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">Loading...</div>
-      </div>
-    )
-  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -43,7 +30,6 @@ const Login = () => {
               appearance={{ theme: ThemeSupa }}
               theme="light"
               providers={[]}
-              redirectTo={`${window.location.origin}/`}
             />
           </div>
         </div>

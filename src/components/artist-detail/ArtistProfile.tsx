@@ -28,7 +28,7 @@ export const ArtistProfile = ({ artist }: ArtistProfileProps) => {
           </div>
         </div>
       </div>
-      <p className="text-muted-foreground text-left">{artist.bio}</p>
+      <p className="text-muted-foreground">{artist.bio}</p>
     </div>
   )
 }

@@ -44,7 +44,9 @@ export const LanguageSelector = ({
       return data as Language[]
     },
     staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
-    cacheTime: 10 * 60 * 1000, // Keep data in cache for 10 minutes
+    gcTime: 10 * 60 * 1000,   // Keep unused data for 10 minutes
+    refetchOnMount: true,      // Refetch when component mounts
+    refetchOnWindowFocus: false // Don't refetch on window focus
   })
 
   if (isLoading) {

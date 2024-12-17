@@ -1,7 +1,7 @@
 import { VoiceoverArtist } from "../types/voiceover";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Globe } from "lucide-react";
+import { Globe, Mic2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 interface ArtistCardProps {
@@ -24,11 +24,19 @@ export const ArtistCard = ({ artist }: ArtistCardProps) => {
           <AvatarImage src={artist.avatar || ''} alt={artist.name} />
           <AvatarFallback>{artist.name[0]}</AvatarFallback>
         </Avatar>
-        <div className="flex flex-col">
+        <div className="flex flex-col flex-1">
           <h3 className="font-semibold text-lg">{artist.name}</h3>
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <Globe className="h-4 w-4" />
-            {languages.length > 0 ? languages.join(", ") : "No languages specified"}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <Globe className="h-4 w-4" />
+              {languages.length > 0 ? languages.join(", ") : "No languages specified"}
+            </div>
+            {artist.voice_gender && (
+              <div className="flex items-center gap-2 text-sm text-gray-500">
+                <Mic2 className="h-4 w-4" />
+                {artist.voice_gender.charAt(0).toUpperCase() + artist.voice_gender.slice(1)}
+              </div>
+            )}
           </div>
         </div>
       </CardHeader>

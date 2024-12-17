@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner"
 import { useQuery } from "@tanstack/react-query"
 import { useSessionContext } from "@supabase/auth-helpers-react"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 const AdminNewArtist = () => {
   const navigate = useNavigate()
@@ -16,6 +17,7 @@ const AdminNewArtist = () => {
   const [languages, setLanguages] = useState<string[]>([])
   const [audioDemo, setAudioDemo] = useState<File | null>(null)
   const [avatar, setAvatar] = useState<File | null>(null)
+  const [voiceGender, setVoiceGender] = useState<string>("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { session } = useSessionContext()
 
@@ -40,7 +42,7 @@ const AdminNewArtist = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!name || languages.length === 0) {
+    if (!name || languages.length === 0 || !voiceGender) {
       toast.error('Please fill in all required fields')
       return
     }
@@ -108,7 +110,8 @@ const AdminNewArtist = () => {
           languages,
           avatar: avatarUrl,
           audio_demo: audioDemoUrl,
-          created_by: session.user.id, // Add the created_by field
+          created_by: session.user.id,
+          voice_gender: voiceGender,
         })
 
       if (insertError) {
@@ -140,6 +143,24 @@ const AdminNewArtist = () => {
               onChange={(e) => setName(e.target.value)}
               required
             />
+          </div>
+
+          <div>
+            <Label>Voice Gender</Label>
+            <RadioGroup
+              value={voiceGender}
+              onValueChange={setVoiceGender}
+              className="flex gap-4 mt-2"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="male" id="male" />
+                <Label htmlFor="male">Male</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="female" id="female" />
+                <Label htmlFor="female">Female</Label>
+              </div>
+            </RadioGroup>
           </div>
 
           <div>

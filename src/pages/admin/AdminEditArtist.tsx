@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { toast } from "sonner"
 import { useQuery } from "@tanstack/react-query"
 
@@ -16,6 +17,7 @@ const AdminEditArtist = () => {
   const [languages, setLanguages] = useState<string[]>([])
   const [audioDemo, setAudioDemo] = useState<File | null>(null)
   const [avatar, setAvatar] = useState<File | null>(null)
+  const [voiceGender, setVoiceGender] = useState<string>("")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Fetch available languages
@@ -61,6 +63,7 @@ const AdminEditArtist = () => {
     if (artist) {
       setName(artist.name)
       setLanguages(artist.languages as string[])
+      setVoiceGender(artist.voice_gender || "")
     }
   }, [artist])
 
@@ -73,6 +76,7 @@ const AdminEditArtist = () => {
       let updates: any = {
         name,
         languages,
+        voice_gender: voiceGender,
       }
 
       // Upload new avatar if provided
@@ -164,6 +168,24 @@ const AdminEditArtist = () => {
               onChange={(e) => setName(e.target.value)}
               required
             />
+          </div>
+
+          <div>
+            <Label>Voice Gender</Label>
+            <RadioGroup
+              value={voiceGender}
+              onValueChange={setVoiceGender}
+              className="flex gap-4 mt-2"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="male" id="male" />
+                <Label htmlFor="male">Male</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="female" id="female" />
+                <Label htmlFor="female">Female</Label>
+              </div>
+            </RadioGroup>
           </div>
 
           <div>

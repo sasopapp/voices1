@@ -19,6 +19,7 @@ export type Database = {
           is_approved: boolean | null
           languages: string[]
           name: string
+          voice_gender: string | null
         }
         Insert: {
           audio_demo?: string | null
@@ -29,6 +30,7 @@ export type Database = {
           is_approved?: boolean | null
           languages?: string[]
           name: string
+          voice_gender?: string | null
         }
         Update: {
           audio_demo?: string | null
@@ -39,6 +41,7 @@ export type Database = {
           is_approved?: boolean | null
           languages?: string[]
           name?: string
+          voice_gender?: string | null
         }
         Relationships: [
           {

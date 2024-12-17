@@ -1,7 +1,7 @@
 import { VoiceoverArtist } from "@/types/voiceover"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Globe, MoreVertical } from "lucide-react"
+import { Globe, MoreVertical, Mic2 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import {
@@ -50,7 +50,6 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
     try {
       console.log('Deleting artist:', artist.id)
       
-      // Delete the artist from the database
       const { error } = await supabase
         .from('artists')
         .delete()
@@ -65,7 +64,6 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
       console.log('Artist deleted successfully')
       toast.success('Artist deleted successfully')
       
-      // Immediately invalidate and refetch the artists query
       await queryClient.invalidateQueries({ queryKey: ['admin-artists'] })
       await queryClient.refetchQueries({ queryKey: ['admin-artists'], exact: true })
     } catch (error) {
@@ -74,9 +72,8 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
     }
   }
 
-  // Ensure languages is always an array and log it for debugging
+  // Ensure languages is always an array
   const languages = Array.isArray(artist.languages) ? artist.languages : []
-  console.log('Artist languages in AdminArtistCard:', languages)
 
   return (
     <Card className="relative overflow-hidden">
@@ -90,9 +87,17 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
         </Avatar>
         <div className="flex flex-col flex-1">
           <h3 className="font-semibold text-lg">{artist.name}</h3>
-          <div className="flex items-center gap-2 text-sm text-gray-500">
-            <Globe className="h-4 w-4" />
-            {languages.length > 0 ? languages.join(", ") : "No languages specified"}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <Globe className="h-4 w-4" />
+              {languages.length > 0 ? languages.join(", ") : "No languages specified"}
+            </div>
+            {artist.voice_gender && (
+              <div className="flex items-center gap-2 text-sm text-gray-500">
+                <Mic2 className="h-4 w-4" />
+                {artist.voice_gender.charAt(0).toUpperCase() + artist.voice_gender.slice(1)}
+              </div>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-2">

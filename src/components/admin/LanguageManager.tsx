@@ -29,6 +29,8 @@ export const LanguageManager = () => {
       console.log('Languages loaded in LanguageManager:', data)
       return data as Language[]
     },
+    staleTime: 0, // This ensures the data is considered stale immediately
+    refetchOnMount: 'always', // This ensures we always refetch when the component mounts
   })
 
   if (error) {

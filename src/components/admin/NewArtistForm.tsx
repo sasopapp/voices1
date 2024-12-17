@@ -2,6 +2,8 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { supabase } from "@/integrations/supabase/client"
 import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { toast } from "sonner"
 import { useSessionContext } from "@supabase/auth-helpers-react"
 import { BasicInfoFields } from "./form/BasicInfoFields"
@@ -123,7 +125,7 @@ export const NewArtistForm = () => {
           value={bio}
           onChange={(e) => {
             if (e.target.value.length <= 250) {
-              onBioChange(e.target.value)
+              setBio(e.target.value)
             }
           }}
           maxLength={250}

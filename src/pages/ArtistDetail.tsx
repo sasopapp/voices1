@@ -90,12 +90,10 @@ const ArtistDetail = () => {
                 <Globe className="h-4 w-4" />
                 {artist.languages.join(", ")}
               </div>
-              {artist.voice_gender && (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Mic2 className="h-4 w-4" />
-                  {artist.voice_gender.charAt(0).toUpperCase() + artist.voice_gender.slice(1)} Voice
-                </div>
-              )}
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Mic2 className="h-4 w-4" />
+                {artist.voice_gender ? artist.voice_gender.charAt(0).toUpperCase() + artist.voice_gender.slice(1) : "Not specified"}
+              </div>
             </div>
           </div>
         </div>

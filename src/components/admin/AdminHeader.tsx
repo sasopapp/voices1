@@ -30,7 +30,7 @@ export function AdminHeader({ title }: { title: string }) {
       }
 
       console.log('Languages loaded:', data)
-      return data
+      return data.map(lang => lang.name)
     },
   })
 
@@ -86,12 +86,12 @@ export function AdminHeader({ title }: { title: string }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              {languages.map((lang) => (
+              {languages.map((language) => (
                 <DropdownMenuItem 
-                  key={lang.name}
-                  onClick={() => navigate(`/language/${encodeURIComponent(lang.name.toLowerCase())}`)}
+                  key={language}
+                  onClick={() => navigate(`/language/${encodeURIComponent(language.toLowerCase())}`)}
                 >
-                  {lang.name}
+                  {language}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -124,12 +124,12 @@ export function AdminHeader({ title }: { title: string }) {
                 <Globe className="mr-2 h-4 w-4" />
                 <span>Languages</span>
               </DropdownMenuItem>
-              {languages.map((lang) => (
+              {languages.map((language) => (
                 <DropdownMenuItem 
-                  key={lang.name}
-                  onClick={() => navigate(`/language/${encodeURIComponent(lang.name.toLowerCase())}`)}
+                  key={language}
+                  onClick={() => navigate(`/language/${encodeURIComponent(language.toLowerCase())}`)}
                 >
-                  {lang.name}
+                  {language}
                 </DropdownMenuItem>
               ))}
               <DropdownMenuItem onClick={() => navigate('/admin/new')}>

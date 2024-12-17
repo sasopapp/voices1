@@ -5,18 +5,6 @@ export const useInitializeSession = () => {
   const [initialSession, setInitialSession] = useState(null)
 
   useEffect(() => {
-    // Clear any existing session data to prevent stale tokens
-    const clearSession = async () => {
-      try {
-        const { error } = await supabase.auth.signOut()
-        if (error) {
-          console.error('Error clearing session:', error)
-        }
-      } catch (error) {
-        console.error('Error during session cleanup:', error)
-      }
-    }
-
     // Initialize session
     const initSession = async () => {
       try {
@@ -25,7 +13,6 @@ export const useInitializeSession = () => {
         setInitialSession(session)
       } catch (error) {
         console.error('Error getting session:', error)
-        await clearSession()
       }
     }
 

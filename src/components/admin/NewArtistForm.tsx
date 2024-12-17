@@ -137,7 +137,6 @@ export const NewArtistForm = ({ availableLanguages }: NewArtistFormProps) => {
       />
 
       <div>
-        <Label>Languages</Label>
         <LanguageSelector
           languages={languages}
           onLanguageAdd={(lang) => setLanguages(prev => [...prev, lang])}
@@ -146,7 +145,6 @@ export const NewArtistForm = ({ availableLanguages }: NewArtistFormProps) => {
       </div>
 
       <MediaUploadFields
-        onAudioChange={setAudioDemo}
         onAvatarChange={setAvatar}
       />
 

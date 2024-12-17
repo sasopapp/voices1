@@ -52,20 +52,20 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
       value={value} 
       onValueChange={onChange}
     >
-      <SelectTrigger className="w-[180px] bg-white">
+      <SelectTrigger className="w-[180px] bg-white border border-input">
         <SelectValue placeholder="Select language">
           {value === "all" ? "All Languages" : value}
         </SelectValue>
       </SelectTrigger>
-      <SelectContent className="bg-white">
-        <SelectItem value="all" className="bg-white hover:bg-gray-100">
+      <SelectContent className="bg-white border border-input shadow-md">
+        <SelectItem value="all" className="bg-white hover:bg-gray-100 cursor-pointer">
           All Languages
         </SelectItem>
         {languages.map((language: Language) => (
           <SelectItem 
             key={language.id} 
             value={language.name}
-            className="bg-white hover:bg-gray-100"
+            className="bg-white hover:bg-gray-100 cursor-pointer"
           >
             {language.name}
           </SelectItem>

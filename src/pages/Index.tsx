@@ -71,7 +71,8 @@ const Index = () => {
         email: artist.email,
         firstname: artist.firstname,
         lastname: artist.lastname,
-        username: artist.username
+        username: artist.username,
+        bio: artist.bio || 'No bio available yet.'
       }))
       
       console.log('Mapped approved artists:', mappedArtists)

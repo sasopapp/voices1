@@ -40,7 +40,8 @@ const AdminEditArtist = () => {
         email: data.email,
         firstname: data.firstname,
         lastname: data.lastname,
-        username: data.username
+        username: data.username,
+        bio: data.bio || 'No bio available yet.'
       }
 
       console.log('Artist details loaded:', mappedArtist)

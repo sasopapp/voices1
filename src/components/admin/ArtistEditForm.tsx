@@ -29,11 +29,12 @@ export const ArtistEditForm = ({ artist }: ArtistEditFormProps) => {
   const [languages, setLanguages] = useState<string[]>(artist.languages)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [voiceGender, setVoiceGender] = useState<string>(artist.voice_gender || '')
+  const [bio, setBio] = useState(artist.bio)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!firstname || !lastname || !email || !username || languages.length === 0 || !voiceGender) {
+    if (!firstname || !lastname || !email || !username || languages.length === 0 || !voiceGender || !bio) {
       toast.error('Please fill in all required fields')
       return
     }
@@ -76,6 +77,7 @@ export const ArtistEditForm = ({ artist }: ArtistEditFormProps) => {
           languages,
           avatar: avatarUrl,
           voice_gender: voiceGender,
+          bio,
         })
         .eq('id', artist.id)
 
@@ -104,10 +106,12 @@ export const ArtistEditForm = ({ artist }: ArtistEditFormProps) => {
         lastname={lastname}
         email={email}
         voiceGender={voiceGender}
+        bio={bio}
         onFirstnameChange={setFirstname}
         onLastnameChange={setLastname}
         onEmailChange={setEmail}
         onVoiceGenderChange={setVoiceGender}
+        onBioChange={setBio}
       />
 
       <UsernameField

@@ -22,14 +22,14 @@ export const NewArtistForm = ({ availableLanguages }: NewArtistFormProps) => {
   const [email, setEmail] = useState("")
   const [username, setUsername] = useState("")
   const [languages, setLanguages] = useState<string[]>([])
-  const [audioDemo, setAudioDemo] = useState<File | null>(null)
   const [avatar, setAvatar] = useState<File | null>(null)
   const [voiceGender, setVoiceGender] = useState<string>("")
+  const [bio, setBio] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!firstname || !lastname || !email || !username || languages.length === 0 || !voiceGender) {
+    if (!firstname || !lastname || !email || !username || languages.length === 0 || !voiceGender || !bio) {
       toast.error('Please fill in all required fields')
       return
     }
@@ -44,7 +44,6 @@ export const NewArtistForm = ({ availableLanguages }: NewArtistFormProps) => {
       console.log('Starting artist creation process...')
 
       let avatarUrl = null
-      let audioDemoUrl = null
 
       if (avatar) {
         console.log('Uploading avatar...')
@@ -66,26 +65,6 @@ export const NewArtistForm = ({ availableLanguages }: NewArtistFormProps) => {
         console.log('Avatar uploaded successfully:', avatarUrl)
       }
 
-      if (audioDemo) {
-        console.log('Uploading audio demo...')
-        const audioFileName = `${Date.now()}-${audioDemo.name}`
-        const { error: audioError } = await supabase.storage
-          .from('demos')
-          .upload(audioFileName, audioDemo)
-
-        if (audioError) {
-          console.error('Audio demo upload error:', audioError)
-          throw new Error('Failed to upload audio demo')
-        }
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('demos')
-          .getPublicUrl(audioFileName)
-        
-        audioDemoUrl = publicUrl
-        console.log('Audio demo uploaded successfully:', audioDemoUrl)
-      }
-
       console.log('Creating artist record...')
       const { error: insertError } = await supabase
         .from('artists')
@@ -97,9 +76,9 @@ export const NewArtistForm = ({ availableLanguages }: NewArtistFormProps) => {
           username,
           languages,
           avatar: avatarUrl,
-          audio_demo: audioDemoUrl,
           created_by: session.user.id,
           voice_gender: voiceGender,
+          bio,
         })
 
       if (insertError) {
@@ -125,10 +104,12 @@ export const NewArtistForm = ({ availableLanguages }: NewArtistFormProps) => {
         lastname={lastname}
         email={email}
         voiceGender={voiceGender}
+        bio={bio}
         onFirstnameChange={setFirstname}
         onLastnameChange={setLastname}
         onEmailChange={setEmail}
         onVoiceGenderChange={setVoiceGender}
+        onBioChange={setBio}
       />
 
       <UsernameField

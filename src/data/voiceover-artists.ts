@@ -18,7 +18,8 @@ export const voiceoverArtists: VoiceoverArtist[] = [
     email: "sarah.johnson@example.com",
     firstname: "Sarah",
     lastname: "Johnson",
-    username: "sarahjohnson"
+    username: "sarahjohnson",
+    bio: "Professional voice artist specializing in commercials and narration."
   },
   {
     id: "2",
@@ -37,7 +38,8 @@ export const voiceoverArtists: VoiceoverArtist[] = [
     email: "miguel.rodriguez@example.com",
     firstname: "Miguel",
     lastname: "Rodriguez",
-    username: "miguelrodriguez"
+    username: "miguelrodriguez",
+    bio: "Bilingual voice talent with expertise in dubbing and animation."
   },
   {
     id: "3",
@@ -56,7 +58,8 @@ export const voiceoverArtists: VoiceoverArtist[] = [
     email: "anna.schmidt@example.com",
     firstname: "Anna",
     lastname: "Schmidt",
-    username: "annaschmidt"
+    username: "annaschmidt",
+    bio: "Experienced voice actor for audiobooks and e-learning content."
   },
   {
     id: "4",
@@ -75,7 +78,8 @@ export const voiceoverArtists: VoiceoverArtist[] = [
     email: "marco.rossi@example.com",
     firstname: "Marco",
     lastname: "Rossi",
-    username: "marcorossi"
+    username: "marcorossi",
+    bio: "Italian voice talent specializing in commercial and corporate content."
   },
 ];
 

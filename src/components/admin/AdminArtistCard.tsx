@@ -23,7 +23,8 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
 
-  const handleApprove = async () => {
+  const handleApprove = async (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent navigation when clicking approve button
     try {
       console.log('Approving artist:', artist.id)
       const { error } = await supabase
@@ -46,7 +47,8 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
     }
   }
 
-  const handleDelete = async () => {
+  const handleDelete = async (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent navigation when clicking delete
     try {
       console.log('Deleting artist:', artist.id)
       
@@ -76,10 +78,21 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
   const languages = Array.isArray(artist.languages) ? artist.languages : []
 
   // Find the main demo
-  const mainDemo = artist.demos?.find(demo => demo.is_main);
+  const mainDemo = artist.demos?.find(demo => demo.is_main)
+
+  const handleCardClick = () => {
+    navigate(`/artist/${artist.id}`)
+  }
+
+  const handleDropdownClick = (e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent navigation when clicking dropdown
+  }
 
   return (
-    <Card className="relative overflow-hidden">
+    <Card 
+      className="relative overflow-hidden cursor-pointer hover:shadow-lg transition-all" 
+      onClick={handleCardClick}
+    >
       <div className={`absolute right-2 top-2 z-10 ${!artist.is_approved ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'} rounded-full px-3 py-1 text-xs font-medium`}>
         {artist.is_approved ? 'Approved' : 'Pending'}
       </div>
@@ -103,7 +116,7 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
             )}
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
           {!artist.is_approved && (
             <Button 
               variant="outline" 
@@ -115,14 +128,17 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
             </Button>
           )}
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger asChild onClick={handleDropdownClick}>
               <Button variant="ghost" size="icon">
                 <MoreVertical className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-white">
               <DropdownMenuItem 
-                onClick={() => navigate(`/admin/edit/${artist.id}`)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  navigate(`/admin/edit/${artist.id}`)
+                }}
                 className="bg-white hover:bg-gray-100"
               >
                 Edit Artist

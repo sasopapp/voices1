@@ -49,37 +49,40 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
       // Extract project reference from Supabase URL
       const projectRef = SUPABASE_URL.match(/https:\/\/(.*?)\.supabase\.co/)?.[1]
       
-      // First, try to sign out
-      const { error } = await supabase.auth.signOut()
+      // Check current session first
+      const { data: { session } } = await supabase.auth.getSession()
       
-      if (error) {
-        console.error('Error during logout:', error)
-        // If the error is session_not_found, we can consider this a "successful" logout
-        // since the user is effectively already logged out
-        if (error.message.includes('session_not_found')) {
-          console.log('Session already expired, cleaning up...')
-        } else {
-          // For other types of errors, show an error message
+      if (session) {
+        // Only attempt to sign out if we have a session
+        const { error } = await supabase.auth.signOut()
+        if (error && !error.message.includes('session_not_found')) {
+          console.error('Error during logout:', error)
           toast.error('Error logging out')
           return
         }
+      } else {
+        console.log('No active session found, proceeding with cleanup...')
       }
 
-      // Always clean up local storage and redirect
+      // Always clean up local storage
       if (projectRef) {
-        localStorage.removeItem('sb-' + projectRef + '-auth-token')
+        localStorage.removeItem(`sb-${projectRef}-auth-token`)
       }
       
       console.log('Logout successful')
       toast.success('Logged out successfully')
-      window.location.href = '/' // Force a full page refresh
+      
+      // Small delay before redirect to ensure toast is visible
+      setTimeout(() => {
+        window.location.href = '/'
+      }, 500)
       
     } catch (error) {
       console.error('Error during logout:', error)
       // Even if we catch an error, try to clean up
       const projectRef = SUPABASE_URL.match(/https:\/\/(.*?)\.supabase\.co/)?.[1]
       if (projectRef) {
-        localStorage.removeItem('sb-' + projectRef + '-auth-token')
+        localStorage.removeItem(`sb-${projectRef}-auth-token`)
       }
       toast.error('Error during logout, please refresh the page')
       window.location.href = '/' // Force a full page refresh

@@ -18,7 +18,7 @@ const Index = () => {
       const { data, error } = await supabase
         .from('artists')
         .select('*')
-        .eq('is_approved', true) // Only fetch approved artists
+        .eq('is_approved', true)
       
       console.log('Raw Supabase response:', { data, error })
       
@@ -42,7 +42,8 @@ const Index = () => {
         avatar: artist.avatar,
         created_by: artist.created_by,
         is_approved: artist.is_approved,
-        created_at: artist.created_at
+        created_at: artist.created_at,
+        voice_gender: artist.voice_gender
       }))
       
       console.log('Mapped approved artists:', mappedArtists)

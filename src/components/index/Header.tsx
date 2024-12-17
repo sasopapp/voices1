@@ -18,22 +18,39 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
     try {
       console.log('Starting logout process...')
       
-      // First, try to sign out without checking session
+      // First check if we have an active session
+      const { data: { session: currentSession } } = await supabase.auth.getSession()
+      
+      if (!currentSession) {
+        console.log('No active session found, redirecting to login')
+        navigate('/login')
+        toast.success('Logged out successfully')
+        return
+      }
+
+      // Attempt to sign out with the active session
       const { error } = await supabase.auth.signOut()
       
       if (error) {
         console.error('Error during logout:', error)
         
-        // If we get session_not_found, that's okay - the user is already logged out
+        // If session not found, consider it a successful logout
         if (error.message?.toLowerCase().includes('session not found')) {
-          console.log('Session already expired or not found')
+          console.log('Session not found, considering as logged out')
           navigate('/login')
           toast.success('Logged out successfully')
           return
         }
         
-        // For other errors, show error message
-        toast.error('Error during logout')
+        // For other errors, try one more time to sign out
+        try {
+          await supabase.auth.signOut()
+          navigate('/login')
+          toast.success('Logged out successfully')
+        } catch (retryError) {
+          console.error('Error during logout retry:', retryError)
+          toast.error('Error during logout')
+        }
         return
       }
 
@@ -42,8 +59,12 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
       navigate('/login')
     } catch (error) {
       console.error('Unexpected error during logout:', error)
-      // Try to sign out anyway in case of unexpected errors
-      await supabase.auth.signOut()
+      // Try to sign out one last time in case of unexpected errors
+      try {
+        await supabase.auth.signOut()
+      } catch (finalError) {
+        console.error('Final logout attempt failed:', finalError)
+      }
       toast.error('Error during logout')
       navigate('/login')
     }

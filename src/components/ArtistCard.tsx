@@ -26,7 +26,7 @@ export const ArtistCard = ({ artist }: ArtistCardProps) => {
         </Avatar>
         <div className="flex flex-col flex-1">
           <h3 className="font-semibold text-lg">{artist.name}</h3>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4">
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <Globe className="h-4 w-4" />
               {languages.length > 0 ? languages.join(", ") : "No languages specified"}

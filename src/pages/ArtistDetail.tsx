@@ -5,7 +5,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { VoiceoverArtist } from "@/types/voiceover";
 import {
   Breadcrumb,
   BreadcrumbItem,

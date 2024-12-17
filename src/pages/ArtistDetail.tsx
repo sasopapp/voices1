@@ -1,25 +1,35 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Globe, Mic, Mic2, ArrowLeft } from "lucide-react";
+import { Globe, Mic, Mic2, ArrowLeft, Edit } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { useSessionContext } from "@supabase/auth-helpers-react";
 
 const ArtistDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { session } = useSessionContext();
+
+  // Query to check if user is admin
+  const { data: profile } = useQuery({
+    queryKey: ['profile', session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user?.id) return null;
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('is_admin')
+        .eq('id', session.user.id)
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!session?.user?.id,
+  });
 
   const { data: artist, isLoading } = useQuery({
     queryKey: ['artist', id],
@@ -89,24 +99,24 @@ const ArtistDetail = () => {
             />
           </div>
 
-          <div className="w-[68px]" /> {/* Spacer to balance the layout */}
+          <div className="w-[68px] flex justify-end">
+            {profile?.is_admin && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate(`/admin/edit/${artist.id}`)}
+                className="ml-2"
+              >
+                <Edit className="h-4 w-4" />
+                <span className="sr-only">Edit Artist</span>
+              </Button>
+            )}
+          </div>
         </div>
       </header>
 
       <div className="p-8 flex-1">
         <div className="mx-auto max-w-4xl">
-          <Breadcrumb className="mb-6">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/">Home</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>@{artist.username}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-
           <div className="mb-8 flex items-center gap-6">
             <Avatar className="h-24 w-24">
               <AvatarImage src={artist.avatar || ''} alt={artist.username} />

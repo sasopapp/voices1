@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useQuery } from "@tanstack/react-query"
+import { SUPABASE_URL } from "@/integrations/supabase/client"
 
 interface HeaderProps {
   isAdmin?: boolean
@@ -45,8 +46,8 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
   const handleLogout = async () => {
     console.log('Starting logout process...')
     try {
-      // Extract project reference from Supabase URL using the proper method
-      const projectRef = supabase.getUrl().match(/https:\/\/(.*?)\.supabase\.co/)?.[1]
+      // Extract project reference from Supabase URL
+      const projectRef = SUPABASE_URL.match(/https:\/\/(.*?)\.supabase\.co/)?.[1]
       
       // First, try to sign out normally
       const { error } = await supabase.auth.signOut()
@@ -73,7 +74,7 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
     } catch (error) {
       console.error('Error during logout:', error)
       // If we catch any error, we should still try to clean up
-      const projectRef = supabase.getUrl().match(/https:\/\/(.*?)\.supabase\.co/)?.[1]
+      const projectRef = SUPABASE_URL.match(/https:\/\/(.*?)\.supabase\.co/)?.[1]
       if (projectRef) {
         localStorage.removeItem('sb-' + projectRef + '-auth-token')
       }

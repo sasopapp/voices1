@@ -38,10 +38,6 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
       console.log('Languages loaded:', data)
       return data as Language[]
     },
-    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
-    refetchOnMount: true,     // Refetch when component mounts
-    refetchOnWindowFocus: false, // Don't refetch on window focus
-    initialData: [],          // Provide initial empty array
   })
 
   if (isLoading) {

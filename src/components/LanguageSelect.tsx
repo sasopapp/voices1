@@ -47,10 +47,6 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
     return <div>Loading languages...</div>
   }
 
-  // Find the selected language object
-  const selectedLanguage = languages.find(lang => lang.name === value)
-  const displayValue = value === "all" ? "All Languages" : selectedLanguage?.name || value
-
   return (
     <Select 
       value={value} 
@@ -58,7 +54,7 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
     >
       <SelectTrigger className="w-[180px] bg-white">
         <SelectValue>
-          {displayValue}
+          {value === "all" ? "All Languages" : value}
         </SelectValue>
       </SelectTrigger>
       <SelectContent className="bg-white">

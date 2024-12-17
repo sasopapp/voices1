@@ -23,7 +23,9 @@ const AdminEditArtist = () => {
         throw error
       }
 
-      return data.map(lang => lang.name)
+      const languageNames = data.map(lang => lang.name)
+      console.log('Available languages:', languageNames)
+      return languageNames
     },
   })
 
@@ -43,6 +45,7 @@ const AdminEditArtist = () => {
         throw error
       }
 
+      console.log('Artist data loaded:', data)
       return data
     },
   })

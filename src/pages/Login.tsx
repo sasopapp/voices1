@@ -30,6 +30,7 @@ const Login = () => {
               appearance={{ theme: ThemeSupa }}
               theme="light"
               providers={[]}
+              redirectTo={`${window.location.origin}/`}
             />
           </div>
         </div>

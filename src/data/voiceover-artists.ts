@@ -7,6 +7,7 @@ export const voiceoverArtists: VoiceoverArtist[] = [
     languages: ["English", "French"],
     audioDemo: "https://example.com/demo1.mp3",
     avatar: "/placeholder.svg",
+    voice_gender: "female"
   },
   {
     id: "2",
@@ -14,6 +15,7 @@ export const voiceoverArtists: VoiceoverArtist[] = [
     languages: ["Spanish", "English"],
     audioDemo: "https://example.com/demo2.mp3",
     avatar: "/placeholder.svg",
+    voice_gender: "male"
   },
   {
     id: "3",
@@ -21,6 +23,7 @@ export const voiceoverArtists: VoiceoverArtist[] = [
     languages: ["German", "English"],
     audioDemo: "https://example.com/demo3.mp3",
     avatar: "/placeholder.svg",
+    voice_gender: "female"
   },
   {
     id: "4",
@@ -28,6 +31,7 @@ export const voiceoverArtists: VoiceoverArtist[] = [
     languages: ["Italian", "English"],
     audioDemo: "https://example.com/demo4.mp3",
     avatar: "/placeholder.svg",
+    voice_gender: "male"
   },
 ];
 

@@ -55,34 +55,32 @@ export const LanguageSelector = ({
 
   return (
     <div className="space-y-4">
-      <div className="space-y-2">
-        <Select
-          onValueChange={(value) => {
-            if (!languages.includes(value)) {
-              onLanguageAdd(value)
-            }
-          }}
+      <Select
+        onValueChange={(value) => {
+          if (!languages.includes(value)) {
+            onLanguageAdd(value)
+          }
+        }}
+      >
+        <SelectTrigger className="w-full bg-white border border-input">
+          <SelectValue placeholder="Select a language" />
+        </SelectTrigger>
+        <SelectContent 
+          className="bg-white border border-input shadow-md max-h-[300px] overflow-y-auto z-50"
+          position="popper"
+          sideOffset={4}
         >
-          <SelectTrigger className="w-full bg-white border border-input">
-            <SelectValue placeholder="Select a language" />
-          </SelectTrigger>
-          <SelectContent 
-            className="bg-white border border-input shadow-md max-h-[300px] overflow-y-auto z-50"
-            position="popper"
-            sideOffset={4}
-          >
-            {availableLanguagesForSelect.map((lang) => (
-              <SelectItem 
-                key={lang.id} 
-                value={lang.name}
-                className="bg-white hover:bg-accent hover:text-accent-foreground cursor-pointer py-2 px-3"
-              >
-                {lang.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+          {availableLanguagesForSelect.map((lang) => (
+            <SelectItem 
+              key={lang.id} 
+              value={lang.name}
+              className="bg-white hover:bg-accent hover:text-accent-foreground cursor-pointer py-2 px-3"
+            >
+              {lang.name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
       <div className="flex flex-wrap gap-2">
         {languages.map((language) => (

@@ -38,6 +38,9 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
       console.log('Languages loaded:', data)
       return data as Language[]
     },
+    initialData: [], // Provide initial empty array
+    staleTime: 0,
+    refetchOnMount: 'always'
   })
 
   if (isLoading) {

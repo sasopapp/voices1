@@ -14,11 +14,6 @@ export const ArtistCard = ({ artist }: ArtistCardProps) => {
   // Ensure languages is always an array
   const languages = Array.isArray(artist.languages) ? artist.languages : [];
 
-  // Format the voice gender to capitalize first letter
-  const formattedGender = artist.voice_gender 
-    ? artist.voice_gender.charAt(0).toUpperCase() + artist.voice_gender.slice(1).toLowerCase()
-    : "Not specified";
-
   return (
     <Card 
       className="overflow-hidden transition-all hover:shadow-lg cursor-pointer" 
@@ -38,7 +33,7 @@ export const ArtistCard = ({ artist }: ArtistCardProps) => {
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <Mic2 className="h-4 w-4" />
-              {formattedGender}
+              {artist.voice_gender ? artist.voice_gender.charAt(0).toUpperCase() + artist.voice_gender.slice(1).toLowerCase() : "Not specified"}
             </div>
           </div>
         </div>

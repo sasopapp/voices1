@@ -10,6 +10,28 @@ const LanguagePage = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<string | "all">("all")
   const { session } = useSessionContext()
 
+  // Query to check if user is admin
+  const { data: profile } = useQuery({
+    queryKey: ['user-profile', session?.user?.id],
+    queryFn: async () => {
+      if (!session?.user?.id) return null
+      
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single()
+      
+      if (error) {
+        console.error('Error fetching profile:', error)
+        return null
+      }
+      
+      return data
+    },
+    enabled: !!session?.user?.id
+  })
+
   const { data: artists = [], isLoading } = useQuery({
     queryKey: ['artists-by-language', selectedLanguage],
     queryFn: async () => {
@@ -62,7 +84,7 @@ const LanguagePage = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header 
-        isAdmin={!!session?.user?.is_admin} 
+        isAdmin={!!profile?.is_admin} 
         isLoggedIn={!!session} 
       />
       <main className="p-8">

@@ -37,6 +37,7 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
         return []
       }
       
+      console.log('Languages loaded:', data)
       return data || []
     },
     enabled: isAdmin // Only fetch if user is admin
@@ -133,7 +134,7 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
                       Languages
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuContent align="end" className="w-48 bg-background">
                     {languages?.map((language) => (
                       <DropdownMenuItem
                         key={language.id}

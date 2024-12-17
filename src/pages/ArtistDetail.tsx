@@ -99,16 +99,15 @@ const ArtistDetail = () => {
             />
           </div>
 
-          <div className="w-[68px] flex justify-end">
+          <div className="flex items-center justify-end">
             {profile?.is_admin && (
               <Button
                 variant="ghost"
-                size="icon"
                 onClick={() => navigate(`/admin/edit/${artist.id}`)}
-                className="ml-2"
+                className="flex items-center gap-2"
               >
                 <Edit className="h-4 w-4" />
-                <span className="sr-only">Edit Artist</span>
+                Edit Artist
               </Button>
             )}
           </div>
@@ -164,6 +163,7 @@ const ArtistDetail = () => {
           </ScrollArea>
         </div>
       </div>
+
       <Footer />
     </div>
   );

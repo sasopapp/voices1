@@ -4,6 +4,7 @@ import { AdminHeader } from "@/components/admin/AdminHeader"
 import { supabase } from "@/integrations/supabase/client"
 import { ArtistEditForm } from "@/components/admin/ArtistEditForm"
 import { VoiceoverArtist } from "@/types/voiceover"
+import { Footer } from "@/components/Footer"
 
 const AdminEditArtist = () => {
   const { id } = useParams()
@@ -61,6 +62,7 @@ const AdminEditArtist = () => {
           <div className="text-red-500">Artist not found</div>
         )}
       </main>
+      <Footer />
     </div>
   )
 }

@@ -7,6 +7,7 @@ import { VoiceoverArtist } from "@/types/voiceover"
 import { LanguageSelect } from "@/components/LanguageSelect"
 import { Button } from "@/components/ui/button"
 import { Users, User, UserCircle } from "lucide-react"
+import { Footer } from "@/components/Footer"
 
 const AdminDashboard = () => {
   const [selectedLanguage, setSelectedLanguage] = useState<string | "all">("all")
@@ -88,6 +89,7 @@ const AdminDashboard = () => {
           ))}
         </div>
       </main>
+      <Footer />
     </div>
   )
 }

@@ -49,31 +49,34 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
       // Extract project reference from Supabase URL
       const projectRef = SUPABASE_URL.match(/https:\/\/(.*?)\.supabase\.co/)?.[1]
       
-      // First, try to sign out normally
+      // First, try to sign out
       const { error } = await supabase.auth.signOut()
       
       if (error) {
         console.error('Error during logout:', error)
-        // If the error is session_not_found, we can consider the user already logged out
+        // If the error is session_not_found, we can consider this a "successful" logout
+        // since the user is effectively already logged out
         if (error.message.includes('session_not_found')) {
           console.log('Session already expired, cleaning up...')
-          // Clear any remaining session data from localStorage
-          if (projectRef) {
-            localStorage.removeItem('sb-' + projectRef + '-auth-token')
-          }
-          toast.success('Logged out successfully')
-          window.location.href = '/' // Force a full page refresh
+        } else {
+          // For other types of errors, show an error message
+          toast.error('Error logging out')
           return
         }
-        toast.error('Error logging out')
-      } else {
-        console.log('Logout successful')
-        toast.success('Logged out successfully')
-        window.location.href = '/' // Force a full page refresh
       }
+
+      // Always clean up local storage and redirect
+      if (projectRef) {
+        localStorage.removeItem('sb-' + projectRef + '-auth-token')
+      }
+      
+      console.log('Logout successful')
+      toast.success('Logged out successfully')
+      window.location.href = '/' // Force a full page refresh
+      
     } catch (error) {
       console.error('Error during logout:', error)
-      // If we catch any error, we should still try to clean up
+      // Even if we catch an error, try to clean up
       const projectRef = SUPABASE_URL.match(/https:\/\/(.*?)\.supabase\.co/)?.[1]
       if (projectRef) {
         localStorage.removeItem('sb-' + projectRef + '-auth-token')

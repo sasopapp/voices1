@@ -66,19 +66,23 @@ export const DemoUploadFields = ({
       {demos.length < 4 && (
         <div className="space-y-2">
           <Label>Add New Demo</Label>
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2">
             <Input
               value={newDemoName}
               onChange={(e) => setNewDemoName(e.target.value)}
               placeholder="Demo name"
               className="flex-1"
             />
-            <Input
-              type="file"
-              accept="audio/*"
-              onChange={handleFileChange}
-              disabled={!newDemoName}
-            />
+            <div className="flex items-center gap-2">
+              <Music className="h-4 w-4 text-gray-500" />
+              <Input
+                type="file"
+                accept="audio/*"
+                onChange={handleFileChange}
+                disabled={!newDemoName}
+                className="flex-1"
+              />
+            </div>
           </div>
         </div>
       )}

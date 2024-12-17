@@ -1,22 +1,30 @@
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 
 interface MediaUploadFieldsProps {
-  onAvatarChange: (file: File | null) => void
+  onAvatarChange: (file: File) => void
 }
 
-export const MediaUploadFields = ({ 
-  onAvatarChange 
+export const MediaUploadFields = ({
+  onAvatarChange,
 }: MediaUploadFieldsProps) => {
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      onAvatarChange(file)
+    }
+  }
+
   return (
-    <div>
-      <Label htmlFor="avatar">New Avatar (optional)</Label>
-      <Input
-        id="avatar"
-        type="file"
-        accept="image/*"
-        onChange={(e) => onAvatarChange(e.target.files?.[0] || null)}
-      />
+    <div className="space-y-4">
+      <div>
+        <Label>Profile Picture</Label>
+        <Input
+          type="file"
+          accept="image/*"
+          onChange={handleAvatarChange}
+        />
+      </div>
     </div>
   )
 }

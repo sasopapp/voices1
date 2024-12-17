@@ -1,6 +1,8 @@
 import { VoiceoverArtist } from "@/types/voiceover"
 import { ArtistCard } from "../ArtistCard"
 import { LanguageSelect } from "../LanguageSelect"
+import { Button } from "../ui/button"
+import { Users, User, UserCircle } from "lucide-react"
 
 interface ArtistListProps {
   artists: VoiceoverArtist[]
@@ -13,9 +15,13 @@ export const ArtistList = ({
   selectedLanguage, 
   onLanguageChange 
 }: ArtistListProps) => {
+  const [selectedGender, setSelectedGender] = React.useState<string | null>(null)
+
   const filteredArtists = artists.filter((artist) => {
-    if (selectedLanguage === "all") return true
-    return artist.languages.includes(selectedLanguage)
+    const matchesLanguage = selectedLanguage === "all" || artist.languages.includes(selectedLanguage)
+    const matchesGender = !selectedGender || 
+      (artist.voice_gender?.toLowerCase() === selectedGender.toLowerCase())
+    return matchesLanguage && matchesGender
   })
 
   return (
@@ -25,8 +31,35 @@ export const ArtistList = ({
         <p className="mb-8 text-lg text-gray-600">
           Discover professional voiceover artists in multiple languages
         </p>
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center gap-4">
           <LanguageSelect value={selectedLanguage} onChange={onLanguageChange} />
+          
+          <div className="flex justify-center gap-4">
+            <Button
+              variant={selectedGender === null ? "secondary" : "outline"}
+              onClick={() => setSelectedGender(null)}
+              className="min-w-32"
+            >
+              <Users className="mr-2" />
+              All Voices
+            </Button>
+            <Button
+              variant={selectedGender === "male" ? "secondary" : "outline"}
+              onClick={() => setSelectedGender("male")}
+              className="min-w-32"
+            >
+              <User className="mr-2" />
+              Male Voices
+            </Button>
+            <Button
+              variant={selectedGender === "female" ? "secondary" : "outline"}
+              onClick={() => setSelectedGender("female")}
+              className="min-w-32"
+            >
+              <UserCircle className="mr-2" />
+              Female Voices
+            </Button>
+          </div>
         </div>
       </div>
       

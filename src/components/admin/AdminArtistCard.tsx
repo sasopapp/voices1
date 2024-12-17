@@ -2,12 +2,14 @@ import { VoiceoverArtist } from "@/types/voiceover"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Globe, MoreVertical, Mic2 } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu"
 import { supabase } from "@/integrations/supabase/client"
 import { toast } from "sonner"
@@ -18,6 +20,7 @@ interface AdminArtistCardProps {
 }
 
 export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
 
   const handleApprove = async () => {
@@ -115,6 +118,13 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-white">
+              <DropdownMenuItem 
+                onClick={() => navigate(`/admin/edit/${artist.id}`)}
+                className="bg-white hover:bg-gray-100"
+              >
+                Edit Artist
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
               <DropdownMenuItem 
                 onClick={handleDelete}
                 className="text-red-600 focus:text-red-600 focus:bg-red-50 bg-white hover:bg-red-50"

@@ -14,6 +14,7 @@ import Index from "./pages/Index"
 import ArtistDetail from "./pages/ArtistDetail"
 import AdminDashboard from "./pages/admin/AdminDashboard"
 import AdminNewArtist from "./pages/AdminPage"
+import AdminEditArtist from "./pages/admin/AdminEditArtist"
 import AdminLanguages from "./pages/admin/AdminLanguages"
 import Login from "./pages/Login"
 import LanguagePage from "./pages/LanguagePage"
@@ -65,6 +66,14 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <AdminNewArtist />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/edit/:id" 
+                element={
+                  <ProtectedRoute>
+                    <AdminEditArtist />
                   </ProtectedRoute>
                 } 
               />

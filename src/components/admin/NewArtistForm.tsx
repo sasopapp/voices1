@@ -123,6 +123,11 @@ export const NewArtistForm = () => {
         />
       </div>
 
+      <DemoManager
+        artistId=""
+        initialDemos={[]}
+      />
+
       <MediaUploadFields
         onAvatarChange={setAvatar}
       />

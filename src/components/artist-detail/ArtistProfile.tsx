@@ -1,9 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Globe, Mic2 } from "lucide-react"
-import { Artist } from "@/types/voiceover"
+import { VoiceoverArtist } from "@/types/voiceover"
 
 interface ArtistProfileProps {
-  artist: Artist
+  artist: VoiceoverArtist
 }
 
 export const ArtistProfile = ({ artist }: ArtistProfileProps) => {

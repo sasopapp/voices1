@@ -26,13 +26,16 @@ export const LanguageManager = () => {
       console.log('Languages loaded:', data);
       return data as Language[];
     },
-    initialData: [],
     enabled: true,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
-    staleTime: 0,
+    staleTime: 1000,
     gcTime: 0
   });
+
+  if (isLoading) {
+    console.log('Loading languages...');
+  }
 
   return (
     <div className="space-y-6">

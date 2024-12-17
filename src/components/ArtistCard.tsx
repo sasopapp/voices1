@@ -17,6 +17,11 @@ export const ArtistCard = ({ artist }: ArtistCardProps) => {
   // Find the main demo
   const mainDemo = artist.demos?.find(demo => demo.is_main);
 
+  // Truncate bio to 40 characters and add ellipsis if needed
+  const truncatedBio = artist.bio?.length > 40 
+    ? `${artist.bio.slice(0, 40)}...` 
+    : artist.bio;
+
   return (
     <Card 
       className="overflow-hidden transition-all hover:shadow-lg cursor-pointer" 
@@ -42,6 +47,7 @@ export const ArtistCard = ({ artist }: ArtistCardProps) => {
         </div>
       </CardHeader>
       <CardContent>
+        <p className="text-sm text-gray-600 mb-3">{truncatedBio}</p>
         {mainDemo && (
           <audio controls className="w-full">
             <source src={mainDemo.url} type="audio/mpeg" />

@@ -11,7 +11,7 @@ export const Footer = () => {
             <span>{new Date().getFullYear()} Authentic Voices. All rights reserved.</span>
           </div>
           <div className="text-xs text-gray-400">
-            Version 0.8 ALPHA
+            Version 0.811 BETA
           </div>
         </div>
       </div>

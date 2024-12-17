@@ -49,33 +49,26 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
       // Extract project reference from Supabase URL for localStorage cleanup
       const projectRef = SUPABASE_URL.match(/https:\/\/(.*?)\.supabase\.co/)?.[1]
       
-      // Clean up all auth-related items from localStorage first
+      // Clean up ALL auth-related items from localStorage first
       if (projectRef) {
         const keysToRemove = [
           `sb-${projectRef}-auth-token`,
           'supabase.auth.token',
-          'supabase.auth.refreshToken'
+          'supabase.auth.refreshToken',
+          `sb-${projectRef}-provider-token`,
+          'voiceover-auth-token'
         ]
         keysToRemove.forEach(key => localStorage.removeItem(key))
       }
 
-      // Attempt to sign out regardless of session state
-      const { error } = await supabase.auth.signOut()
-      if (error) {
-        console.error('Error during signOut:', error)
-        // Don't throw if it's a session-related error
-        if (!error.message.includes('session_not_found') && !error.message.includes('JWT')) {
-          throw error
-        }
-      }
-
+      // Attempt to sign out
+      await supabase.auth.signOut()
+      
       console.log('Logout successful')
       toast.success('Logged out successfully')
       
-      // Small delay before redirect to ensure toast is visible
-      setTimeout(() => {
-        window.location.href = '/'
-      }, 500)
+      // Force a complete page reload to ensure clean state
+      window.location.href = '/'
       
     } catch (error) {
       console.error('Error during logout:', error)

@@ -17,9 +17,9 @@ export const ArtistCard = ({ artist }: ArtistCardProps) => {
   // Find the main demo
   const mainDemo = artist.demos?.find(demo => demo.is_main);
 
-  // Truncate bio to 40 characters and add ellipsis if needed
-  const truncatedBio = artist.bio?.length > 40 
-    ? `${artist.bio.slice(0, 40)}...` 
+  // Truncate bio to 120 characters and add ellipsis if needed
+  const truncatedBio = artist.bio?.length > 120 
+    ? `${artist.bio.slice(0, 120)}...` 
     : artist.bio;
 
   return (

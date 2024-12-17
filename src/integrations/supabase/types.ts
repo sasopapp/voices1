@@ -15,9 +15,12 @@ export type Database = {
           avatar: string | null
           created_at: string
           created_by: string | null
+          email: string
+          firstname: string
           id: string
           is_approved: boolean | null
           languages: string[]
+          lastname: string
           name: string
           voice_gender: string | null
         }
@@ -26,9 +29,12 @@ export type Database = {
           avatar?: string | null
           created_at?: string
           created_by?: string | null
+          email: string
+          firstname: string
           id?: string
           is_approved?: boolean | null
           languages?: string[]
+          lastname: string
           name: string
           voice_gender?: string | null
         }
@@ -37,9 +43,12 @@ export type Database = {
           avatar?: string | null
           created_at?: string
           created_by?: string | null
+          email?: string
+          firstname?: string
           id?: string
           is_approved?: boolean | null
           languages?: string[]
+          lastname?: string
           name?: string
           voice_gender?: string | null
         }

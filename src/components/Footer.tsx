@@ -1,4 +1,4 @@
-import { Copyright, Github, Linkedin } from "lucide-react"
+import { Copyright, Facebook, Instagram } from "lucide-react"
 import { Link } from "react-router-dom"
 
 export const Footer = () => {
@@ -13,22 +13,22 @@ export const Footer = () => {
           
           <div className="flex items-center gap-4">
             <a
-              href="https://github.com"
+              href="https://instagram.com"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-600 transition-colors hover:text-gray-900"
             >
-              <Github className="h-5 w-5" />
-              <span className="sr-only">GitHub</span>
+              <Instagram className="h-5 w-5" />
+              <span className="sr-only">Instagram</span>
             </a>
             <a
-              href="https://linkedin.com"
+              href="https://facebook.com"
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-600 transition-colors hover:text-gray-900"
             >
-              <Linkedin className="h-5 w-5" />
-              <span className="sr-only">LinkedIn</span>
+              <Facebook className="h-5 w-5" />
+              <span className="sr-only">Facebook</span>
             </a>
           </div>
         </div>

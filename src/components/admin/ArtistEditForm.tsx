@@ -1,11 +1,11 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { toast } from "sonner"
 import { supabase } from "@/integrations/supabase/client"
+import { BasicInfoFields } from "./artist-form/BasicInfoFields"
+import { VoiceGenderField } from "./artist-form/VoiceGenderField"
+import { LanguagesField } from "./artist-form/LanguagesField"
+import { FileUploadFields } from "./artist-form/FileUploadFields"
 
 interface ArtistEditFormProps {
   artist: {
@@ -110,113 +110,30 @@ export const ArtistEditForm = ({ artist, availableLanguages, onSuccess }: Artist
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div>
-        <Label htmlFor="firstname">First Name</Label>
-        <Input
-          id="firstname"
-          value={firstname}
-          onChange={(e) => setFirstname(e.target.value)}
-          required
-        />
-      </div>
+      <BasicInfoFields
+        firstname={firstname}
+        lastname={lastname}
+        email={email}
+        setFirstname={setFirstname}
+        setLastname={setLastname}
+        setEmail={setEmail}
+      />
 
-      <div>
-        <Label htmlFor="lastname">Last Name</Label>
-        <Input
-          id="lastname"
-          value={lastname}
-          onChange={(e) => setLastname(e.target.value)}
-          required
-        />
-      </div>
+      <VoiceGenderField
+        voiceGender={voiceGender}
+        setVoiceGender={setVoiceGender}
+      />
 
-      <div>
-        <Label htmlFor="email">Email</Label>
-        <Input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-      </div>
+      <LanguagesField
+        languages={languages}
+        availableLanguages={availableLanguages}
+        setLanguages={setLanguages}
+      />
 
-      <div>
-        <Label>Voice Gender</Label>
-        <RadioGroup
-          value={voiceGender}
-          onValueChange={setVoiceGender}
-          className="flex gap-4 mt-2"
-        >
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="male" id="male" />
-            <Label htmlFor="male">Male</Label>
-          </div>
-          <div className="flex items-center space-x-2">
-            <RadioGroupItem value="female" id="female" />
-            <Label htmlFor="female">Female</Label>
-          </div>
-        </RadioGroup>
-      </div>
-
-      <div>
-        <Label>Languages</Label>
-        <Select
-          onValueChange={(value) => 
-            setLanguages([...languages, value])
-          }
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select language" />
-          </SelectTrigger>
-          <SelectContent>
-            {availableLanguages.map((lang) => (
-              <SelectItem key={lang} value={lang}>
-                {lang}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {languages.map((lang) => (
-            <div
-              key={lang}
-              className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-sm flex items-center gap-2"
-            >
-              {lang}
-              <button
-                type="button"
-                onClick={() => 
-                  setLanguages(languages.filter((l) => l !== lang))
-                }
-                className="text-secondary-foreground/50 hover:text-secondary-foreground"
-              >
-                ×
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div>
-        <Label htmlFor="audio">New Audio Demo (optional)</Label>
-        <Input
-          id="audio"
-          type="file"
-          accept="audio/*"
-          onChange={(e) => setAudioDemo(e.target.files?.[0] || null)}
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="avatar">New Avatar (optional)</Label>
-        <Input
-          id="avatar"
-          type="file"
-          accept="image/*"
-          onChange={(e) => setAvatar(e.target.files?.[0] || null)}
-        />
-      </div>
+      <FileUploadFields
+        setAudioDemo={setAudioDemo}
+        setAvatar={setAvatar}
+      />
 
       <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? 'Updating Artist...' : 'Update Artist'}

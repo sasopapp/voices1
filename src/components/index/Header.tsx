@@ -71,6 +71,15 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
           <div className="flex items-center gap-4">
             {isAdmin && (
               <>
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate('/admin')}
+                  className="flex items-center gap-2"
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  Admin Dashboard
+                </Button>
+
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button 
@@ -96,15 +105,6 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
                     ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
-
-                <Button 
-                  variant="ghost" 
-                  onClick={() => navigate('/admin')}
-                  className="flex items-center gap-2"
-                >
-                  <LayoutDashboard className="h-4 w-4" />
-                  Admin Dashboard
-                </Button>
               </>
             )}
           </div>

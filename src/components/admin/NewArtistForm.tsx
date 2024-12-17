@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { toast } from "sonner"
 import { useSessionContext } from "@supabase/auth-helpers-react"
 import { BasicInfoFields } from "./form/BasicInfoFields"
@@ -103,19 +104,33 @@ export const NewArtistForm = () => {
         firstname={firstname}
         lastname={lastname}
         email={email}
-        voiceGender={voiceGender}
-        bio={bio}
         onFirstnameChange={setFirstname}
         onLastnameChange={setLastname}
         onEmailChange={setEmail}
-        onVoiceGenderChange={setVoiceGender}
-        onBioChange={setBio}
       />
 
       <UsernameField
         username={username}
         onUsernameChange={setUsername}
       />
+
+      <div className="space-y-2">
+        <Label>Voice Gender</Label>
+        <RadioGroup
+          value={voiceGender}
+          onValueChange={setVoiceGender}
+          className="flex flex-col space-y-1"
+        >
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="male" id="male" />
+            <Label htmlFor="male">Male</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="female" id="female" />
+            <Label htmlFor="female">Female</Label>
+          </div>
+        </RadioGroup>
+      </div>
 
       <div className="space-y-2">
         <Label htmlFor="bio">Bio (250 characters max)</Label>

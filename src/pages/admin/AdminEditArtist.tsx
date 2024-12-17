@@ -23,6 +23,7 @@ const AdminEditArtist = () => {
         throw error
       }
 
+      // Extract just the language names from the response
       const languageNames = data.map(lang => lang.name)
       console.log('Available languages:', languageNames)
       return languageNames

@@ -27,7 +27,7 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
       console.log('Fetching languages for select...')
       const { data, error } = await supabase
         .from('languages')
-        .select('id, name')
+        .select('*')
         .order('name')
 
       if (error) {
@@ -38,8 +38,6 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
       console.log('Languages loaded:', data)
       return data as Language[]
     },
-    staleTime: 0,
-    refetchOnMount: 'always'
   })
 
   if (isLoading) {

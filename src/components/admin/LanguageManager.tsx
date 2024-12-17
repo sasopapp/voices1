@@ -15,7 +15,7 @@ export const LanguageManager = () => {
   const [newLanguage, setNewLanguage] = useState("");
   const queryClient = useQueryClient();
 
-  const { data: languages, isLoading } = useQuery({
+  const { data: languages = [], isLoading } = useQuery({
     queryKey: ['languages'],
     queryFn: async () => {
       console.log('Fetching languages...');
@@ -90,6 +90,10 @@ export const LanguageManager = () => {
     addLanguageMutation.mutate(newLanguage.trim());
   };
 
+  if (isLoading) {
+    return <div>Loading languages...</div>;
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col space-y-4">
@@ -110,28 +114,24 @@ export const LanguageManager = () => {
           </Button>
         </form>
 
-        {isLoading ? (
-          <div>Loading languages...</div>
-        ) : (
-          <div className="grid gap-2">
-            {languages?.map((language) => (
-              <div 
-                key={language.id} 
-                className="flex items-center justify-between p-3 bg-white rounded-lg shadow"
+        <div className="grid gap-2">
+          {languages.map((language) => (
+            <div 
+              key={language.id} 
+              className="flex items-center justify-between p-3 bg-white rounded-lg shadow"
+            >
+              <span>{language.name}</span>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => deleteLanguageMutation.mutate(language.id)}
+                disabled={deleteLanguageMutation.isPending}
               >
-                <span>{language.name}</span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => deleteLanguageMutation.mutate(language.id)}
-                  disabled={deleteLanguageMutation.isPending}
-                >
-                  <Trash2 className="h-4 w-4 text-red-500" />
-                </Button>
-              </div>
-            ))}
-          </div>
-        )}
+                <Trash2 className="h-4 w-4 text-red-500" />
+              </Button>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

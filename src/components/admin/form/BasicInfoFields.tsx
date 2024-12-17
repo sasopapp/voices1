@@ -83,21 +83,21 @@ export const BasicInfoFields = ({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="bio">Bio (120 characters max)</Label>
+        <Label htmlFor="bio">Bio (250 characters max)</Label>
         <Textarea
           id="bio"
           placeholder="Enter your bio"
           value={bio}
           onChange={(e) => {
-            if (e.target.value.length <= 120) {
+            if (e.target.value.length <= 250) {
               onBioChange(e.target.value)
             }
           }}
-          maxLength={120}
+          maxLength={250}
           className="resize-none"
         />
         <div className="text-sm text-muted-foreground text-right">
-          {bio.length}/120
+          {bio.length}/250
         </div>
       </div>
     </div>

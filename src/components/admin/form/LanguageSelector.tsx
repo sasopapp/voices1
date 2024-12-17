@@ -43,10 +43,9 @@ export const LanguageSelector = ({
       console.log('Languages loaded:', data)
       return data as Language[]
     },
-    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
-    gcTime: 10 * 60 * 1000,   // Keep unused data for 10 minutes
-    refetchOnMount: true,      // Refetch when component mounts
-    refetchOnWindowFocus: false // Don't refetch on window focus
+    initialData: [],
+    staleTime: 0,
+    refetchOnMount: 'always'
   })
 
   if (isLoading) {

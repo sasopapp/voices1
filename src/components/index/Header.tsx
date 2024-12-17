@@ -64,13 +64,13 @@ export const Header = ({ isAdmin, isLoggedIn }: HeaderProps) => {
   return (
     <header className="border-b bg-white relative z-10">
       <div className="flex h-16 items-center px-6">
-        <div className="flex-1" /> {/* Left spacer */}
+        <div className="flex-1" />
 
         <div className="flex justify-center">
           <img 
             src="https://authenticvoices.eu/wp-content/uploads/2023/11/AV_logo_250px-1.png"
             alt="Authentic Voices Logo"
-            className="h-12 w-auto"
+            className="h-24 w-auto"
           />
         </div>
 

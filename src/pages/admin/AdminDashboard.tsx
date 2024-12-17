@@ -18,6 +18,7 @@ interface DatabaseArtist {
   email: string
   firstname: string
   lastname: string
+  username: string
 }
 
 const AdminDashboard = () => {
@@ -59,7 +60,8 @@ const AdminDashboard = () => {
         voice_gender: artist.voice_gender,
         email: artist.email,
         firstname: artist.firstname,
-        lastname: artist.lastname
+        lastname: artist.lastname,
+        username: artist.username
       }))
     },
     enabled: !!session

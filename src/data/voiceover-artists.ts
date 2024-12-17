@@ -10,7 +10,8 @@ export const voiceoverArtists: VoiceoverArtist[] = [
     voice_gender: "female",
     email: "sarah.johnson@example.com",
     firstname: "Sarah",
-    lastname: "Johnson"
+    lastname: "Johnson",
+    username: "sarahjohnson"
   },
   {
     id: "2",
@@ -21,7 +22,8 @@ export const voiceoverArtists: VoiceoverArtist[] = [
     voice_gender: "male",
     email: "miguel.rodriguez@example.com",
     firstname: "Miguel",
-    lastname: "Rodriguez"
+    lastname: "Rodriguez",
+    username: "miguelrodriguez"
   },
   {
     id: "3",
@@ -32,7 +34,8 @@ export const voiceoverArtists: VoiceoverArtist[] = [
     voice_gender: "female",
     email: "anna.schmidt@example.com",
     firstname: "Anna",
-    lastname: "Schmidt"
+    lastname: "Schmidt",
+    username: "annaschmidt"
   },
   {
     id: "4",
@@ -43,7 +46,8 @@ export const voiceoverArtists: VoiceoverArtist[] = [
     voice_gender: "male",
     email: "marco.rossi@example.com",
     firstname: "Marco",
-    lastname: "Rossi"
+    lastname: "Rossi",
+    username: "marcorossi"
   },
 ];
 

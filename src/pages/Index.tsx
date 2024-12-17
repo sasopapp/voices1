@@ -68,7 +68,8 @@ const Index = () => {
         voice_gender: artist.voice_gender,
         email: artist.email,
         firstname: artist.firstname,
-        lastname: artist.lastname
+        lastname: artist.lastname,
+        username: artist.username
       }))
       
       console.log('Mapped approved artists:', mappedArtists)

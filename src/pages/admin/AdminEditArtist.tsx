@@ -36,7 +36,8 @@ const AdminEditArtist = () => {
         voice_gender: data.voice_gender,
         email: data.email,
         firstname: data.firstname,
-        lastname: data.lastname
+        lastname: data.lastname,
+        username: data.username
       }
 
       console.log('Artist details loaded:', mappedArtist)

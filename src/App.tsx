@@ -1,52 +1,94 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import { Toaster } from "@/components/ui/toaster"
+import { Toaster as Sonner } from "@/components/ui/sonner"
+import { TooltipProvider } from "@/components/ui/tooltip"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { SessionContextProvider } from "@supabase/auth-helpers-react"
+import { supabase } from "./integrations/supabase/client"
+import { ProtectedRoute } from "./components/auth/ProtectedRoute"
+import { AuthRoute } from "./components/auth/AuthRoute"
+import { useInitializeSession } from "./hooks/useInitializeSession"
+
+// Pages
 import Index from "./pages/Index"
-import Login from "./pages/Login"
-import AdminPage from "./pages/AdminPage"
+import ArtistDetail from "./pages/ArtistDetail"
 import AdminDashboard from "./pages/admin/AdminDashboard"
+import AdminNewArtist from "./pages/AdminPage"
 import AdminEditArtist from "./pages/admin/AdminEditArtist"
 import AdminLanguages from "./pages/admin/AdminLanguages"
-import ArtistDetail from "./pages/ArtistDetail"
+import Login from "./pages/Login"
 import LanguagePage from "./pages/LanguagePage"
-import { AuthRoute } from "./components/auth/AuthRoute"
-import { ProtectedRoute } from "./components/auth/ProtectedRoute"
-import "./App.css"
 
-// Create a client
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
       retry: 1,
+      refetchOnWindowFocus: false,
     },
   },
 })
 
-function App() {
+const App = () => {
+  const initialSession = useInitializeSession()
+
   return (
     <QueryClientProvider client={queryClient}>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/language/:language" element={<LanguagePage />} />
-          <Route path="/artist/:username" element={<ArtistDetail />} />
-          <Route
-            path="/admin"
-            element={
-              <AuthRoute>
-                <ProtectedRoute>
-                  <AdminPage />
-                </ProtectedRoute>
-              </AuthRoute>
-            }
-          >
-            <Route index element={<AdminDashboard />} />
-            <Route path="edit/:id" element={<AdminEditArtist />} />
-            <Route path="languages" element={<AdminLanguages />} />
-          </Route>
-        </Routes>
-      </Router>
+      <SessionContextProvider 
+        supabaseClient={supabase}
+        initialSession={initialSession}
+      >
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route 
+                path="/login" 
+                element={
+                  <AuthRoute>
+                    <Login />
+                  </AuthRoute>
+                } 
+              />
+              <Route path="/" element={<Index />} />
+              <Route path="/artist/:id" element={<ArtistDetail />} />
+              <Route path="/language/:language" element={<LanguagePage />} />
+              <Route 
+                path="/admin" 
+                element={
+                  <ProtectedRoute>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/new" 
+                element={
+                  <ProtectedRoute>
+                    <AdminNewArtist />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/edit/:id" 
+                element={
+                  <ProtectedRoute>
+                    <AdminEditArtist />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/languages" 
+                element={
+                  <ProtectedRoute>
+                    <AdminLanguages />
+                  </ProtectedRoute>
+                } 
+              />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </SessionContextProvider>
     </QueryClientProvider>
   )
 }

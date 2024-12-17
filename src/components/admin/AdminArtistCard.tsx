@@ -78,6 +78,11 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
     e.stopPropagation()
   }
 
+  // Truncate bio to 145 characters and add ellipsis if needed
+  const truncatedBio = artist.bio?.length > 145 
+    ? `${artist.bio.slice(0, 145)}...` 
+    : artist.bio
+
   return (
     <Card 
       className="relative overflow-hidden cursor-pointer hover:shadow-lg transition-all" 
@@ -95,6 +100,7 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
         />
       </CardHeader>
       <CardContent>
+        <p className="text-sm text-gray-600 mb-3">{truncatedBio}</p>
         {mainDemo && (
           <CustomAudioPlayer url={mainDemo.url} />
         )}

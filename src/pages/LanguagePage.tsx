@@ -71,14 +71,14 @@ const LanguagePage = () => {
     <div className="min-h-screen bg-background">
       <Header isAdmin={false} isLoggedIn={!!session} />
       <main className="p-8">
-        <h1 className="text-4xl font-bold mb-8 text-center">
+        <h1 className="text-4xl font-bold mb-8 text-center text-gray-900">
           Professional {decodedLanguage} Voice Over Artists
         </h1>
-        <ArtistList 
-          artists={artists}
-          selectedLanguage={decodedLanguage}
-          onLanguageChange={() => {}} // Disabled since this is a language-specific page
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {artists.map((artist) => (
+            <ArtistList.Card key={artist.id} artist={artist} />
+          ))}
+        </div>
       </main>
     </div>
   )

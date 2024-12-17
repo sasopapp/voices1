@@ -80,7 +80,7 @@ const AdminEditArtist = () => {
         <div className="max-w-xl mx-auto">
           <ArtistEditForm
             artist={artist}
-            availableLanguages={availableLanguages || []}
+            availableLanguages={availableLanguages}
             onSuccess={() => navigate('/admin')}
           />
         </div>

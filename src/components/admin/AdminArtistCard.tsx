@@ -75,6 +75,7 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
       console.log('Artist deleted successfully')
       toast.success('Artist deleted successfully')
       
+      // Force refetch the artists data
       await queryClient.invalidateQueries({ queryKey: ['admin-artists'] })
       await queryClient.refetchQueries({ queryKey: ['admin-artists'], exact: true })
     } catch (error) {

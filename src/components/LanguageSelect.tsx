@@ -39,7 +39,7 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
       return data as Language[]
     },
     staleTime: 0, // Always consider data stale
-    cacheTime: 1000 * 60 * 5, // Keep in cache for 5 minutes
+    gcTime: 1000 * 60 * 5, // Keep in cache for 5 minutes (renamed from cacheTime)
     refetchOnMount: 'always', // Always refetch when component mounts
     refetchOnWindowFocus: true, // Refetch when window gains focus
     refetchOnReconnect: true, // Refetch when reconnecting

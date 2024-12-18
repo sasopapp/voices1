@@ -1,43 +1,11 @@
-import { useNavigate, useLocation } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
-import { Home, Users, Globe, Plus, Menu } from "lucide-react"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { useQuery } from "@tanstack/react-query"
-import { supabase } from "@/integrations/supabase/client"
+import { Home } from "lucide-react"
+import { DesktopNav } from "./navigation/DesktopNav"
+import { MobileNav } from "./navigation/MobileNav"
 
 export function AdminHeader({ title }: { title: string }) {
   const navigate = useNavigate()
-  const location = useLocation()
-
-  // Only fetch languages for the dropdown
-  const { data: languages = [] } = useQuery({
-    queryKey: ['languages'],
-    queryFn: async () => {
-      console.log('Fetching languages for header dropdown...')
-      const { data, error } = await supabase
-        .from('languages')
-        .select('*')
-        .order('name')
-
-      if (error) {
-        console.error('Error fetching languages:', error)
-        throw error
-      }
-
-      console.log('Languages loaded:', data)
-      return data
-    },
-    staleTime: 0, // Always consider data stale
-    gcTime: 1000 * 60 * 5, // Keep in cache for 5 minutes (renamed from cacheTime)
-    refetchOnMount: 'always', // Always refetch when component mounts
-    refetchOnWindowFocus: true, // Refetch when window gains focus
-    refetchOnReconnect: true, // Refetch when reconnecting
-  })
 
   return (
     <header className="border-b bg-white relative z-10">
@@ -63,87 +31,8 @@ export function AdminHeader({ title }: { title: string }) {
           />
         </div>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-4">
-          <Button
-            variant="ghost"
-            className={`flex items-center gap-2 ${location.pathname === '/admin' ? 'bg-accent' : ''}`}
-            onClick={() => navigate('/admin')}
-          >
-            <Users className="h-4 w-4" />
-            Artists
-          </Button>
-          <Button
-            variant="ghost"
-            className={`flex items-center gap-2 ${location.pathname === '/admin/languages' ? 'bg-accent' : ''}`}
-            onClick={() => navigate('/admin/languages')}
-          >
-            <Globe className="h-4 w-4" />
-            Languages
-          </Button>
-
-          {/* Language Pages Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center gap-2">
-                <Globe className="h-4 w-4" />
-                Language Pages
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              {languages.map((language) => (
-                <DropdownMenuItem 
-                  key={language.id}
-                  onClick={() => navigate(`/language/${encodeURIComponent(language.name.toLowerCase())}`)}
-                >
-                  {language.name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <Button
-            onClick={() => navigate('/admin/new')}
-            className="flex items-center gap-2"
-          >
-            <Plus className="h-4 w-4" />
-            Add New Artist
-          </Button>
-        </div>
-
-        {/* Mobile Navigation */}
-        <div className="md:hidden">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Open menu</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem onClick={() => navigate('/admin')}>
-                <Users className="mr-2 h-4 w-4" />
-                <span>Artists</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate('/admin/languages')}>
-                <Globe className="mr-2 h-4 w-4" />
-                <span>Languages</span>
-              </DropdownMenuItem>
-              {languages.map((language) => (
-                <DropdownMenuItem 
-                  key={language.id}
-                  onClick={() => navigate(`/language/${encodeURIComponent(language.name.toLowerCase())}`)}
-                >
-                  {language.name}
-                </DropdownMenuItem>
-              ))}
-              <DropdownMenuItem onClick={() => navigate('/admin/new')}>
-                <Plus className="mr-2 h-4 w-4" />
-                <span>Add New Artist</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        <DesktopNav />
+        <MobileNav />
       </div>
     </header>
   )

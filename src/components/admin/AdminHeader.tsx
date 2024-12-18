@@ -32,6 +32,11 @@ export function AdminHeader({ title }: { title: string }) {
       console.log('Languages loaded:', data)
       return data.map(lang => lang.name)
     },
+    staleTime: 0, // Always consider data stale
+    gcTime: 1000 * 60 * 5, // Keep in cache for 5 minutes (renamed from cacheTime)
+    refetchOnMount: 'always', // Always refetch when component mounts
+    refetchOnWindowFocus: true, // Refetch when window gains focus
+    refetchOnReconnect: true, // Refetch when reconnecting
   })
 
   return (

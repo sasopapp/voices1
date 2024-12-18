@@ -24,7 +24,7 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
   const { data: languages = [], isLoading } = useQuery({
     queryKey: ['languages'],
     queryFn: async () => {
-      console.log('Starting language fetch for dropdown...')
+      console.log('Fetching languages for dropdown...')
       const { data, error } = await supabase
         .from('languages')
         .select('*')
@@ -35,12 +35,14 @@ export const LanguageSelect = ({ value, onChange }: LanguageSelectProps) => {
         throw error
       }
 
-      console.log('Languages loaded successfully:', data)
+      console.log('Languages loaded:', data)
       return data as Language[]
     },
-    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
-    refetchOnMount: true,
-    refetchOnWindowFocus: false,
+    staleTime: 0, // Always consider data stale
+    cacheTime: 1000 * 60 * 5, // Keep in cache for 5 minutes
+    refetchOnMount: 'always', // Always refetch when component mounts
+    refetchOnWindowFocus: true, // Refetch when window gains focus
+    refetchOnReconnect: true, // Refetch when reconnecting
   })
 
   if (isLoading) {

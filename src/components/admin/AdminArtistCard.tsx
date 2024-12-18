@@ -44,15 +44,30 @@ export const AdminArtistCard = ({ artist }: AdminArtistCardProps) => {
   const handleDelete = async (e: React.MouseEvent) => {
     e.stopPropagation()
     try {
-      console.log('Deleting artist:', artist.id)
+      console.log('Starting deletion process for artist:', artist.id)
       
-      const { error } = await supabase
+      // First, delete all demos associated with the artist
+      const { error: demosError } = await supabase
+        .from('demos')
+        .delete()
+        .eq('artist_id', artist.id)
+
+      if (demosError) {
+        console.error('Error deleting demos:', demosError)
+        toast.error('Failed to delete artist demos')
+        return
+      }
+
+      console.log('Successfully deleted associated demos')
+
+      // Then delete the artist
+      const { error: artistError } = await supabase
         .from('artists')
         .delete()
         .eq('id', artist.id)
 
-      if (error) {
-        console.error('Error deleting artist:', error)
+      if (artistError) {
+        console.error('Error deleting artist:', artistError)
         toast.error('Failed to delete artist')
         return
       }

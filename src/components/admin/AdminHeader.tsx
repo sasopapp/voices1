@@ -21,7 +21,7 @@ export function AdminHeader({ title }: { title: string }) {
       console.log('Fetching languages for header dropdown...')
       const { data, error } = await supabase
         .from('languages')
-        .select('name')
+        .select('*')
         .order('name')
 
       if (error) {
@@ -30,7 +30,7 @@ export function AdminHeader({ title }: { title: string }) {
       }
 
       console.log('Languages loaded:', data)
-      return data.map(lang => lang.name)
+      return data
     },
     staleTime: 0, // Always consider data stale
     gcTime: 1000 * 60 * 5, // Keep in cache for 5 minutes (renamed from cacheTime)
@@ -93,10 +93,10 @@ export function AdminHeader({ title }: { title: string }) {
             <DropdownMenuContent align="end" className="w-48">
               {languages.map((language) => (
                 <DropdownMenuItem 
-                  key={language}
-                  onClick={() => navigate(`/language/${encodeURIComponent(language.toLowerCase())}`)}
+                  key={language.id}
+                  onClick={() => navigate(`/language/${encodeURIComponent(language.name.toLowerCase())}`)}
                 >
-                  {language}
+                  {language.name}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -131,10 +131,10 @@ export function AdminHeader({ title }: { title: string }) {
               </DropdownMenuItem>
               {languages.map((language) => (
                 <DropdownMenuItem 
-                  key={language}
-                  onClick={() => navigate(`/language/${encodeURIComponent(language.toLowerCase())}`)}
+                  key={language.id}
+                  onClick={() => navigate(`/language/${encodeURIComponent(language.name.toLowerCase())}`)}
                 >
-                  {language}
+                  {language.name}
                 </DropdownMenuItem>
               ))}
               <DropdownMenuItem onClick={() => navigate('/admin/new')}>
